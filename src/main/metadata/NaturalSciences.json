@@ -1,0 +1,5 @@
+{
+    "buildingName": "Natural Sciences",
+    "levels": ["Level 2", "Level 4", "Level 5"],
+    "levelNames": ["Lower Ground Floor", "First Floor", "Second Floor"]
+}
