@@ -32,10 +32,9 @@ public class Main extends JFrame {
         frame = new Main();
      
         Map map = new Map();
+ 
         
-   
-        
-        
+  
         
         saved = true;
 

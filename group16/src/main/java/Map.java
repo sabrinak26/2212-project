@@ -143,7 +143,7 @@ public class Map {
                     
                     
                     //building.getLayer("Accessibility").addPOI("OPAAAAAAAA", "Built-in", "Accessibility", 7, "This is OPAAAAA", 578, 75);
-                    //building.getLayer("Accessibility").removePOI(0);
+                    //building.getLayer("Accessibility").removePOI(1);
                     
                     
                     // Gets label for each buildng
