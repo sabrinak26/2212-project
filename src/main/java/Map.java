@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import com.google.gson.Gson;
 import org.imgscalr.Scalr;
+import java.awt.Desktop;
 
 public class Map {
     private JPanel panel;
@@ -24,6 +25,7 @@ public class Map {
     JComboBox<String> cb;
     FileReader fileReader;
     JScrollPane mapPanel;
+    JLabel picLabel = null;
 
     // Gets the JTabbedPane with the map in it
     
@@ -107,6 +109,8 @@ public class Map {
                         buildings[i] = building;
                         
                         
+                        setCurrentBuilding(building);
+                        
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
                     }
@@ -133,9 +137,8 @@ public class Map {
                         }
                     });
 
-                    // Setting current floor, this is the floor that is first shown upon opening
                     
-                    currentFloor = "Level 2";
+                    
                     
                     
                     // I used these to test adding and removing POIs to diffrent layers, use them if you want to test
@@ -148,7 +151,7 @@ public class Map {
                     
                     // Gets label for each buildng
                   
-                    JLabel picLabel = generatePicLabel(getBuilding().getLevels()[0].replaceAll("\\s+","").toLowerCase());
+                    picLabel = generatePicLabel(getBuilding().getLevels()[0].replaceAll("\\s+","").toLowerCase());
                     
                     // Makes the panel that the map is in
                     
@@ -162,6 +165,12 @@ public class Map {
                     panel.add(tabs);
                  
             }
+            
+            // Setting current floor, this is the floor that is first shown upon opening
+
+            currentFloor = "Level 2";
+            
+            setCurrentBuilding(getBuilding("NaturalSciences"));
 
 
             building = buildings[tabs.getSelectedIndex()];
@@ -179,18 +188,28 @@ public class Map {
         } else {
             System.out.println("./src/main/metadata/ does not exist");
         }
+        
+        picLabel = generatePicLabel(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase());
+        
+        System.out.println(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase()+ "THISSS");
+        
+        System.out.println( picLabel.getHeight());
     }
+    
+    
     
     // Creates labels
 
     JLabel generatePicLabel(String level) {
-        JLabel picLabel = null;
+        System.out.println("./src/main/images/" + currentBuilding.getBuildingName().replaceAll("\\s+","") + "/" + level + ".jpg" + "AHHHHHH");
         try {
-            File file = new File("./src/main/images/" + building.getBuildingName().replaceAll("\\s+","") + "/" + level + ".jpg");
+            File file = new File("./src/main/images/" + currentBuilding.getBuildingName().replaceAll("\\s+","") + "/" + level + ".jpg");
             BufferedImage myPicture = ImageIO.read(file);
             BufferedImage scaledImg = Scalr.resize(myPicture, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, 800, 400, Scalr.OP_ANTIALIAS);
             picLabel = new JLabel(new ImageIcon(scaledImg));
             picLabel.setPreferredSize(new Dimension(scaledImg.getWidth(), scaledImg.getHeight()));
+            //System.out.println( picLabel.getHeight());
+            //System.out.println( picLabel.getWidth());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -271,6 +290,26 @@ public class Map {
         
         return currentFloor;
         
+    }
+    
+    public void addPOIsToMap(POI[] pois) {
+        System.out.println("AHHHH");
+        for (int i = 0; i < pois.length; i++) {
+        
+        POI poi = pois[i];
+        System.out.println(poi.getName());
+        
+        addPOI(poi.getX(),poi.getY());
+    
+         
+    }
+        
+        
+    }
+    
+    public void addPOI(int x, int y) {
+        
+      
     }
 }
   

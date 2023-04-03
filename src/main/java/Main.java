@@ -59,6 +59,14 @@ public class Main extends JFrame {
         frame.add(helpButton);
         frame.setVisible(true);
         
+        
+        //map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 25, 25);
+        //map.getBuilding("NaturalSciences").getLayer("Accessibility").removePOI(1);
+        
+        // This is currently the line I am using to test putting POIs on the map
+        
+        map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Accessibility").getPOIs());
+        
         // Checks if application is being closed
         
         frame.addWindowListener(new WindowAdapter() {

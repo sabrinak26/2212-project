@@ -18,6 +18,7 @@ public class POI {
     private int x_coordinate;
     private int y_coordinate;
     private int key;
+    private String floor;
     
     // Create POI with no metadata
     
@@ -29,11 +30,12 @@ public class POI {
     
     // Create POI with metadata
     
-    public POI(String poiName, String poiType, String poiCategory, int poiRoomNumber, String poiDescription, int poiX, int poiY, int key) {
+    public POI(String poiName, String floor, String poiType, String poiCategory, int poiRoomNumber, String poiDescription, int poiX, int poiY, int key) {
         
         this.type = poiType;
         this.category = poiCategory;
         this.name = poiName;
+        this.floor = floor;
         this.roomNumber = poiRoomNumber;
         this.description = poiDescription;
         this.favourite = false;
@@ -110,9 +112,17 @@ public class POI {
     public int getKey() {
         return key;
     }
-
+   
     public void setKey(int key) {
         this.key = key;
+    }
+    
+    public String getfloor() {
+        return floor;
+    }
+
+    public void setfloor(String floor) {
+        this.floor = floor;
     }
     
 }

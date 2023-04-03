@@ -17,6 +17,7 @@ public class Layer {
     // Number of POIs in layer
     
     private int numPois;
+    private int currKey = 0;
     
     // Create layer, might not need to construct more layers cause they are already all there
     
@@ -37,15 +38,16 @@ public class Layer {
             
         }
         
-        pois.put(numPois, new POI(numPois));
+        pois.put(numPois, new POI(currKey));
         
         numPois++;
+        currKey++;
     
     }
     
     // Add POI with metadata to Hashtable using numPois as the key
     
-    public void addPOI(String poiName, String poiType, String poiCategory, int poiRoomNumber, String poiDescription, int poiX, int poiY) {
+    public void addPOI(String poiName, String floor, String poiType, String poiCategory, int poiRoomNumber, String poiDescription, int poiX, int poiY) {
     
         if (pois == null) {
             
@@ -53,9 +55,10 @@ public class Layer {
             
         }
         
-    pois.put(numPois, new POI(poiName, poiType, poiCategory, poiRoomNumber, poiDescription, poiX, poiY, numPois));
+    pois.put(currKey, new POI(poiName, floor, poiType, poiCategory, poiRoomNumber, poiDescription, poiX, poiY, currKey));
     
     numPois++;
+    currKey++;
     
 }
     
@@ -75,6 +78,21 @@ public class Layer {
         
         return category;
         
+    }
+    
+    public POI[] getPOIs() {
+        
+        POI[] poiArray = new POI[pois.size()];
+        int index = 0;
+        
+        for (POI value : pois.values()) {
+        
+            poiArray[index] = value;
+            index++;
+        
+        }
+        
+        return poiArray;
     }
     
 }
