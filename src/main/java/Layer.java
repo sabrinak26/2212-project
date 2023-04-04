@@ -18,6 +18,7 @@ public class Layer {
     
     private int numPois;
     private int currKey = 0;
+    boolean isSelected = false;
     
     // Create layer, might not need to construct more layers cause they are already all there
     
@@ -38,7 +39,7 @@ public class Layer {
             
         }
         
-        pois.put(numPois, new POI(currKey));
+        pois.put(currKey, new POI(currKey));
         
         numPois++;
         currKey++;
@@ -93,6 +94,18 @@ public class Layer {
         }
         
         return poiArray;
+    }
+    
+    public boolean getIsSelected() {
+        
+        return isSelected;
+        
+    }
+    
+    public void setIsSelected(boolean isSelected) {
+        
+        this.isSelected = isSelected;
+        
     }
     
 }

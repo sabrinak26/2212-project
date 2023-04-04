@@ -33,7 +33,7 @@ public class Main extends JFrame {
      
         Map map = new Map();
         
-   
+        //JPanel layersPanel = new JPanel();
         
         
         
@@ -57,15 +57,152 @@ public class Main extends JFrame {
         
         frame.add(aboutButton);
         frame.add(helpButton);
+        
+        
+        //layersPanel.setBounds(720, 260, 270, 400);
+        
+        ImageIcon layersImage = new ImageIcon("./src/main/images/icons/layers.png");
+        JLabel layersLabel = new JLabel();
+        layersLabel.setIcon(layersImage);
+        layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+
+        JLayeredPane layerLayeredPane = new JLayeredPane();
+        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layerLayeredPane.add(layersLabel, JLayeredPane.DEFAULT_LAYER);
+
+        JPanel layersPanel = new JPanel();
+        layersPanel.setLayout(null); // set the layout to null to use setBounds
+        layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
+        
+        JCheckBox accCheckBox = new JCheckBox();
+        accCheckBox.setSelected(false);
+        
+        JCheckBox classCheckBox = new JCheckBox();
+        classCheckBox.setSelected(false);
+        
+        JCheckBox favCheckBox = new JCheckBox();
+        favCheckBox.setSelected(false);
+        
+        JCheckBox labCheckBox = new JCheckBox();
+        labCheckBox.setSelected(false);
+        
+        JCheckBox resCheckBox = new JCheckBox();
+        resCheckBox.setSelected(false);
+        
+        JCheckBox userCheckBox = new JCheckBox();
+        userCheckBox.setSelected(false);
+        
+        JCheckBox washCheckBox = new JCheckBox();
+        washCheckBox.setSelected(false);
+        
+        layerLayeredPane.add(accCheckBox);
+        layerLayeredPane.add(classCheckBox);
+        layerLayeredPane.add(favCheckBox);
+        layerLayeredPane.add(labCheckBox);
+        layerLayeredPane.add(resCheckBox);
+        layerLayeredPane.add(userCheckBox);
+        layerLayeredPane.add(washCheckBox);
+
+        
+        layersPanel.add(layerLayeredPane);
+        
+        accCheckBox.setBounds(12, 25, 25, 25);
+        classCheckBox.setBounds(12, 80, 25, 25);
+        favCheckBox.setBounds(12, 135, 25, 25);
+        labCheckBox.setBounds(12, 190, 25, 25);
+        resCheckBox.setBounds(12, 240, 25, 25);
+        userCheckBox.setBounds(12, 295, 25, 25);
+        washCheckBox.setBounds(12, 350, 25, 25);
+        
+        
+        frame.add(layersPanel);
+        
         frame.setVisible(true);
+
+        accCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (accCheckBox.isSelected()) {
+                    System.out.println("accCheckBox is checked");
+                } else {
+                    System.out.println("accCheckBox is unchecked");
+                }
+            }
+        });
         
+        classCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (classCheckBox.isSelected()) {
+                    System.out.println("classCheckBox is checked");
+                } else {
+                    System.out.println("classCheckBox is unchecked");
+                }
+            }
+        });
         
-        //map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 25, 25);
-        //map.getBuilding("NaturalSciences").getLayer("Accessibility").removePOI(1);
+        favCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (favCheckBox.isSelected()) {
+                    System.out.println("favCheckBox is checked");
+                } else {
+                    System.out.println("favCheckBox is unchecked");
+                }
+            }
+        });
+        
+        labCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (labCheckBox.isSelected()) {
+                    System.out.println("labCheckBox is checked");
+                } else {
+                    System.out.println("labCheckBox is unchecked");
+                }
+            }
+        });
+        
+        resCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (resCheckBox.isSelected()) {
+                    System.out.println("resCheckBox is checked");
+                } else {
+                    System.out.println("resCheckBox is unchecked");
+                }
+            }
+        });
+        
+        userCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (userCheckBox.isSelected()) {
+                    System.out.println("userCheckBox is checked");
+                } else {
+                    System.out.println("userCheckBox is unchecked");
+                }
+            }
+        });
+        
+        washCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (washCheckBox.isSelected()) {
+                    System.out.println("washCheckBox is checked");
+                } else {
+                    System.out.println("washCheckBox is unchecked");
+                }
+            }
+        });
+        
+        //map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+
+        //map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(0);
         
         // This is currently the line I am using to test putting POIs on the map
         
-        map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Accessibility").getPOIs());
+        //map.addMarker(75, 75, map.getBuilding("NaturalSciences").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
+        //map.addMarker(175, 175, map.getBuilding("NaturalSciences").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
+        //map.addMarker(75, 75, map.getBuilding("AlumniHall").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
+        //map.addMarker(175, 175, map.getBuilding("AlumniHall").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
+        
+        
+        //map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Accessibility").getPOIs());
         
         // Checks if application is being closed
         

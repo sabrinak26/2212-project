@@ -1,3 +1,7 @@
+import java.util.Enumeration;
+import java.util.Hashtable;
+import javax.swing.*;
+
 public class Building {
     private String buildingName;
     private String[] levels;
@@ -5,7 +9,7 @@ public class Building {
     private String[] levelNames;
     private Layer[] layers;
     private int id;
-    
+    //private Hashtable<String, JLayeredPane> layeredPanes;
 
 
     public String[] getLevelNames() {
@@ -76,4 +80,25 @@ public class Building {
         new Layer("Washrooms")
         };
     }
+    /*
+    public JLayeredPane getLayeredPane(String level) {
+        
+        return layeredPanes.get(level);
+        
+    }
+
+    public void addLayeredPane(String level, JLayeredPane pane) {
+        
+        level = level.replaceAll("\\s+","").toLowerCase();
+        
+        if (layeredPanes == null) {
+            
+            layeredPanes = new Hashtable<>();
+            
+        }
+        
+        layeredPanes.put(level, pane);
+
+    }
+*/
 }

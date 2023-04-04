@@ -13,6 +13,14 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import org.imgscalr.Scalr;
 import java.awt.Desktop;
+import java.util.Hashtable;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class Map {
     private JPanel panel;
@@ -25,7 +33,11 @@ public class Map {
     JComboBox<String> cb;
     FileReader fileReader;
     JScrollPane mapPanel;
-    JLabel picLabel = null;
+    private Hashtable<String, JLayeredPane> layeredPanes;
+    private Hashtable<String, JScrollPane> scrollPanes;
+    private Hashtable<String, JTabbedPane> tabbedPanes;
+    //JLayeredPane LayeredPane;
+    //JLabel picLabel = null;
 
     // Gets the JTabbedPane with the map in it
     
@@ -58,8 +70,9 @@ public class Map {
             String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
             System.out.println(level);
             currentFloor = level;
-            JLabel picLabel = generatePicLabel(level);
-            mapPanel = new JScrollPane(picLabel);
+            System.out.println("THIS IS 1");
+            JLayeredPane layeredPane = generateLayeredPane(level);
+            mapPanel = new JScrollPane(layeredPane);
             
 
             tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
@@ -150,12 +163,24 @@ public class Map {
                     
                     
                     // Gets label for each buildng
-                  
-                    picLabel = generatePicLabel(getBuilding().getLevels()[0].replaceAll("\\s+","").toLowerCase());
+                    System.out.println("THIS IS 2");
+                    JLayeredPane layeredPane = generateLayeredPane(getBuilding().getLevels()[0].replaceAll("\\s+","").toLowerCase());
+                    
+                    /*
+                    picLabel.setPreferredSize(new Dimension(picLabel.getIcon().getIconWidth(), picLabel.getIcon().getIconHeight()));
+                    
+                    
+                    JLayeredPane layeredPane = new JLayeredPane();
+                    layeredPane.setPreferredSize(picLabel.getPreferredSize());
+
+                    layeredPane.add(picLabel, JLayeredPane.DEFAULT_LAYER);
+                    */
+                    JScrollPane mapPanel = new JScrollPane(layeredPane);
+                    
+                    //picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
                     
                     // Makes the panel that the map is in
                     
-                    mapPanel = new JScrollPane(picLabel);
 
                     // Adds diffrent components to the panel
                     
@@ -166,12 +191,21 @@ public class Map {
                  
             }
             
+                    //JFrame frame2 = new JFrame("Test2");
+                    //frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            
+            
+                    //frame2.add(picLabel);
+
+                    // Pack the frame and make it visible
+                    //frame2.pack();
+                    //frame2.setVisible(true);
+            
             // Setting current floor, this is the floor that is first shown upon opening
 
             currentFloor = "Level 2";
             
             setCurrentBuilding(getBuilding("NaturalSciences"));
-
 
             building = buildings[tabs.getSelectedIndex()];
 
@@ -188,32 +222,59 @@ public class Map {
         } else {
             System.out.println("./src/main/metadata/ does not exist");
         }
+        System.out.println("THIS IS 3");
+        //JLayeredPane picLabel = generateLayeredPane(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase());
         
-        picLabel = generatePicLabel(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase());
+        //System.out.println(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase()+ "THISSS");
         
-        System.out.println(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase()+ "THISSS");
-        
-        System.out.println( picLabel.getHeight());
+        //System.out.println( picLabel.getHeight());
     }
     
     
     
     // Creates labels
 
-    JLabel generatePicLabel(String level) {
+    JLayeredPane generateLayeredPane(String level) {
         System.out.println("./src/main/images/" + currentBuilding.getBuildingName().replaceAll("\\s+","") + "/" + level + ".jpg" + "AHHHHHH");
+        JLabel picLabel = null;
+        JLayeredPane layeredPane = null;
         try {
             File file = new File("./src/main/images/" + currentBuilding.getBuildingName().replaceAll("\\s+","") + "/" + level + ".jpg");
+
             BufferedImage myPicture = ImageIO.read(file);
             BufferedImage scaledImg = Scalr.resize(myPicture, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, 800, 400, Scalr.OP_ANTIALIAS);
             picLabel = new JLabel(new ImageIcon(scaledImg));
             picLabel.setPreferredSize(new Dimension(scaledImg.getWidth(), scaledImg.getHeight()));
             //System.out.println( picLabel.getHeight());
             //System.out.println( picLabel.getWidth());
+            
+            //JFrame frame2 = new JFrame("Test2");
+            //frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            
+            
+            //frame2.add(picLabel);
+
+            // Pack the frame and make it visible
+            //frame2.pack();
+            //frame2.setVisible(true);
+            
+            picLabel.setPreferredSize(new Dimension(picLabel.getIcon().getIconWidth(), picLabel.getIcon().getIconHeight()));
+                    
+                    
+            layeredPane = new JLayeredPane();
+            layeredPane.setPreferredSize(picLabel.getPreferredSize());
+
+            layeredPane.add(picLabel, JLayeredPane.DEFAULT_LAYER);
+            picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
+            
+            //currentBuilding.addLayeredPane(level, layeredPane);
+            
+            addLayeredPane(currentBuilding.getBuildingName(), level, layeredPane);
+            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return picLabel;
+        return layeredPane;
     }
 
     // Reutnrs building object
@@ -292,6 +353,12 @@ public class Map {
         
     }
     
+    public void addPOIToMap(POI poi) {
+        
+        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
+        
+    }
+    
     public void addPOIsToMap(POI[] pois) {
         System.out.println("AHHHH");
         for (int i = 0; i < pois.length; i++) {
@@ -299,7 +366,7 @@ public class Map {
         POI poi = pois[i];
         System.out.println(poi.getName());
         
-        addPOI(poi.getX(),poi.getY());
+        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
     
          
     }
@@ -311,5 +378,100 @@ public class Map {
         
       
     }
+    
+    public void addMarker(int x, int y, String building, String level) {
+       System.out.print("TESTINGHEH");
+       
+        JLabel marker = new JLabel();
+        marker.setIcon(new ImageIcon("./src/main/images/icons/POI.png")); // replace with path to your blue dot image
+        
+        marker.setPreferredSize(new Dimension(18, 28)); // set the size of the dot
+        marker.setBackground(Color.BLUE);
+
+        // Get the correct JLayeredPane based on the building and level strings
+        JLayeredPane pane = getLayeredPane(building, level);
+
+        // Add the blue dot to the correct JLayeredPane at the given coordinates
+        pane.add(marker, JLayeredPane.PALETTE_LAYER); // add to the lowest layer
+        marker.setBounds(x, y, marker.getPreferredSize().width, marker.getPreferredSize().height);
+        pane.moveToFront(marker);
+
+        // Refresh the JLayeredPane to show the added dot
+        pane.revalidate();
+        pane.repaint();
+        this.panel.repaint();
+        this.panel.revalidate();
+        System.out.println("DID IT REPAINT?");
+        
+        /*
+        
+        marker.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                 System.out.println("ON" + x + building);
+            }
+
+            public void focusLost(FocusEvent e) {
+                System.out.println("OFF" + x + building);
+                // Do something here
+            }
+        });
+        */
+        
+        
+        marker.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            System.out.println("PRITNINGGGGGGGG" + x + building);
+            }
+        });
+       
+        
+        
+        
+        
+        /*
+        
+       // Get the correct JLayeredPane based on the building and level strings
+        getLayeredPane(building, level);
+    
+        // Create a new JLabel and set its properties
+        JLabel marker = new JLabel();
+        marker.setIcon(new ImageIcon("./src/main/images/icons/POI.png")); // replace "blue_dot.png" with the path to your blue dot image file
+        marker.setBounds(x, y, 32, 49); // set the bounds of the JLabel based on the x and y coordinates
+    
+        // Add the JLabel to the correct JLayeredPane
+        getLayeredPane(building, level).add(marker, JLayeredPane.DRAG_LAYER);
+    
+        // Repaint the JLayeredPane to show the added JLabel
+        getLayeredPane(building, level).repaint();
+        */
+    }
+    
+    public JLayeredPane getLayeredPane(String building, String level) {
+        
+        level = level.replaceAll("\\s+","").toLowerCase();
+        building = building.replaceAll("\\s+","").toLowerCase();
+        String key = level + building;
+        
+        return layeredPanes.get(key);
+        
+    }
+
+    public void addLayeredPane(String building, String level, JLayeredPane pane) {
+        
+        level = level.replaceAll("\\s+","").toLowerCase();
+        building = building.replaceAll("\\s+","").toLowerCase();
+        String key = level + building;
+        
+        if (layeredPanes == null) {
+            
+            layeredPanes = new Hashtable<>();
+            
+        }
+        
+        layeredPanes.put(key, pane);
+
+    }
+
 }
   
