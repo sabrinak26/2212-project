@@ -39,6 +39,16 @@ public class Map {
     //JLayeredPane LayeredPane;
     //JLabel picLabel = null;
 
+    private JButton addNewPOIButton;
+    private JTextField poiNameField;
+    private JTextField roomNumTextField;
+    private JTextField descTextField;
+    private JTextField typeTextField;
+    private JTextField categoryTextField;
+    private JButton submitPOIButton;
+
+    private ActionListener cbActionListener;
+
     // Gets the JTabbedPane with the map in it
     
     public JTabbedPane getTabs() {
@@ -57,32 +67,91 @@ public class Map {
         panel.setLayout(null);
         
         // Loads all data from JSON files
+
+//        if ( addNewPOIButton != null ){
+//            System.out.println("in main, no button");
+//            this.addNewPOIButton = addNewPOIButton;
+//        }
         
         loadBuildingsData();
+
+        // If diffrent building is clicked then change image to that building
+
+        cbActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = ((JComboBox) e.getSource()).getSelectedIndex();
+                String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
+                System.out.println(level);
+                currentFloor = level;
+                System.out.println("THIS IS 1");
+                JLayeredPane layeredPane = generateLayeredPane(level);
+                mapPanel = new JScrollPane(layeredPane);
+
+
+
+                tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
+
+                mapPanel.revalidate();
+                mapPanel.repaint();
+                tabs.revalidate();
+                tabs.repaint();
+
+
+
+            }
+        };
+
+
+
     }
 
-    // If diffrent building is clicked then change image to that building
-    
-    ActionListener cbActionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int index = ((JComboBox) e.getSource()).getSelectedIndex();
-            String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
-            System.out.println(level);
-            currentFloor = level;
-            System.out.println("THIS IS 1");
-            JLayeredPane layeredPane = generateLayeredPane(level);
-            mapPanel = new JScrollPane(layeredPane);
-            
+    public Map( JButton addNewPOIButton, JTextField poiNameField, JTextField typeTextField, JTextField descTextField, JTextField roomNumTextField, JTextField categoryTextField, JButton submitPOIButton ) {
+        panel = new JPanel();
+        panel.setBounds(8, 25, 700, 568);
+        panel.setLayout(null);
 
-            tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
+        this.addNewPOIButton = addNewPOIButton;
+        this.poiNameField = poiNameField;
+        this.roomNumTextField = roomNumTextField;
+        this.typeTextField = typeTextField;
+        this.descTextField = descTextField;
+        this.categoryTextField = categoryTextField;
+        this.submitPOIButton = submitPOIButton;
 
-            mapPanel.revalidate();
-            mapPanel.repaint();
-            tabs.revalidate();
-            tabs.repaint();
-        }
-    };
+        // Loads all data from JSON files
+        loadBuildingsData();
+
+        // If diffrent building is clicked then change image to that building
+
+        cbActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = ((JComboBox) e.getSource()).getSelectedIndex();
+                String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
+                System.out.println(level);
+                currentFloor = level;
+                System.out.println("THIS IS 1");
+                JLayeredPane layeredPane = generateLayeredPane(level);
+                mapPanel = new JScrollPane(layeredPane);
+
+
+
+                tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
+
+                mapPanel.revalidate();
+                mapPanel.repaint();
+                tabs.revalidate();
+                tabs.repaint();
+
+
+
+            }
+        };
+
+    }
+
+
 
 
     public void loadBuildingsData() {
@@ -176,6 +245,67 @@ public class Map {
                     layeredPane.add(picLabel, JLayeredPane.DEFAULT_LAYER);
                     */
                     JScrollPane mapPanel = new JScrollPane(layeredPane);
+
+                    if ( addNewPOIButton != null ) {
+                        addNewPOIButton.addActionListener(f ->
+                        {
+                            addNewPOIButton.setText("Select where you want to add your POI and click");
+                            layeredPane.addMouseListener(new MouseListener() {
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                                    int x = e.getX()-9;
+                                    int y = e.getY()-28;
+
+                                    addMarker(x, y, currentBuilding.getBuildingName(),  currentFloor);
+
+                                    System.out.println(x + "," + y);//these co-ords are relative to the component
+                                    addNewPOIButton.setVisible(false);
+                                    poiNameField.setVisible(true);
+                                    typeTextField.setVisible(true);
+                                    descTextField.setVisible(true);
+                                    roomNumTextField.setVisible(true);
+                                    submitPOIButton.setVisible(true);
+                                    categoryTextField.setVisible(true);
+
+                                    submitPOIButton.addActionListener( g -> {
+                                        String name = poiNameField.getText();
+                                        String type = typeTextField.getText();
+                                        String desc = descTextField.getText();
+                                        int roomNum = Integer.parseInt(roomNumTextField.getText());
+                                        String category = categoryTextField.getText();
+                                        System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+
+                                        currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+                                    } );
+
+                                }
+
+                                @Override
+                                public void mousePressed(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseReleased(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseEntered(MouseEvent e) {
+
+                                }
+
+                                @Override
+                                public void mouseExited(MouseEvent e) {
+
+                                }
+                            });
+
+
+                        });
+                    }
+
                     
                     //picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
                     
