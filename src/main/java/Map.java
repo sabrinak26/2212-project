@@ -36,12 +36,27 @@ public class Map {
     private Hashtable<String, JLayeredPane> layeredPanes;
     private Hashtable<String, JScrollPane> scrollPanes;
     private Hashtable<String, JTabbedPane> tabbedPanes;
+    JCheckBox accCheckBox = new JCheckBox();
+        
+    JCheckBox classCheckBox = new JCheckBox();
+        
+    JCheckBox favCheckBox = new JCheckBox();
+        
+    JCheckBox labCheckBox = new JCheckBox();
+        
+    JCheckBox resCheckBox = new JCheckBox();
+        
+    JCheckBox userCheckBox = new JCheckBox();
+        
+    JCheckBox washCheckBox = new JCheckBox();
+    
+    
     //JLayeredPane LayeredPane;
     //JLabel picLabel = null;
 
     // Gets the JTabbedPane with the map in it
     
-    public JTabbedPane getTabs() {
+    public JTabbedPane getTabs() {      
         return tabs;
     }
 
@@ -68,6 +83,26 @@ public class Map {
         public void actionPerformed(ActionEvent e) {
             int index = ((JComboBox) e.getSource()).getSelectedIndex();
             String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
+            accCheckBox.setSelected(false);
+            classCheckBox.setSelected(false);
+            favCheckBox.setSelected(false); 
+            labCheckBox.setSelected(false);       
+            resCheckBox.setSelected(false); 
+            userCheckBox.setSelected(false);
+            washCheckBox.setSelected(false);
+            
+            if (currentBuilding != null && currentFloor != null) {
+                            
+                removePOIsFromMap(getCurrentBuilding().getLayer("Accessibility").getPOIs());
+                removePOIsFromMap(getCurrentBuilding().getLayer("Classrooms").getPOIs());
+                removePOIsFromMap(getCurrentBuilding().getLayer("Favourites").getPOIs());
+                removePOIsFromMap(getCurrentBuilding().getLayer("Labs").getPOIs());
+                removePOIsFromMap(getCurrentBuilding().getLayer("Restaurants").getPOIs());
+                removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
+                removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
+                            
+            }
+            
             System.out.println(level);
             currentFloor = level;
             System.out.println("THIS IS 1");
@@ -90,6 +125,9 @@ public class Map {
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
            
+            
+            
+            
             // For each of the 3 JSON files get the data and set the info
             
             for (int i = 0; i < 3; i++) {
@@ -135,6 +173,26 @@ public class Map {
                         @Override
                         public void stateChanged(ChangeEvent e) {
                             int index = tabs.getSelectedIndex();
+                            accCheckBox.setSelected(false);
+                            classCheckBox.setSelected(false);
+                            favCheckBox.setSelected(false); 
+                            labCheckBox.setSelected(false);       
+                            resCheckBox.setSelected(false); 
+                            userCheckBox.setSelected(false);
+                            washCheckBox.setSelected(false);
+                            
+                            if (currentBuilding != null && currentFloor != null) {
+                            
+                                removePOIsFromMap(getCurrentBuilding().getLayer("Accessibility").getPOIs());
+                                removePOIsFromMap(getCurrentBuilding().getLayer("Classrooms").getPOIs());
+                                removePOIsFromMap(getCurrentBuilding().getLayer("Favourites").getPOIs());
+                                removePOIsFromMap(getCurrentBuilding().getLayer("Labs").getPOIs());
+                                removePOIsFromMap(getCurrentBuilding().getLayer("Restaurants").getPOIs());
+                                removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
+                                removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
+                            
+                            }
+                                
                             building = buildings[index];
                             currentBuilding = building;
                             System.out.println(building.getBuildingName());
@@ -150,10 +208,6 @@ public class Map {
                         }
                     });
 
-                    
-                    
-                    
-                    
                     // I used these to test adding and removing POIs to diffrent layers, use them if you want to test
                     // added and removing POIs to all buildings, check JSON files to see if it works
                     
@@ -166,23 +220,9 @@ public class Map {
                     System.out.println("THIS IS 2");
                     JLayeredPane layeredPane = generateLayeredPane(getBuilding().getLevels()[0].replaceAll("\\s+","").toLowerCase());
                     
-                    /*
-                    picLabel.setPreferredSize(new Dimension(picLabel.getIcon().getIconWidth(), picLabel.getIcon().getIconHeight()));
-                    
-                    
-                    JLayeredPane layeredPane = new JLayeredPane();
-                    layeredPane.setPreferredSize(picLabel.getPreferredSize());
 
-                    layeredPane.add(picLabel, JLayeredPane.DEFAULT_LAYER);
-                    */
                     JScrollPane mapPanel = new JScrollPane(layeredPane);
-                    
-                    //picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
-                    
-                    // Makes the panel that the map is in
-                    
 
-                    // Adds diffrent components to the panel
                     
                     tabs.addTab(building.getBuildingName(), mapPanel);
                     tabs.setPreferredSize(new Dimension(700, 550));
@@ -190,18 +230,7 @@ public class Map {
                     panel.add(tabs);
                  
             }
-            
-                    //JFrame frame2 = new JFrame("Test2");
-                    //frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
-            
-                    //frame2.add(picLabel);
 
-                    // Pack the frame and make it visible
-                    //frame2.pack();
-                    //frame2.setVisible(true);
-            
-            // Setting current floor, this is the floor that is first shown upon opening
 
             currentFloor = "Level 2";
             
@@ -223,11 +252,7 @@ public class Map {
             System.out.println("./src/main/metadata/ does not exist");
         }
         System.out.println("THIS IS 3");
-        //JLayeredPane picLabel = generateLayeredPane(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase());
-        
-        //System.out.println(getBuilding("NaturalSciences").getLevels()[0].replaceAll("\\s+","").toLowerCase()+ "THISSS");
-        
-        //System.out.println( picLabel.getHeight());
+
     }
     
     
@@ -245,18 +270,7 @@ public class Map {
             BufferedImage scaledImg = Scalr.resize(myPicture, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, 800, 400, Scalr.OP_ANTIALIAS);
             picLabel = new JLabel(new ImageIcon(scaledImg));
             picLabel.setPreferredSize(new Dimension(scaledImg.getWidth(), scaledImg.getHeight()));
-            //System.out.println( picLabel.getHeight());
-            //System.out.println( picLabel.getWidth());
-            
-            //JFrame frame2 = new JFrame("Test2");
-            //frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
-            
-            //frame2.add(picLabel);
 
-            // Pack the frame and make it visible
-            //frame2.pack();
-            //frame2.setVisible(true);
             
             picLabel.setPreferredSize(new Dimension(picLabel.getIcon().getIconWidth(), picLabel.getIcon().getIconHeight()));
                     
@@ -363,12 +377,34 @@ public class Map {
         System.out.println("AHHHH");
         for (int i = 0; i < pois.length; i++) {
         
-        POI poi = pois[i];
-        System.out.println(poi.getName());
-        
-        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
-    
+            POI poi = pois[i];
+            System.out.println(poi.getName());
+            System.out.println("I'm before");
+            System.out.println("I'm before");
+            System.out.println(currentFloor);
+            System.out.println(poi.getfloor());
+            System.out.println(poi.getfloor());
+            if (poi.getfloor().replaceAll("\\s+","").toLowerCase().equalsIgnoreCase(currentFloor.replaceAll("\\s+","").toLowerCase())) {
+                System.out.println("I THE ONE THAT YOU WANT");
+                addMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName().replaceAll("\\s+","").toLowerCase(), poi.getfloor().replaceAll("\\s+","").toLowerCase());
+            
+            }
          
+        }
+    }
+        
+    public void removePOIsFromMap(POI[] pois) {
+        System.out.println("AHHHH: The Squeekqual");
+        for (int i = 0; i < pois.length; i++) {
+            
+            POI poi = pois[i];
+            System.out.println(poi.getName());
+            
+            if (poi.getfloor().replaceAll("\\s+","").toLowerCase().equalsIgnoreCase(currentFloor.replaceAll("\\s+","").toLowerCase())) {
+            System.out.println("I THE ONE THAT YOU WANT");
+            removeMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName().replaceAll("\\s+","").toLowerCase(), poi.getfloor().replaceAll("\\s+","").toLowerCase());
+    
+            }
     }
         
         
@@ -402,20 +438,7 @@ public class Map {
         this.panel.repaint();
         this.panel.revalidate();
         System.out.println("DID IT REPAINT?");
-        
-        /*
-        
-        marker.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                 System.out.println("ON" + x + building);
-            }
 
-            public void focusLost(FocusEvent e) {
-                System.out.println("OFF" + x + building);
-                // Do something here
-            }
-        });
-        */
         
         
         marker.addMouseListener(new MouseAdapter() {
@@ -426,25 +449,29 @@ public class Map {
         });
        
         
-        
-        
-        
-        /*
-        
-       // Get the correct JLayeredPane based on the building and level strings
-        getLayeredPane(building, level);
+ 
+    }
     
-        // Create a new JLabel and set its properties
-        JLabel marker = new JLabel();
-        marker.setIcon(new ImageIcon("./src/main/images/icons/POI.png")); // replace "blue_dot.png" with the path to your blue dot image file
-        marker.setBounds(x, y, 32, 49); // set the bounds of the JLabel based on the x and y coordinates
-    
-        // Add the JLabel to the correct JLayeredPane
-        getLayeredPane(building, level).add(marker, JLayeredPane.DRAG_LAYER);
-    
-        // Repaint the JLayeredPane to show the added JLabel
-        getLayeredPane(building, level).repaint();
-        */
+    public void removeMarker(int x, int y, String building, String level) {
+        
+       JLayeredPane pane = getLayeredPane(building, level);
+        Component[] components = pane.getComponents();
+        for (Component component : components) {
+            if (component instanceof JLabel) {
+                JLabel marker = (JLabel) component;
+                if (marker.getX() == x && marker.getY() == y) {
+                    pane.remove(marker);
+                    pane.revalidate();
+                    pane.repaint();
+                    this.panel.repaint();
+                    this.panel.revalidate();
+                    
+                }
+            }
+        }
+       
+        
+ 
     }
     
     public JLayeredPane getLayeredPane(String building, String level) {
@@ -458,7 +485,7 @@ public class Map {
     }
 
     public void addLayeredPane(String building, String level, JLayeredPane pane) {
-        
+        System.out.println("ADDED A LAYERED PANE");
         level = level.replaceAll("\\s+","").toLowerCase();
         building = building.replaceAll("\\s+","").toLowerCase();
         String key = level + building;
@@ -471,6 +498,14 @@ public class Map {
         
         layeredPanes.put(key, pane);
 
+    }
+    
+    public JCheckBox[] getCheckBoxs() {
+        
+        JCheckBox[] boxs = {accCheckBox, classCheckBox, favCheckBox, labCheckBox, resCheckBox, userCheckBox, washCheckBox};
+        
+        return boxs;
+        
     }
 
 }

@@ -23,6 +23,9 @@ public class Main extends JFrame {
     private static JButton helpButton;
     private static JButton aboutButton;
     
+    
+
+    
     // Main application window
     
     private static void openMainFrame() {
@@ -74,125 +77,151 @@ public class Main extends JFrame {
         layersPanel.setLayout(null); // set the layout to null to use setBounds
         layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
         
-        JCheckBox accCheckBox = new JCheckBox();
-        accCheckBox.setSelected(false);
+        //JCheckBox accCheckBox = new JCheckBox();
+        map.getCheckBoxs()[0].setSelected(false);
         
-        JCheckBox classCheckBox = new JCheckBox();
-        classCheckBox.setSelected(false);
+        //JCheckBox classCheckBox = new JCheckBox();
+        map.getCheckBoxs()[1].setSelected(false);
         
-        JCheckBox favCheckBox = new JCheckBox();
-        favCheckBox.setSelected(false);
+        //JCheckBox favCheckBox = new JCheckBox();
+        map.getCheckBoxs()[2].setSelected(false);
         
-        JCheckBox labCheckBox = new JCheckBox();
-        labCheckBox.setSelected(false);
+        //JCheckBox labCheckBox = new JCheckBox();
+        map.getCheckBoxs()[3].setSelected(false);
         
-        JCheckBox resCheckBox = new JCheckBox();
-        resCheckBox.setSelected(false);
+        //JCheckBox resCheckBox = new JCheckBox();
+        map.getCheckBoxs()[4].setSelected(false);
         
-        JCheckBox userCheckBox = new JCheckBox();
-        userCheckBox.setSelected(false);
+        //JCheckBox userCheckBox = new JCheckBox();
+        map.getCheckBoxs()[5].setSelected(false);
         
-        JCheckBox washCheckBox = new JCheckBox();
-        washCheckBox.setSelected(false);
+        //JCheckBox washCheckBox = new JCheckBox();
+        map.getCheckBoxs()[6].setSelected(false);
         
-        layerLayeredPane.add(accCheckBox);
-        layerLayeredPane.add(classCheckBox);
-        layerLayeredPane.add(favCheckBox);
-        layerLayeredPane.add(labCheckBox);
-        layerLayeredPane.add(resCheckBox);
-        layerLayeredPane.add(userCheckBox);
-        layerLayeredPane.add(washCheckBox);
+        layerLayeredPane.add(map.getCheckBoxs()[0]);
+        layerLayeredPane.add(map.getCheckBoxs()[1]);
+        layerLayeredPane.add(map.getCheckBoxs()[2]);
+        layerLayeredPane.add(map.getCheckBoxs()[3]);
+        layerLayeredPane.add(map.getCheckBoxs()[4]);
+        layerLayeredPane.add(map.getCheckBoxs()[5]);
+        layerLayeredPane.add(map.getCheckBoxs()[6]);
 
         
         layersPanel.add(layerLayeredPane);
         
-        accCheckBox.setBounds(12, 25, 25, 25);
-        classCheckBox.setBounds(12, 80, 25, 25);
-        favCheckBox.setBounds(12, 135, 25, 25);
-        labCheckBox.setBounds(12, 190, 25, 25);
-        resCheckBox.setBounds(12, 240, 25, 25);
-        userCheckBox.setBounds(12, 295, 25, 25);
-        washCheckBox.setBounds(12, 350, 25, 25);
+        map.getCheckBoxs()[0].setBounds(12, 25, 25, 25);
+        map.getCheckBoxs()[1].setBounds(12, 80, 25, 25);
+        map.getCheckBoxs()[2].setBounds(12, 135, 25, 25);
+        map.getCheckBoxs()[3].setBounds(12, 190, 25, 25);
+        map.getCheckBoxs()[4].setBounds(12, 240, 25, 25);
+        map.getCheckBoxs()[5].setBounds(12, 295, 25, 25);
+        map.getCheckBoxs()[6].setBounds(12, 350, 25, 25);
         
         
         frame.add(layersPanel);
         
         frame.setVisible(true);
 
-        accCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[0].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (accCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[0].isSelected()) {
                     System.out.println("accCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
+                    
+
                 } else {
                     System.out.println("accCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
                 }
             }
         });
         
-        classCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[1].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (classCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[1].isSelected()) {
                     System.out.println("classCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
+                        
                 } else {
                     System.out.println("classCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
                 }
             }
         });
         
-        favCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[2].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (favCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[2].isSelected()) {
                     System.out.println("favCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
+
                 } else {
                     System.out.println("favCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
+                    
                 }
             }
         });
         
-        labCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[3].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (labCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[3].isSelected()) {
                     System.out.println("labCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
                 } else {
                     System.out.println("labCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
                 }
             }
         });
         
-        resCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[4].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (resCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[4].isSelected()) {
                     System.out.println("resCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
                 } else {
                     System.out.println("resCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
                 }
             }
         });
         
-        userCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[5].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (userCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[5].isSelected()) {
                     System.out.println("userCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                 } else {
                     System.out.println("userCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                 }
             }
         });
         
-        washCheckBox.addActionListener(new ActionListener() {
+        map.getCheckBoxs()[6].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (washCheckBox.isSelected()) {
+                if (map.getCheckBoxs()[6].isSelected()) {
                     System.out.println("washCheckBox is checked");
+                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
                 } else {
                     System.out.println("washCheckBox is unchecked");
+                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
                 }
             }
         });
         
-        //map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
-        //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        
+        //map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
+        //map.getBuilding("AlumniHall").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
 
         //map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(0);
+        //map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(3);
+        //map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(2);
+        //map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(1);
+        //map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(10);
+        //map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(11);
+
         
         // This is currently the line I am using to test putting POIs on the map
         
@@ -203,6 +232,7 @@ public class Main extends JFrame {
         
         
         //map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Accessibility").getPOIs());
+        //map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Classrooms").getPOIs());
         
         // Checks if application is being closed
         
@@ -375,4 +405,7 @@ public class Main extends JFrame {
         helpButton.setVisible(true);
         startFrame.setVisible(true);
     }
+    
 }
+    
+    

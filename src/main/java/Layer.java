@@ -83,6 +83,12 @@ public class Layer {
     
     public POI[] getPOIs() {
         
+        if (pois == null) {
+            
+            pois = new Hashtable<>();
+            
+        }
+        
         POI[] poiArray = new POI[pois.size()];
         int index = 0;
         
@@ -97,6 +103,8 @@ public class Layer {
     }
     
     public boolean getIsSelected() {
+        
+        
         
         return isSelected;
         
