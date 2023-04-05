@@ -294,6 +294,7 @@ public class Map {
                                     categoryTextField.setVisible(true);
 
                                     submitPOIButton.addActionListener( g -> {
+                                        submitPOIButton.setVisible(false);
                                         String name = poiNameField.getText();
                                         String type = typeTextField.getText();
                                         String desc = descTextField.getText();
@@ -302,6 +303,14 @@ public class Map {
                                         System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
 
                                         currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+                                        poiNameField.setVisible(false);
+                                        typeTextField.setVisible(false);
+                                        descTextField.setVisible(false);
+                                        roomNumTextField.setVisible(false);
+                                        categoryTextField.setVisible(false);
+
+                                        addNewPOIButton.setVisible(true);
 
                                     } );
 
@@ -770,6 +779,10 @@ public class Map {
         
         layeredPanes.put(key, pane);
 
+    }
+
+    public Building[] getBuildings() {
+        return this.buildings;
     }
     
     public JCheckBox[] getCheckBoxs() {

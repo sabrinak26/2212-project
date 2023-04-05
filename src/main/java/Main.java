@@ -7,29 +7,10 @@ import java.io.IOException;
 import java.awt.event.*;
 import com.google.gson.Gson;
 import java.io.FileWriter;
-import java.net.http.HttpClient;
-import java.io.*;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.URL;
-import javax.swing.*;
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.awt.event.*;
-import com.google.gson.Gson;
-import java.io.FileWriter;
-import java.net.http.HttpClient;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.net.URL;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
@@ -64,6 +45,10 @@ public class Main extends JFrame {
     private static JTextField typeTextField;
     private static JTextField categoryTextField;
     private static JButton submitPOIButton;
+
+    // searchPOI fields
+    private static JComboBox searchPOIDropDown;
+    private static JButton findPOIOnMapButton;
     
     private static JLabel poiTitle;
     private static JLabel poiRoom;
@@ -109,7 +94,54 @@ public class Main extends JFrame {
         frame.setResizable(false);
         frame.getContentPane().setBackground(new Color(49,39, 131));
         
-        
+
+        // Add search JComboBox
+//        String[] poiList = new String[]{"choice 1", "choice 2", "choice 3", "banana", "cat", "michael jordan"};
+
+        // getCurrentBuilding().getLayer("Accessibility").getPOINames()
+
+        String[] poiList = new String[]{};
+
+        for ( int i=0; i <map.getBuildings().length; i++ ) {
+            Building curr = map.getBuildings()[i];
+            String[] accPoi = curr.getLayer("Accessibility").getPOINames();
+            String[] classPoi = curr.getLayer("Classrooms").getPOINames();
+            String[] favPoi = curr.getLayer("Favourites").getPOINames();
+            String[] labPoi =curr.getLayer("Labs").getPOINames();
+            String[] restaurantPoi =curr.getLayer("Restaurants").getPOINames();
+            String[] userDefPoi = curr.getLayer("User defined POIs").getPOINames();
+            String[] washroomPoi = curr.getLayer("Washrooms").getPOINames();
+
+            String[] tempArr = new String[ poiList.length + accPoi.length + classPoi.length + favPoi.length + labPoi.length + restaurantPoi.length + userDefPoi.length + washroomPoi.length ];
+            System.arraycopy( poiList,0,tempArr, 0,poiList.length );
+            System.arraycopy(accPoi, 0, tempArr, poiList.length,accPoi.length  );
+            System.arraycopy( classPoi, 0, tempArr, poiList.length+accPoi.length, classPoi.length );
+            System.arraycopy( favPoi, 0, tempArr,poiList.length+accPoi.length+classPoi.length, favPoi.length );
+            System.arraycopy( labPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length, labPoi.length );
+            System.arraycopy( restaurantPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length, restaurantPoi.length );
+            System.arraycopy(userDefPoi, 0, tempArr,poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length+restaurantPoi.length, userDefPoi.length );
+            System.arraycopy( washroomPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length+restaurantPoi.length+ userDefPoi.length,washroomPoi.length );
+            poiList = tempArr;
+
+
+
+
+        }
+
+        searchPOIDropDown = new JComboBox(poiList);
+        searchPOIDropDown.setBounds(730, 120, 250, 20);
+        AutoComplete.enable(searchPOIDropDown);
+
+        findPOIOnMapButton = new JButton("find poi");
+        findPOIOnMapButton.setBounds( 730, 200, 50,20 );
+        findPOIOnMapButton.addActionListener(e -> {
+            System.out.println( "The selected POI to search is: " + searchPOIDropDown.getItemAt( searchPOIDropDown.getSelectedIndex() ) );
+
+            // Here we will add the logic to scroll to the proper POI, searchPOI.getItemAt( searchPOI.getSelectedIndex()) gets the string of selected POI
+        });
+
+        frame.add(searchPOIDropDown);
+        frame.add(findPOIOnMapButton);
         
         // Adds map panel
         
