@@ -28,6 +28,9 @@ import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.URL;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JFrame;
 
 public class Main extends JFrame {
     
@@ -62,6 +65,10 @@ public class Main extends JFrame {
     private static JTextField categoryTextField;
     private static JButton submitPOIButton;
     
+    private static JLabel poiTitle;
+    private static JLabel poiRoom;
+    private static JLabel poiDes;
+    
     private static void openMainFrame() {
         
         // Creates frame
@@ -88,6 +95,8 @@ public class Main extends JFrame {
         }
        */
         
+ 
+        
         saved = true;
 
         // Info about frame
@@ -99,6 +108,8 @@ public class Main extends JFrame {
         frame.setTitle("Group 16 - UWO GIS");
         frame.setResizable(false);
         frame.getContentPane().setBackground(new Color(49,39, 131));
+        
+        
         
         // Adds map panel
         
@@ -199,6 +210,48 @@ public class Main extends JFrame {
         
         frame.add(layersPanel);
         frame.add(weatherPanel);
+        
+        
+        JPanel poiInfo = new JPanel();
+        poiInfo.setLayout(null);
+        poiInfo.setBounds(28, 600, 660, 65);
+        poiInfo.setOpaque(true);
+
+        JLayeredPane poiLayeredPane = new JLayeredPane();
+        poiLayeredPane.setSize(poiInfo.getSize());
+
+        JLabel label = new JLabel("Selected POI:");
+        label.setBounds(5, 0, 100, 30);
+        poiLayeredPane.add(label, JLayeredPane.DEFAULT_LAYER);
+
+        JLabel poiName = new JLabel("POI name:");
+        poiName.setBounds(200, 0, 80, 30);
+        poiLayeredPane.add(poiName, JLayeredPane.DEFAULT_LAYER);
+
+        JLabel poiRoomNumber = new JLabel("POI Room Number:");
+        poiRoomNumber.setBounds(400, 0, 120, 30);
+        poiLayeredPane.add(poiRoomNumber, JLayeredPane.DEFAULT_LAYER);
+
+        JLabel poiDescription = new JLabel("POI Description:");
+        poiDescription.setBounds(200, 30, 110, 30);
+        poiLayeredPane.add(poiDescription, JLayeredPane.DEFAULT_LAYER);
+        
+        poiTitle = new JLabel("");
+        poiRoom = new JLabel("");
+        poiDes = new JLabel("");
+        
+        poiTitle.setBounds(267, 0, 200, 30);
+        poiLayeredPane.add(poiTitle, JLayeredPane.DEFAULT_LAYER);
+        poiRoom.setBounds(523, 0, 120, 30);
+        poiLayeredPane.add(poiRoom, JLayeredPane.DEFAULT_LAYER);
+        poiDes.setBounds(305, 30, 300, 30);
+        poiLayeredPane.add(poiDes, JLayeredPane.DEFAULT_LAYER);
+
+        poiInfo.add(poiLayeredPane);
+
+        frame.add(poiInfo);
+        
+        
         frame.setVisible(true);
 
         map.getCheckBoxs()[0].addActionListener(new ActionListener() {
@@ -302,14 +355,101 @@ public class Main extends JFrame {
 //        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
         //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
 
+        /*
+        
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(0);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(1);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(2);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(3);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(4);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(5);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(6);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(7);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(8);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(9);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(10);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(11);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(12);
+        
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(0);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(1);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(2);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(3);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(4);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(5);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(6);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(7);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(8);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(9);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(10);
+        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(11);
+        
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(0);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(1);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(2);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(3);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(4);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(5);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(6);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(7);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(8);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(9);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(10);
+        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(11);
 
-        //map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(0);
-        //map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(3);
-        //map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(2);
-        //map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(1);
-        //map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(10);
-        //map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(11);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(0);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(1);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(2);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(3);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(4);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(5);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(6);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(7);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(8);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(9);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(10);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(11);
+        
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(0);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(1);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(2);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(3);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(4);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(5);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(6);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(7);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(8);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(9);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(10);
+        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(11);
+        
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(0);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(1);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(2);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(3);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(4);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(5);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(6);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(7);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(8);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(9);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(10);
+        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(11);
+        
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(0);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(1);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(2);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(3);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(4);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(5);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(6);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(7);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(8);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(9);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(10);
+        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(11);
 
+        */
         
         // This is currently the line I am using to test putting POIs on the map
         
@@ -874,6 +1014,29 @@ public class Main extends JFrame {
         enterCredsButton.setVisible(true);
 //        addNewPOIButton.setVisible(true);
         startFrame.setVisible(true);
+    }
+    
+    public JLabel[] getPoiInfo() {
+        
+        JLabel[] array = {poiTitle, poiRoom, poiDes};
+        
+        return array;
+        
+    }
+    
+    public void setPoiInfo(String poiTitle, String poiRoom, String poiDes) {
+        
+        this.poiTitle.setText(poiTitle);
+        this.poiRoom.setText(poiRoom);
+        this.poiDes.setText(poiDes);
+        
+        this.poiTitle.revalidate();
+        this.poiTitle.repaint();
+        this.poiRoom.revalidate();
+        this.poiRoom.repaint();
+        this.poiDes.revalidate();
+        this.poiDes.repaint();
+        
     }
     
 }

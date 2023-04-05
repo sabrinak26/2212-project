@@ -13,7 +13,6 @@ import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.imgscalr.Scalr;
-import java.awt.Desktop;
 import java.util.Hashtable;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -21,16 +20,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.*;
 
 
 public class Map {
@@ -45,25 +39,13 @@ public class Map {
     FileReader fileReader;
     JScrollPane mapPanel;
     private Hashtable<String, JLayeredPane> layeredPanes;
-    private Hashtable<String, JScrollPane> scrollPanes;
-    private Hashtable<String, JTabbedPane> tabbedPanes;
     JCheckBox accCheckBox = new JCheckBox();
-        
     JCheckBox classCheckBox = new JCheckBox();
-        
     JCheckBox favCheckBox = new JCheckBox();
-        
-    JCheckBox labCheckBox = new JCheckBox();
-        
-    JCheckBox resCheckBox = new JCheckBox();
-        
+    JCheckBox labCheckBox = new JCheckBox(); 
+    JCheckBox resCheckBox = new JCheckBox();  
     JCheckBox userCheckBox = new JCheckBox();
-        
     JCheckBox washCheckBox = new JCheckBox();
-    
-    
-    //JLayeredPane LayeredPane;
-    //JLabel picLabel = null;
 
     private JButton addNewPOIButton;
     private JTextField poiNameField;
@@ -73,13 +55,13 @@ public class Map {
     private JTextField categoryTextField;
     private JButton submitPOIButton;
     
+    JLabel poiName;
+    JLabel poiRoom;
+    JLabel poiDes;
+    
     private String icon = "04d";
     private float temp = 12;    
 
-    //private ActionListener cbActionListener;
-
-    // Gets the JTabbedPane with the map in it
-    
     public JTabbedPane getTabs() {      
         return tabs;
     }
@@ -87,57 +69,17 @@ public class Map {
     public void setTabs(JTabbedPane tabs) {
         this.tabs = tabs;
     }
-    
-    // Creates the gray panel that the map and navigation buttons is in
 
     public Map() {
         panel = new JPanel();
         panel.setBounds(8, 25, 700, 568);
         panel.setLayout(null);
-        
-        // Loads all data from JSON files
 
-//        if ( addNewPOIButton != null ){
-//            System.out.println("in main, no button");
-//            this.addNewPOIButton = addNewPOIButton;
-//        }
         
         loadBuildingsData();
 
-        // If diffrent building is clicked then change image to that building
-/*
-        cbActionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = ((JComboBox) e.getSource()).getSelectedIndex();
-                String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
-                System.out.println(level);
-                currentFloor = level;
-                System.out.println("THIS IS 1");
-                JLayeredPane layeredPane = generateLayeredPane(level);
-                mapPanel = new JScrollPane(layeredPane);
-
-
-
-                tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
-
-                mapPanel.revalidate();
-                mapPanel.repaint();
-                tabs.revalidate();
-                tabs.repaint();
-
-
-
-            }
-        };
-
-*/
-
     }
 
-
-    // If diffrent building is clicked then change image to that building
-    
     ActionListener cbActionListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -178,7 +120,6 @@ public class Map {
             tabs.repaint();
         }
     };
-            
 
     public Map( JButton addNewPOIButton, JTextField poiNameField, JTextField typeTextField, JTextField descTextField, JTextField roomNumTextField, JTextField categoryTextField, JButton submitPOIButton ) {
         panel = new JPanel();
@@ -193,17 +134,37 @@ public class Map {
         this.descTextField = descTextField;
         this.categoryTextField = categoryTextField;
         this.submitPOIButton = submitPOIButton;
+        
+        
 
-        // Loads all data from JSON files
         loadBuildingsData();
-
-        // If diffrent building is clicked then change image to that building
 
         cbActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = ((JComboBox) e.getSource()).getSelectedIndex();
                 String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
+                
+                accCheckBox.setSelected(false);
+                classCheckBox.setSelected(false);
+                favCheckBox.setSelected(false); 
+                labCheckBox.setSelected(false);       
+                resCheckBox.setSelected(false); 
+                userCheckBox.setSelected(false);
+                washCheckBox.setSelected(false);
+
+                if (currentBuilding != null && currentFloor != null) {
+
+                    removePOIsFromMap(getCurrentBuilding().getLayer("Accessibility").getPOIs());
+                    removePOIsFromMap(getCurrentBuilding().getLayer("Classrooms").getPOIs());
+                    removePOIsFromMap(getCurrentBuilding().getLayer("Favourites").getPOIs());
+                    removePOIsFromMap(getCurrentBuilding().getLayer("Labs").getPOIs());
+                    removePOIsFromMap(getCurrentBuilding().getLayer("Restaurants").getPOIs());
+                    removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
+                    removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
+
+                }
+                
                 System.out.println(level);
                 currentFloor = level;
                 System.out.println("THIS IS 1");
@@ -219,25 +180,15 @@ public class Map {
                 tabs.revalidate();
                 tabs.repaint();
 
-
-
             }
         };
 
     }
-
-
-
-
     public void loadBuildingsData() {
         File dir = new File("./src/main/metadata/");
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
-           
-            
-            
-            
-            // For each of the 3 JSON files get the data and set the info
+
             
             for (int i = 0; i < 3; i++) {
                 
@@ -261,9 +212,6 @@ public class Map {
 
                         }
 
-                        // This gets the data from the JSON files then sets that to the building class since each JSON file
-                        // represents a building
-                        
                         building = gson.fromJson(fileReader, Building.class);
                         building.setId(i);
                         buildings[i] = building;
@@ -275,9 +223,6 @@ public class Map {
                         throw new RuntimeException(e);
                     }
 
-                    // Checks to see if a diffrent diffrent buidling has been selected to change
-                    // the levels being shown
-                    
                     tabs.addChangeListener(new ChangeListener() {
                         @Override
                         public void stateChanged(ChangeEvent e) {
@@ -317,13 +262,6 @@ public class Map {
                         }
                     });
 
-                    // I used these to test adding and removing POIs to diffrent layers, use them if you want to test
-                    // added and removing POIs to all buildings, check JSON files to see if it works
-                    
-                    
-                    //building.getLayer("Accessibility").addPOI("OPAAAAAAAA", "Built-in", "Accessibility", 7, "This is OPAAAAA", 578, 75);
-                    //building.getLayer("Accessibility").removePOI(1);
-                    
                     
                     // Gets label for each buildng
                     System.out.println("THIS IS 2");
@@ -395,13 +333,6 @@ public class Map {
                     }
 
                     
-                    //picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
-                    
-                    // Makes the panel that the map is in
-                    
-
-
-                    
                     tabs.addTab(building.getBuildingName(), mapPanel);
                     tabs.setPreferredSize(new Dimension(700, 550));
                     tabs.setBounds(0, 0, 700, 550);
@@ -426,15 +357,15 @@ public class Map {
             panel.add(cb);
             cb.setMaximumSize(cb.getPreferredSize()); 
             
+            
+            
         } else {
             System.out.println("./src/main/metadata/ does not exist");
         }
         System.out.println("THIS IS 3");
 
     }
-    
-    
-    
+
     // Creates labels
 
     JLayeredPane generateLayeredPane(String level) {
@@ -458,8 +389,7 @@ public class Map {
 
             layeredPane.add(picLabel, JLayeredPane.DEFAULT_LAYER);
             picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
-            
-            //currentBuilding.addLayeredPane(level, layeredPane);
+ 
             
             addLayeredPane(currentBuilding.getBuildingName(), level, layeredPane);
             
@@ -490,12 +420,8 @@ public class Map {
             return buildings[2];
             
         }
-        
-        
-        
+ 
     }
-    
-    
 
     public void setBuilding(Building building) {
         this.building = building;
@@ -547,7 +473,7 @@ public class Map {
     
     public void addPOIToMap(POI poi) {
         
-        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
+        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor(), poi);
         
     }
     
@@ -564,7 +490,7 @@ public class Map {
             System.out.println(poi.getfloor());
             if (poi.getfloor().replaceAll("\\s+","").toLowerCase().equalsIgnoreCase(currentFloor.replaceAll("\\s+","").toLowerCase())) {
                 System.out.println("I THE ONE THAT YOU WANT");
-                addMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName().replaceAll("\\s+","").toLowerCase(), poi.getfloor().replaceAll("\\s+","").toLowerCase());
+                addMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName().replaceAll("\\s+","").toLowerCase(), poi.getfloor().replaceAll("\\s+","").toLowerCase(), poi);
             
             }
          
@@ -593,14 +519,16 @@ public class Map {
       
     }
     
-    public void addMarker(int x, int y, String building, String level) {
+    public void addMarker(int x, int y, String building, String level, POI poi) {
        System.out.print("TESTINGHEH");
        
         JLabel marker = new JLabel();
         marker.setIcon(new ImageIcon("./src/main/images/icons/POI.png")); // replace with path to your blue dot image
         
         marker.setPreferredSize(new Dimension(18, 28)); // set the size of the dot
-        marker.setBackground(Color.BLUE);
+        marker.setBackground(Color.GREEN);
+        marker.setFocusable(true);
+        marker.setOpaque(false);
 
         // Get the correct JLayeredPane based on the building and level strings
         JLayeredPane pane = getLayeredPane(building, level);
@@ -611,23 +539,138 @@ public class Map {
         pane.moveToFront(marker);
 
         // Refresh the JLayeredPane to show the added dot
+        
+
+        marker.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            System.out.println("PRITNINGGGGGGGG" + x + building);
+            marker.requestFocusInWindow();
+            marker.setBackground(Color.GREEN);
+            marker.setOpaque(true);
+            
+            //pane.revalidate();
+            //pane.repaint();
+            }
+        });
+        
+        marker.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                System.out.println("Label focused");
+                
+                Main main = new Main();
+
+                String roomNum = String.valueOf(poi.getRoomNumber());
+
+                main.setPoiInfo(poi.getName(), roomNum, poi.getDescription());
+                
+                marker.setBackground(Color.GREEN);
+                marker.setOpaque(true);
+                
+                pane.revalidate();
+                pane.repaint();
+            }
+            
+            public void focusLost(FocusEvent e) {
+                
+                Main main = new Main();
+                
+                main.setPoiInfo("", "", "");
+                
+                System.out.println("Label focus lost");
+                marker.setBackground(Color.WHITE);
+                marker.setOpaque(false);
+                pane.revalidate();
+                pane.repaint();
+            }
+        });
+        
+        pane.addMouseListener(new MouseAdapter() {
+                @Override
+                    public void mouseClicked(MouseEvent e) {
+                    
+                    KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
+                }
+            });
+        
+       
         pane.revalidate();
         pane.repaint();
         this.panel.repaint();
         this.panel.revalidate();
         System.out.println("DID IT REPAINT?");
 
+    }
+    
+    public void addMarker(int x, int y, String building, String level) {
+       System.out.print("TESTINGHEH");
+       
+        JLabel marker = new JLabel();
+        marker.setIcon(new ImageIcon("./src/main/images/icons/POI.png")); // replace with path to your blue dot image
         
+        marker.setPreferredSize(new Dimension(18, 28)); // set the size of the dot
+        marker.setBackground(Color.GREEN);
+        marker.setFocusable(true);
+        marker.setOpaque(false);
+
+        // Get the correct JLayeredPane based on the building and level strings
+        JLayeredPane pane = getLayeredPane(building, level);
+
+        // Add the blue dot to the correct JLayeredPane at the given coordinates
+        pane.add(marker, JLayeredPane.PALETTE_LAYER); // add to the lowest layer
+        marker.setBounds(x, y, marker.getPreferredSize().width, marker.getPreferredSize().height);
+        pane.moveToFront(marker);
+
+        // Refresh the JLayeredPane to show the added dot
         
+
         marker.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
             System.out.println("PRITNINGGGGGGGG" + x + building);
+            marker.requestFocusInWindow();
+            marker.setBackground(Color.GREEN);
+            marker.setOpaque(true);
+            
+            //pane.revalidate();
+            //pane.repaint();
             }
         });
        
+        marker.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                System.out.println("Label focused");
+                marker.setBackground(Color.GREEN);
+                marker.setOpaque(true);
+                
+                pane.revalidate();
+                pane.repaint();
+            }
+            
+            public void focusLost(FocusEvent e) {
+                System.out.println("Label focus lost");
+                marker.setBackground(Color.WHITE);
+                marker.setOpaque(false);
+                pane.revalidate();
+                pane.repaint();
+            }
+        });
         
- 
+        pane.addMouseListener(new MouseAdapter() {
+                @Override
+                    public void mouseClicked(MouseEvent e) {
+                    
+                    KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
+                }
+            });
+        
+       
+        pane.revalidate();
+        pane.repaint();
+        this.panel.repaint();
+        this.panel.revalidate();
+        System.out.println("DID IT REPAINT?");
+
     }
     
     public void removeMarker(int x, int y, String building, String level) {
@@ -647,9 +690,7 @@ public class Map {
                 }
             }
         }
-       
-        
- 
+
     }
     
     public JLayeredPane getLayeredPane(String building, String level) {
@@ -699,14 +740,11 @@ public class Map {
         var response = client.send(request, BodyHandlers.ofString());
         
         JsonObject weather = new Gson().fromJson(response.body(), JsonObject.class);
-        
-        //System.out.println(response.body());
+
         
         icon = weather.getAsJsonArray("weather").get(0).getAsJsonObject().get("icon").getAsString();
         temp = weather.getAsJsonObject("main").get("temp").getAsFloat() - 273.15f;
-        
-        //System.out.println(forecast);
-        //System.out.println(temp);
+
     }
     
     public String getIcon(){
