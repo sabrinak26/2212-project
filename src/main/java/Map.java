@@ -378,6 +378,8 @@ public class Map {
             panel.add(cb);
             cb.setMaximumSize(cb.getPreferredSize()); 
             
+            
+            
         } else {
             System.out.println("./src/main/metadata/ does not exist");
         }
