@@ -7,29 +7,10 @@ import java.io.IOException;
 import java.awt.event.*;
 import com.google.gson.Gson;
 import java.io.FileWriter;
-import java.net.http.HttpClient;
-import java.io.*;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.URL;
-import javax.swing.*;
-import java.awt.Color;
-import java.awt.Desktop;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.awt.event.*;
-import com.google.gson.Gson;
-import java.io.FileWriter;
-import java.net.http.HttpClient;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.net.URL;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
@@ -49,8 +30,8 @@ public class Main extends JFrame {
 
 
     // admin access buttons
-    private static JTextField userTextField;
-    private static JTextField passwordTextField;
+    private static JTextField userNameTextField;
+    private static JPasswordField passwordTextField;
     private static JButton enterCredsButton;
 
 
@@ -64,6 +45,10 @@ public class Main extends JFrame {
     private static JTextField typeTextField;
     private static JTextField categoryTextField;
     private static JButton submitPOIButton;
+
+    // searchPOI fields
+    private static JComboBox searchPOIDropDown;
+    private static JButton findPOIOnMapButton;
     
     private static JLabel poiTitle;
     private static JLabel poiRoom;
@@ -109,7 +94,54 @@ public class Main extends JFrame {
         frame.setResizable(false);
         frame.getContentPane().setBackground(new Color(49,39, 131));
         
-        
+
+        // Add search JComboBox
+//        String[] poiList = new String[]{"choice 1", "choice 2", "choice 3", "banana", "cat", "michael jordan"};
+
+        // getCurrentBuilding().getLayer("Accessibility").getPOINames()
+
+        String[] poiList = new String[]{};
+
+        for ( int i=0; i <map.getBuildings().length; i++ ) {
+            Building curr = map.getBuildings()[i];
+            String[] accPoi = curr.getLayer("Accessibility").getPOINames();
+            String[] classPoi = curr.getLayer("Classrooms").getPOINames();
+            String[] favPoi = curr.getLayer("Favourites").getPOINames();
+            String[] labPoi =curr.getLayer("Labs").getPOINames();
+            String[] restaurantPoi =curr.getLayer("Restaurants").getPOINames();
+            String[] userDefPoi = curr.getLayer("User defined POIs").getPOINames();
+            String[] washroomPoi = curr.getLayer("Washrooms").getPOINames();
+
+            String[] tempArr = new String[ poiList.length + accPoi.length + classPoi.length + favPoi.length + labPoi.length + restaurantPoi.length + userDefPoi.length + washroomPoi.length ];
+            System.arraycopy( poiList,0,tempArr, 0,poiList.length );
+            System.arraycopy(accPoi, 0, tempArr, poiList.length,accPoi.length  );
+            System.arraycopy( classPoi, 0, tempArr, poiList.length+accPoi.length, classPoi.length );
+            System.arraycopy( favPoi, 0, tempArr,poiList.length+accPoi.length+classPoi.length, favPoi.length );
+            System.arraycopy( labPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length, labPoi.length );
+            System.arraycopy( restaurantPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length, restaurantPoi.length );
+            System.arraycopy(userDefPoi, 0, tempArr,poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length+restaurantPoi.length, userDefPoi.length );
+            System.arraycopy( washroomPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length+restaurantPoi.length+ userDefPoi.length,washroomPoi.length );
+            poiList = tempArr;
+
+
+
+
+        }
+
+        searchPOIDropDown = new JComboBox(poiList);
+        searchPOIDropDown.setBounds(730, 120, 250, 20);
+        AutoComplete.enable(searchPOIDropDown);
+
+        findPOIOnMapButton = new JButton("find poi");
+        findPOIOnMapButton.setBounds( 730, 200, 50,20 );
+        findPOIOnMapButton.addActionListener(e -> {
+            System.out.println( "The selected POI to search is: " + searchPOIDropDown.getItemAt( searchPOIDropDown.getSelectedIndex() ) );
+
+            // Here we will add the logic to scroll to the proper POI, searchPOI.getItemAt( searchPOI.getSelectedIndex()) gets the string of selected POI
+        });
+
+        frame.add(searchPOIDropDown);
+        frame.add(findPOIOnMapButton);
         
         // Adds map panel
         
@@ -619,12 +651,12 @@ public class Main extends JFrame {
         submitPOIButton = new JButton("Submit");
 
 
-        poiNameField.setBounds(100, 600, 100, 25);
-        typeTextField.setBounds(250, 600, 100, 25);
-        descTextField.setBounds(100, 630, 100, 25);
-        roomNumTextField.setBounds(250, 630, 100, 25);
-        categoryTextField.setBounds(400, 600, 100, 25);
-        submitPOIButton.setBounds(350,630, 100, 25);
+        poiNameField.setBounds(20, 600, 150, 25);
+        typeTextField.setBounds(220, 600, 150, 25);
+        descTextField.setBounds(20, 630, 150, 25);
+        roomNumTextField.setBounds(220, 630, 150, 25);
+        categoryTextField.setBounds(420, 600, 150, 25);
+        submitPOIButton.setBounds(420,630, 150, 25);
 
         frame.add(poiNameField);
         frame.add(typeTextField);
@@ -818,19 +850,19 @@ public class Main extends JFrame {
 //        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
         //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
 
-        map.getBuilding("NaturalSciences").getLayer("").removePOI(0);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(1);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(2);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(3);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(4);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(5);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(6);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(7);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(8);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(9);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(10);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(11);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(12);
+//        map.getBuilding("NaturalSciences").getLayer("").removePOI(0);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(1);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(2);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(3);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(4);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(5);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(6);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(7);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(8);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(9);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(10);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(11);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(12);
 
         // This is currently the line I am using to test putting POIs on the map
 
@@ -964,8 +996,48 @@ public class Main extends JFrame {
         enterCredsButton = new JButton();
 
         // add admin access fields
-        userTextField = new JTextField("enter username");
-        passwordTextField = new JTextField("enter password");
+        userNameTextField = new JTextField();
+        passwordTextField = new JPasswordField();
+
+
+        userNameTextField.setForeground(Color.GRAY);
+        userNameTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (userNameTextField.getText().equals("Enter Username")) {
+                    userNameTextField.setText("");
+                    userNameTextField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (userNameTextField.getText().isEmpty()) {
+                    userNameTextField.setForeground(Color.GRAY);
+                    userNameTextField.setText("Enter Username");
+                }
+            }
+        });
+
+        passwordTextField.setForeground(Color.GRAY);
+        passwordTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (passwordTextField.getText().equals("Enter Password") || passwordTextField.getText().equals("Incorrect Password Entered")) {
+                    passwordTextField.setEchoChar('*');
+                    passwordTextField.setText("");
+                    passwordTextField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordTextField.getText().isEmpty()) {
+                    passwordTextField.setEchoChar((char)0);
+                    passwordTextField.setForeground(Color.GRAY);
+                    passwordTextField.setText("Enter Password");
+                }
+            }
+        });
+
 
 
 
@@ -980,7 +1052,7 @@ public class Main extends JFrame {
 
 //        enterCredsButton.setText("Enter");
 
-        userTextField.setBounds(150, 450, 300,25);
+        userNameTextField.setBounds(150, 450, 300,25);
         passwordTextField.setBounds(450, 450, 300,25);
         enterCredsButton.setBounds(400, 485, 100,25);
 
@@ -1017,8 +1089,31 @@ public class Main extends JFrame {
 //        });
 
         enterCredsButton.addActionListener( e ->{
-            System.out.println("go to admin page");
-            openAdminFrame();
+//            System.out.println("go to admin page");
+
+            boolean passwordWorks = true;
+            char[] enteredPassword = passwordTextField.getPassword();
+            char[] validPassword = new char[]{'p', 'a', 's', 's', 'w', 'o', 'r', 'd'};
+
+            if (validPassword.length != enteredPassword.length) {
+                passwordWorks = false;
+            } else{
+                for (int i = 0; i < enteredPassword.length; i++) {
+                    if (enteredPassword[i] != validPassword[i]) {
+                        passwordWorks = false;
+                    }
+                }
+            }
+
+
+            if (userNameTextField.getText().equalsIgnoreCase("Admin") && passwordWorks) {
+                openAdminFrame();
+            }else {
+                System.out.println("incorrect password");
+                passwordTextField.setEchoChar((char)0);
+                passwordTextField.setText("Incorrect Password Entered");
+            }
+
 
         });
         
@@ -1041,7 +1136,7 @@ public class Main extends JFrame {
         startFrame.add(aboutButton);
         startFrame.add(helpButton);
 
-        startFrame.add(userTextField);
+        startFrame.add(userNameTextField);
         startFrame.add(passwordTextField);
         startFrame.add(enterCredsButton);
 //        startFrame.add(addNewPOIButton);
@@ -1051,7 +1146,7 @@ public class Main extends JFrame {
         aboutButton.setVisible(true);
         helpButton.setVisible(true);
 
-        userTextField.setVisible(true);
+        userNameTextField.setVisible(true);
         passwordTextField.setVisible(true);
         enterCredsButton.setVisible(true);
 //        addNewPOIButton.setVisible(true);

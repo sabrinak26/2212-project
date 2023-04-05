@@ -307,14 +307,43 @@ public class Map {
 
                                     System.out.println(x + "," + y);//these co-ords are relative to the component
                                     addNewPOIButton.setVisible(false);
+
                                     poiNameField.setVisible(true);
+                                    poiNameField.addFocusListener(new FocusListener() {
+                                        @Override
+                                        public void focusGained(FocusEvent e) {
+                                            if (poiNameField.getText().equals("Enter POI Name")) {
+                                                poiNameField.setText("");
+                                                poiNameField.setForeground(Color.BLACK);
+                                            }
+                                        }
+                                        @Override
+                                        public void focusLost(FocusEvent e) {
+                                            if (poiNameField.getText().isEmpty()) {
+                                                poiNameField.setForeground(Color.GRAY);
+                                                poiNameField.setText("Enter POI Name");
+                                            }
+                                        }
+                                    });
+
+
+
                                     typeTextField.setVisible(true);
+
+
                                     descTextField.setVisible(true);
+
+
                                     roomNumTextField.setVisible(true);
-                                    submitPOIButton.setVisible(true);
+
+
                                     categoryTextField.setVisible(true);
 
+
+                                    submitPOIButton.setVisible(true);
+
                                     submitPOIButton.addActionListener( g -> {
+                                        submitPOIButton.setVisible(false);
                                         String name = poiNameField.getText();
                                         String type = typeTextField.getText();
                                         String desc = descTextField.getText();
@@ -323,6 +352,14 @@ public class Map {
                                         System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
 
                                         currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+                                        poiNameField.setVisible(false);
+                                        typeTextField.setVisible(false);
+                                        descTextField.setVisible(false);
+                                        roomNumTextField.setVisible(false);
+                                        categoryTextField.setVisible(false);
+
+                                        addNewPOIButton.setVisible(true);
 
                                     } );
 
@@ -411,7 +448,60 @@ public class Map {
             layeredPane.add(picLabel, JLayeredPane.DEFAULT_LAYER);
             picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
  
-            
+            // Layered pane is here
+            layeredPane.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int x = e.getX()-9;
+                    int y = e.getY()-28;
+
+                    addMarker(x, y, currentBuilding.getBuildingName(),  currentFloor);
+
+                    System.out.println(x + "," + y);//these co-ords are relative to the component
+                    addNewPOIButton.setVisible(false);
+                    poiNameField.setVisible(true);
+                    typeTextField.setVisible(true);
+                    descTextField.setVisible(true);
+                    roomNumTextField.setVisible(true);
+                    submitPOIButton.setVisible(true);
+                    categoryTextField.setVisible(true);
+
+                    submitPOIButton.addActionListener( g -> {
+                        String name = poiNameField.getText();
+                        String type = typeTextField.getText();
+                        String desc = descTextField.getText();
+                        int roomNum = Integer.parseInt(roomNumTextField.getText());
+                        String category = categoryTextField.getText();
+                        System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+
+                        currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+                    } );
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+
+                }
+            });
+
+
             addLayeredPane(currentBuilding.getBuildingName(), level, layeredPane);
             
         } catch (IOException e) {
@@ -759,6 +849,10 @@ public class Map {
         
         layeredPanes.put(key, pane);
 
+    }
+
+    public Building[] getBuildings() {
+        return this.buildings;
     }
     
     public JCheckBox[] getCheckBoxs() {

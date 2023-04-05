@@ -101,6 +101,25 @@ public class Layer {
         
         return poiArray;
     }
+
+    public String[] getPOINames() {
+        if (pois == null) {
+
+            pois = new Hashtable<>();
+
+        }
+
+        String[] poiNameArray = new String[pois.size()];
+        int index = 0;
+
+        for (POI value : pois.values()) {
+
+            poiNameArray[index] = value.getName();
+            index++;
+
+        }
+        return poiNameArray;
+    }
     
     public boolean getIsSelected() {
         
