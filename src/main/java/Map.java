@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.imgscalr.Scalr;
 import java.awt.Desktop;
 import java.util.Hashtable;
@@ -21,6 +22,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class Map {
     private JPanel panel;
@@ -61,6 +72,9 @@ public class Map {
     private JTextField typeTextField;
     private JTextField categoryTextField;
     private JButton submitPOIButton;
+    
+    private String icon = "04d";
+    private float temp = 12;    
 
     //private ActionListener cbActionListener;
 
@@ -670,6 +684,37 @@ public class Map {
         
         return boxs;
         
+    }
+    
+    public void getWeather() throws IOException, InterruptedException{
+        
+        //request from https://github.com/mjg123/java-http-clients/blob/master/src/main/java/com/twilio/JavaHttpClientDemo.java
+        var client = HttpClient.newHttpClient();
+        
+        var request = HttpRequest.newBuilder(
+            URI.create("https://api.openweathermap.org/data/2.5/weather?lat=42.984924&lon=-81.245277&appid=7289416298553ad8aa7670c1ef8455d3"))
+            .header("accept", "application/json")
+            .build();
+        
+        var response = client.send(request, BodyHandlers.ofString());
+        
+        JsonObject weather = new Gson().fromJson(response.body(), JsonObject.class);
+        
+        //System.out.println(response.body());
+        
+        icon = weather.getAsJsonArray("weather").get(0).getAsJsonObject().get("icon").getAsString();
+        temp = weather.getAsJsonObject("main").get("temp").getAsFloat() - 273.15f;
+        
+        //System.out.println(forecast);
+        //System.out.println(temp);
+    }
+    
+    public String getIcon(){
+        return this.icon;
+    }
+    
+    public float getTemp(){
+        return this.temp;
     }
 
 }

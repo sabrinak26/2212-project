@@ -7,6 +7,27 @@ import java.io.IOException;
 import java.awt.event.*;
 import com.google.gson.Gson;
 import java.io.FileWriter;
+import java.net.http.HttpClient;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.net.URL;
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.awt.event.*;
+import com.google.gson.Gson;
+import java.io.FileWriter;
+import java.net.http.HttpClient;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.net.URL;
 
 public class Main extends JFrame {
     
@@ -54,7 +75,18 @@ public class Main extends JFrame {
 
         Map map = new Map();
         
-        
+        //sets weather parameters/
+        //LIMITED REQUESTS - uncomment only when feature needed
+        /*
+        try {
+            map.getWeather();
+            //JPanel layersPanel = new JPanel();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       */
         
         saved = true;
 
@@ -78,7 +110,34 @@ public class Main extends JFrame {
         frame.add(helpButton);
 
 
+        URL url = null;
+        try {
+            url = new URL("https://openweathermap.org/img/wn/"+map.getIcon()+"@2x.png");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        ImageIcon weatherImg = new ImageIcon(url); // a later problem
+        JLabel weatherLabel = new JLabel();
+        weatherLabel.setIcon(weatherImg);
+        weatherLabel.setBounds(0,0, weatherImg.getIconWidth(), weatherImg.getIconHeight());
+        
+        JLabel weatherText = new JLabel();
+        weatherText.setText(String.format("%.1f\u00B0C",map.getTemp()));
+        weatherText.setForeground(Color.white);
+        weatherText.setBounds(0,-25,weatherImg.getIconWidth(), weatherImg.getIconHeight());
 
+        JLayeredPane weatherLayeredPane = new JLayeredPane();
+        weatherLayeredPane.setBounds(weatherLabel.getBounds());
+        weatherLayeredPane.add(weatherLabel, JLayeredPane.DEFAULT_LAYER);
+        weatherLayeredPane.add(weatherText, JLayeredPane.CENTER_ALIGNMENT);
+        
+        JPanel weatherPanel = new JPanel();
+        weatherPanel.setLayout(null);
+        weatherPanel.setBounds(860, 0, weatherImg.getIconWidth()+10, weatherImg.getIconHeight()+40);
+        weatherPanel.setOpaque(false);
+        
+        weatherPanel.add(weatherLayeredPane);
 
 
 
@@ -139,7 +198,7 @@ public class Main extends JFrame {
         
         
         frame.add(layersPanel);
-        
+        frame.add(weatherPanel);
         frame.setVisible(true);
 
         map.getCheckBoxs()[0].addActionListener(new ActionListener() {
@@ -498,6 +557,8 @@ public class Main extends JFrame {
 
 
         frame.add(layersPanel);
+        
+        
 
         frame.setVisible(true);
 
