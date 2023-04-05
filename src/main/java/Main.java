@@ -776,19 +776,19 @@ public class Main extends JFrame {
 //        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
         //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
 
-        map.getBuilding("NaturalSciences").getLayer("").removePOI(0);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(1);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(2);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(3);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(4);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(5);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(6);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(7);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(8);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(9);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(10);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(11);
-        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(12);
+//        map.getBuilding("NaturalSciences").getLayer("").removePOI(0);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(1);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(2);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(3);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(4);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(5);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(6);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(7);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(8);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(9);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(10);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(11);
+//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(12);
 
         // This is currently the line I am using to test putting POIs on the map
 
