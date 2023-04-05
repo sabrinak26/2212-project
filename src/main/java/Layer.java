@@ -32,7 +32,7 @@ public class Layer {
     // Add POI with no metadata to Hashtable using numPois as the key
     
     public void addPOI() {
-    
+        
         if (pois == null) {
             
             pois = new Hashtable<>();
