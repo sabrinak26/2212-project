@@ -609,12 +609,12 @@ public class Main extends JFrame {
         submitPOIButton = new JButton("Submit");
 
 
-        poiNameField.setBounds(100, 600, 100, 25);
-        typeTextField.setBounds(250, 600, 100, 25);
-        descTextField.setBounds(100, 630, 100, 25);
-        roomNumTextField.setBounds(250, 630, 100, 25);
-        categoryTextField.setBounds(400, 600, 100, 25);
-        submitPOIButton.setBounds(350,630, 100, 25);
+        poiNameField.setBounds(20, 600, 150, 25);
+        typeTextField.setBounds(220, 600, 150, 25);
+        descTextField.setBounds(20, 630, 150, 25);
+        roomNumTextField.setBounds(220, 630, 150, 25);
+        categoryTextField.setBounds(420, 600, 150, 25);
+        submitPOIButton.setBounds(420,630, 150, 25);
 
         frame.add(poiNameField);
         frame.add(typeTextField);
