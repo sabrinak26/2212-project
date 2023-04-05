@@ -30,8 +30,8 @@ public class Main extends JFrame {
 
 
     // admin access buttons
-    private static JTextField userTextField;
-    private static JTextField passwordTextField;
+    private static JTextField userNameTextField;
+    private static JPasswordField passwordTextField;
     private static JButton enterCredsButton;
 
 
@@ -954,8 +954,48 @@ public class Main extends JFrame {
         enterCredsButton = new JButton();
 
         // add admin access fields
-        userTextField = new JTextField("enter username");
-        passwordTextField = new JTextField("enter password");
+        userNameTextField = new JTextField();
+        passwordTextField = new JPasswordField();
+
+
+        userNameTextField.setForeground(Color.GRAY);
+        userNameTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (userNameTextField.getText().equals("Enter Username")) {
+                    userNameTextField.setText("");
+                    userNameTextField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (userNameTextField.getText().isEmpty()) {
+                    userNameTextField.setForeground(Color.GRAY);
+                    userNameTextField.setText("Enter Username");
+                }
+            }
+        });
+
+        passwordTextField.setForeground(Color.GRAY);
+        passwordTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (passwordTextField.getText().equals("Enter Password") || passwordTextField.getText().equals("Incorrect Password Entered")) {
+                    passwordTextField.setEchoChar('*');
+                    passwordTextField.setText("");
+                    passwordTextField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordTextField.getText().isEmpty()) {
+                    passwordTextField.setEchoChar((char)0);
+                    passwordTextField.setForeground(Color.GRAY);
+                    passwordTextField.setText("Enter Password");
+                }
+            }
+        });
+
 
 
 
@@ -970,7 +1010,7 @@ public class Main extends JFrame {
 
 //        enterCredsButton.setText("Enter");
 
-        userTextField.setBounds(150, 450, 300,25);
+        userNameTextField.setBounds(150, 450, 300,25);
         passwordTextField.setBounds(450, 450, 300,25);
         enterCredsButton.setBounds(400, 485, 100,25);
 
@@ -1007,8 +1047,31 @@ public class Main extends JFrame {
 //        });
 
         enterCredsButton.addActionListener( e ->{
-            System.out.println("go to admin page");
-            openAdminFrame();
+//            System.out.println("go to admin page");
+
+            boolean passwordWorks = true;
+            char[] enteredPassword = passwordTextField.getPassword();
+            char[] validPassword = new char[]{'p', 'a', 's', 's', 'w', 'o', 'r', 'd'};
+
+            if (validPassword.length != enteredPassword.length) {
+                passwordWorks = false;
+            } else{
+                for (int i = 0; i < enteredPassword.length; i++) {
+                    if (enteredPassword[i] != validPassword[i]) {
+                        passwordWorks = false;
+                    }
+                }
+            }
+
+
+            if (userNameTextField.getText().equalsIgnoreCase("Admin") && passwordWorks) {
+                openAdminFrame();
+            }else {
+                System.out.println("incorrect password");
+                passwordTextField.setEchoChar((char)0);
+                passwordTextField.setText("Incorrect Password Entered");
+            }
+
 
         });
         
@@ -1031,7 +1094,7 @@ public class Main extends JFrame {
         startFrame.add(aboutButton);
         startFrame.add(helpButton);
 
-        startFrame.add(userTextField);
+        startFrame.add(userNameTextField);
         startFrame.add(passwordTextField);
         startFrame.add(enterCredsButton);
 //        startFrame.add(addNewPOIButton);
@@ -1041,7 +1104,7 @@ public class Main extends JFrame {
         aboutButton.setVisible(true);
         helpButton.setVisible(true);
 
-        userTextField.setVisible(true);
+        userNameTextField.setVisible(true);
         passwordTextField.setVisible(true);
         enterCredsButton.setVisible(true);
 //        addNewPOIButton.setVisible(true);
