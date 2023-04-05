@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.util.ArrayList;
 
 public class Map {
     private JPanel panel;
@@ -686,29 +686,37 @@ public class Map {
         
     }
     
+    //Utilizes Open Weather API to find current weather
     public void getWeather() throws IOException, InterruptedException{
         
-        //request from https://github.com/mjg123/java-http-clients/blob/master/src/main/java/com/twilio/JavaHttpClientDemo.java
-        var client = HttpClient.newHttpClient();
+        //https request code from https://github.com/mjg123/java-http-clients/blob/master/src/main/java/com/twilio/JavaHttpClientDemo.java
         
-        var request = HttpRequest.newBuilder(
+        HttpClient client = HttpClient.newHttpClient();
+        
+        //generates the actual request. "appid={}"is the api key, replace if needed.
+        HttpRequest request = HttpRequest.newBuilder(
             URI.create("https://api.openweathermap.org/data/2.5/weather?lat=42.984924&lon=-81.245277&appid=7289416298553ad8aa7670c1ef8455d3"))
             .header("accept", "application/json")
             .build();
         
-        var response = client.send(request, BodyHandlers.ofString());
+        //actually does the api things
+        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         
+        //for some reason it cant return a json from a json type response,,, so we parse it instead
         JsonObject weather = new Gson().fromJson(response.body(), JsonObject.class);
+        
         
         //System.out.println(response.body());
         
-        icon = weather.getAsJsonArray("weather").get(0).getAsJsonObject().get("icon").getAsString();
-        temp = weather.getAsJsonObject("main").get("temp").getAsFloat() - 273.15f;
+        //search through json for the icon and tempurature 
+        icon = weather.getAsJsonArray("weather").get(0).getAsJsonObject().get("icon").getAsString();  //icon in format "xxc" for unique icon codes
+        temp = weather.getAsJsonObject("main").get("temp").getAsFloat() - 273.15f; //for some reason it gives kelvin
         
         //System.out.println(forecast);
         //System.out.println(temp);
     }
     
+    //getters
     public String getIcon(){
         return this.icon;
     }
@@ -717,6 +725,43 @@ public class Map {
         return this.temp;
     }
 
+    //generates a popup for Main to use
+    //code modified from https://stackoverflow.com/questions/19064358/how-to-create-a-popup-jpanel-in-a-jframe
+    public JPopupMenu makePopup(String category){
+        
+        //finds selected layer and poi's within it
+        Layer layer = currentBuilding.getLayer(category);
+        POI pois[] = layer.getPOIs();
+        
+        
+        final JPopupMenu popup = new JPopupMenu();
+        
+        
+        //JList is picky about what types of list it can take, so we use this
+        DefaultListModel<String> names = new DefaultListModel<>();
+        
+        //add all names
+        for (int i=0; i<pois.length; i++){
+            names.addElement(pois[i].getName());
+        }  
+        
+        
+        //make list :)
+        JList JPois = new JList(names);
+    
+        //tbh this just looked pretty
+        popup.setLayout(new BorderLayout());
+        
+        
+        popup.add(new JScrollPane(JPois));
+        
+        //ensure popup doesnt get too big
+        int height = pois.length>5? 150: 22*pois.length;
+        popup.setPopupSize(100, height);
+
+        //rutilize the main frame rather than dealing with JFrame.getframes()
+        return popup;
+    }
 }
 
   
