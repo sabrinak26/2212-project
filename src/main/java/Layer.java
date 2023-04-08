@@ -48,7 +48,7 @@ public class Layer {
     
     // Add POI with metadata to Hashtable using numPois as the key
     
-    public void addPOI(String poiName, String floor, String poiType, String poiCategory, int poiRoomNumber, String poiDescription, int poiX, int poiY) {
+    public void addPOI(String poiName, String floor, String poiType, String poiCategory, String poiRoomNumber, String poiDescription, int poiX, int poiY) {
     
         if (pois == null) {
             
@@ -98,7 +98,6 @@ public class Layer {
             index++;
         
         }
-        
         return poiArray;
     }
 

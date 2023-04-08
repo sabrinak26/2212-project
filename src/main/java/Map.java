@@ -360,7 +360,7 @@ public class Map {
                                             illegalPOIValues.put(roomNumStr, roomNumStr);
 
 
-                                            int roomNum = Integer.parseInt(roomNumTextField.getText());
+                                            String roomNum = roomNumTextField.getText().replaceAll(" ", "").toUpperCase();
                                             String category = categoryTextField.getText();
                                             System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
                                             System.out.println("this one");
@@ -497,8 +497,7 @@ public class Map {
                             illegalPOIValues.put(desc, desc);
                             illegalPOIValues.put(roomNumStr, roomNumStr);
 
-
-                            int roomNum = Integer.parseInt(roomNumTextField.getText());
+                            String roomNum = roomNumTextField.getText().replaceAll(" ", "").toUpperCase();
                             String category = categoryTextField.getText();
                             System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
                             System.out.println("this one");
