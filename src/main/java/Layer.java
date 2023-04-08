@@ -56,12 +56,12 @@ public class Layer {
             
         }
         
-    pois.put(currKey, new POI(poiName, floor, poiType, poiCategory, poiRoomNumber, poiDescription, poiX, poiY, currKey));
+        pois.put(currKey, new POI(poiName, floor, poiType, poiCategory, poiRoomNumber, poiDescription, poiX, poiY, currKey));
+
+        numPois++;
+        currKey++;
     
-    numPois++;
-    currKey++;
-    
-}
+    }
     
     // If Hashtable and key exists then it removes that POI from the Hashtable
     
@@ -119,6 +119,27 @@ public class Layer {
 
         }
         return poiNameArray;
+    }
+
+    public String[] getPOIInformation() {
+        if (pois == null) {
+
+            pois = new Hashtable<>();
+
+        }
+
+        String[] poiInfoArray = new String[pois.size()*3];
+        int index = 0;
+
+        for (POI value : pois.values()) {
+
+            poiInfoArray[index] = value.getName();
+            poiInfoArray[index+1] = String.valueOf(value.getRoomNumber());
+            poiInfoArray[index+2] = value.getDescription();
+            index+=3;
+
+        }
+        return poiInfoArray;
     }
     
     public boolean getIsSelected() {

@@ -8,6 +8,7 @@ import java.awt.event.*;
 import com.google.gson.Gson;
 import java.io.FileWriter;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.URL;
@@ -53,6 +54,12 @@ public class Main extends JFrame {
     private static JLabel poiTitle;
     private static JLabel poiRoom;
     private static JLabel poiDes;
+
+    // POI HashMap
+    private static HashMap POIHashMap;
+    private static HashMap BuildingPOIHashMap;
+    private static HashMap RoomNumPOIHashMap;
+    private static HashMap DescHashMap;
     
     private static void openMainFrame() {
         
@@ -67,6 +74,33 @@ public class Main extends JFrame {
         //JPanel layersPanel = new JPanel();
 
         Map map = new Map();
+        POIHashMap = new HashMap();
+        BuildingPOIHashMap = new HashMap();
+        DescHashMap = new HashMap();
+        RoomNumPOIHashMap = new HashMap();
+
+
+        Building[] buildingList = map.getBuildings();
+        for( int i=0; i<buildingList.length; i++){
+            Layer[] curr_building_layer = buildingList[i].getLayers();
+
+            for (int j=0; j<curr_building_layer.length; j++){
+                POI[] poiList = curr_building_layer[j].getPOIs();
+
+                for ( int k=0; k<poiList.length; k++ ){
+                    String curr_poi_name = poiList[k].getName();
+
+                    if ( !POIHashMap.containsKey(curr_poi_name) ) {
+                        POIHashMap.put(curr_poi_name, poiList[k]);
+                        BuildingPOIHashMap.put(curr_poi_name, buildingList[i]);
+                        RoomNumPOIHashMap.put( poiList[k].getRoomNumber() + "", poiList[k] );
+                        DescHashMap.put( poiList[k].getDescription(), poiList[k] );
+                    }
+
+                }
+            }
+
+        }
         
         //sets weather parameters/
         //LIMITED REQUESTS - uncomment only when feature needed
@@ -104,13 +138,13 @@ public class Main extends JFrame {
 
         for ( int i=0; i <map.getBuildings().length; i++ ) {
             Building curr = map.getBuildings()[i];
-            String[] accPoi = curr.getLayer("Accessibility").getPOINames();
-            String[] classPoi = curr.getLayer("Classrooms").getPOINames();
-            String[] favPoi = curr.getLayer("Favourites").getPOINames();
-            String[] labPoi =curr.getLayer("Labs").getPOINames();
-            String[] restaurantPoi =curr.getLayer("Restaurants").getPOINames();
-            String[] userDefPoi = curr.getLayer("User defined POIs").getPOINames();
-            String[] washroomPoi = curr.getLayer("Washrooms").getPOINames();
+            String[] accPoi = curr.getLayer("Accessibility").getPOIInformation();
+            String[] classPoi = curr.getLayer("Classrooms").getPOIInformation();
+            String[] favPoi = curr.getLayer("Favourites").getPOIInformation();
+            String[] labPoi =curr.getLayer("Labs").getPOIInformation();
+            String[] restaurantPoi =curr.getLayer("Restaurants").getPOIInformation();
+            String[] userDefPoi = curr.getLayer("User defined POIs").getPOIInformation();
+            String[] washroomPoi = curr.getLayer("Washrooms").getPOIInformation();
 
             String[] tempArr = new String[ poiList.length + accPoi.length + classPoi.length + favPoi.length + labPoi.length + restaurantPoi.length + userDefPoi.length + washroomPoi.length ];
             System.arraycopy( poiList,0,tempArr, 0,poiList.length );
@@ -133,11 +167,47 @@ public class Main extends JFrame {
         AutoComplete.enable(searchPOIDropDown);
 
         findPOIOnMapButton = new JButton("find poi");
-        findPOIOnMapButton.setBounds( 730, 200, 50,20 );
+        findPOIOnMapButton.setBounds( 730, 200, 100,20 );
         findPOIOnMapButton.addActionListener(e -> {
             System.out.println( "The selected POI to search is: " + searchPOIDropDown.getItemAt( searchPOIDropDown.getSelectedIndex() ) );
+            String toSearchFor = (String) searchPOIDropDown.getItemAt( searchPOIDropDown.getSelectedIndex());
+
+            POI searchedPOI = (POI) POIHashMap.get( toSearchFor );
+
+            if ( searchedPOI != null ) {
+
+
+                System.out.println("selecting marker");
+                map.selectMarker( searchedPOI.getX(), searchedPOI.getY(), ((Building)BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName() , searchedPOI.getfloor());
+                map.addPoIToMapLevel(searchedPOI, (String) ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName());
+                } else{
+                searchedPOI = (POI) DescHashMap.get( toSearchFor );
+
+                if ( searchedPOI != null ) {
+                    System.out.println("selecting marker");
+                    map.addPoIToMapLevel(searchedPOI, (String) ((Building)BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName()  );
+                    map.selectMarker( searchedPOI.getX(), searchedPOI.getY(), ((Building)BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName() , searchedPOI.getfloor());
+                } else {
+                    searchedPOI = (POI) RoomNumPOIHashMap.get( toSearchFor );
+                    if ( searchedPOI != null ) {
+                        System.out.println("selecting marker");
+                        map.selectMarker( searchedPOI.getX(), searchedPOI.getY(), ((Building)BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName() , searchedPOI.getfloor());
+                        map.addPoIToMapLevel(searchedPOI, (String) ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName());
+                        }
+
+
+                }
+
+
+            }
+//            System.out.println("name: " + searchedPOI.getName()+ "x: " + searchedPOI.getX() + " y:" + searchedPOI.getY() + "building name: " + ((Building)BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName() + " floor: " + searchedPOI.getfloor());
+
+
+//            System.out.println(map.getPOIHashMap().toString());
+//            System.out.println(searchedPOI.getName());
 
             // Here we will add the logic to scroll to the proper POI, searchPOI.getItemAt( searchPOI.getSelectedIndex()) gets the string of selected POI
+
         });
 
         frame.add(searchPOIDropDown);
@@ -218,7 +288,7 @@ public class Main extends JFrame {
         
         //JCheckBox resCheckBox = new JCheckBox();
         map.getCheckBoxs()[4].setSelected(false);
-        
+
         //JCheckBox userCheckBox = new JCheckBox();
         map.getCheckBoxs()[5].setSelected(false);
         

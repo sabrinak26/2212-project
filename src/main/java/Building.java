@@ -66,6 +66,10 @@ public class Building {
        
     }
 
+    public Layer[] getLayers () {
+        return this.layers;
+    }
+
     // Used this to create the layers, they are all in the JSON files now so might not need this method
     
     public void setLayers() {

@@ -72,6 +72,8 @@ public class Map {
     JLabel poiName;
     JLabel poiRoom;
     JLabel poiDes;
+
+    private HashMap illegalPOIValues;
     
     private String icon = "04d";
     private float temp = 12;    
@@ -88,6 +90,7 @@ public class Map {
         panel = new JPanel();
         panel.setBounds(8, 25, 700, 568);
         panel.setLayout(null);
+        illegalPOIValues = new HashMap();
 
         
         loadBuildingsData();
@@ -151,8 +154,10 @@ public class Map {
         this.descTextField = descTextField;
         this.categoryTextField = categoryTextField;
         this.submitPOIButton = submitPOIButton;
-        
-        
+        illegalPOIValues = new HashMap();
+
+
+
 
         loadBuildingsData();
 
@@ -347,11 +352,25 @@ public class Map {
                                         String name = poiNameField.getText();
                                         String type = typeTextField.getText();
                                         String desc = descTextField.getText();
-                                        int roomNum = Integer.parseInt(roomNumTextField.getText());
-                                        String category = categoryTextField.getText();
-                                        System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+                                        String roomNumStr = roomNumTextField.getText();
 
-                                        currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+                                        if ( !illegalPOIValues.containsKey(name) && !illegalPOIValues.containsKey(desc) && !illegalPOIValues.containsKey(roomNumStr) ) {
+                                            illegalPOIValues.put(name, name);
+                                            illegalPOIValues.put(desc, desc);
+                                            illegalPOIValues.put(roomNumStr, roomNumStr);
+
+
+                                            int roomNum = Integer.parseInt(roomNumTextField.getText());
+                                            String category = categoryTextField.getText();
+                                            System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+                                            System.out.println("this one");
+                                            currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+
+
+                                        } else {
+                                            System.out.println("error, double name, desc, or room number ");
+                                        }
 
                                         poiNameField.setVisible(false);
                                         typeTextField.setVisible(false);
@@ -467,14 +486,37 @@ public class Map {
                     categoryTextField.setVisible(true);
 
                     submitPOIButton.addActionListener( g -> {
+                        submitPOIButton.setVisible(false);
                         String name = poiNameField.getText();
                         String type = typeTextField.getText();
                         String desc = descTextField.getText();
-                        int roomNum = Integer.parseInt(roomNumTextField.getText());
-                        String category = categoryTextField.getText();
-                        System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+                        String roomNumStr = roomNumTextField.getText();
 
-                        currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+                        if ( !illegalPOIValues.containsKey(name) && !illegalPOIValues.containsKey(desc) && !illegalPOIValues.containsKey(roomNumStr) ) {
+                            illegalPOIValues.put(name, name);
+                            illegalPOIValues.put(desc, desc);
+                            illegalPOIValues.put(roomNumStr, roomNumStr);
+
+
+                            int roomNum = Integer.parseInt(roomNumTextField.getText());
+                            String category = categoryTextField.getText();
+                            System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+                            System.out.println("this one");
+                            currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+
+
+                        } else {
+                            System.out.println("error, double name, desc, or room number ");
+                        }
+
+                        poiNameField.setVisible(false);
+                        typeTextField.setVisible(false);
+                        descTextField.setVisible(false);
+                        roomNumTextField.setVisible(false);
+                        categoryTextField.setVisible(false);
+
+                        addNewPOIButton.setVisible(true);
 
                     } );
 
@@ -584,8 +626,63 @@ public class Map {
     
     public void addPOIToMap(POI poi) {
         
-        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor(), poi);
+        addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor(), poi, false);
         
+    }
+
+    public void addPoIToMapLevel( POI poi, String buildingName ) {
+        System.out.println("comparing to: " + buildingName + " and " + currentBuilding.getBuildingName());
+        System.out.println("comparing to: " + poi.getfloor() + " and " + currentFloor);
+        if ( currentBuilding.getBuildingName().equalsIgnoreCase( buildingName ) && poi.getfloor().replaceAll(" ", "").equalsIgnoreCase(currentFloor.replaceAll(" ", "")) ){
+            addPOIToMap(poi);
+        } else {
+            System.out.println("diff case");
+
+            JLayeredPane layeredPane = getLayeredPane(buildingName, poi.getfloor());
+
+            if ( layeredPane == null ){
+                layeredPane = generateLayeredPane(poi.getfloor());
+            }
+
+            mapPanel = new JScrollPane(layeredPane);
+
+
+            tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
+
+            mapPanel.revalidate();
+            mapPanel.repaint();
+            tabs.revalidate();
+            tabs.repaint();
+
+
+            // first switch the level and building to the proper one. then call addPOIToMap()
+            currentBuilding = getBuilding(buildingName);
+            currentFloor = poi.getfloor();
+            System.out.println("current Building: " +currentBuilding.getBuildingName());
+            System.out.println("current floor: " + currentFloor);
+
+            //  add the line here to change the level on drop down to the "currentFloor" instance var
+            System.out.println("selected: " + cb.getSelectedIndex());
+            System.out.println("floor " + currentFloor);
+
+            int j=-1;
+            for(int i=0;i<currentBuilding.getLevels().length; i++){
+//                System.out.println(this.building.getLevels()[i]);
+                String curr_level = this.building.getLevels()[i].replaceAll(" ", "");
+                System.out.println(curr_level);
+//                System.out.println(this.building.getLevels()[i]);
+
+                if ( curr_level.equalsIgnoreCase(currentFloor.replaceAll(" ", "")) ){
+                    j=i;
+                }
+            }
+            cb.setSelectedIndex( j );
+
+
+
+            addPOIToMap(poi);
+
+        }
     }
     
     public void addPOIsToMap(POI[] pois) {
@@ -601,7 +698,7 @@ public class Map {
             System.out.println(poi.getfloor());
             if (poi.getfloor().replaceAll("\\s+","").toLowerCase().equalsIgnoreCase(currentFloor.replaceAll("\\s+","").toLowerCase())) {
                 System.out.println("I THE ONE THAT YOU WANT");
-                addMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName().replaceAll("\\s+","").toLowerCase(), poi.getfloor().replaceAll("\\s+","").toLowerCase(), poi);
+                addMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName().replaceAll("\\s+","").toLowerCase(), poi.getfloor().replaceAll("\\s+","").toLowerCase(), poi, false);
             
             }
          
@@ -630,7 +727,7 @@ public class Map {
       
     }
     
-    public void addMarker(int x, int y, String building, String level, POI poi) {
+    public void addMarker(int x, int y, String building, String level, POI poi, boolean disappear) {
        System.out.print("TESTINGHEH");
         
        
@@ -692,6 +789,11 @@ public class Map {
                 System.out.println("Label focus lost");
                 marker.setBackground(Color.WHITE);
                 marker.setOpaque(false);
+
+                if ( disappear ) {
+                    removePOIsFromMap( new POI[]{poi} );
+                }
+
                 pane.revalidate();
                 pane.repaint();
             }
@@ -789,6 +891,8 @@ public class Map {
     public void selectMarker(int x, int y, String building, String level){
         
         JLayeredPane pane = getLayeredPane(building, level);
+        System.out.println("layered pane  " + pane.getName());
+        System.out.println("getting for building: " + building + ", level: " + level);
         Component[] components = pane.getComponents();
         
         
@@ -831,7 +935,14 @@ public class Map {
         building = building.replaceAll("\\s+","").toLowerCase();
         String key = level + building;
         
-        return layeredPanes.get(key);
+        JLayeredPane returned = layeredPanes.get(key);
+
+        if ( returned == null ) {
+            addLayeredPane(building, level, generateLayeredPane(level));
+            returned = layeredPanes.get(key);
+        }
+
+        return returned;
         
     }
 
@@ -953,8 +1064,13 @@ public class Map {
         //rutilize the main frame rather than dealing with JFrame.getframes()
         return popup;
     
-        }
-    
+    }
+
+    public HashMap getPOIHashMap() {
+        return this.map;
+    }
+
+
     public void removeFromPopup(String category){
         //finds selected layer and poi's within it
         Layer layer = currentBuilding.getLayer(category);
