@@ -159,7 +159,7 @@ public class Main extends JFrame {
             url = new URL("https://openweathermap.org/img/wn/"+map.getIcon()+"@2x.png");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
         
         //gen image label
         ImageIcon weatherImg = new ImageIcon(url); 
@@ -205,25 +205,25 @@ public class Main extends JFrame {
         layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
         
         //JCheckBox accCheckBox = new JCheckBox();
-        map.getCheckBoxs()[0].setSelected(true);
+        map.getCheckBoxs()[0].setSelected(false);
         
         //JCheckBox classCheckBox = new JCheckBox();
-        map.getCheckBoxs()[1].setSelected(true);
+        map.getCheckBoxs()[1].setSelected(false);
         
         //JCheckBox favCheckBox = new JCheckBox();
-        map.getCheckBoxs()[2].setSelected(true);
+        map.getCheckBoxs()[2].setSelected(false);
         
         //JCheckBox labCheckBox = new JCheckBox();
-        map.getCheckBoxs()[3].setSelected(true);
+        map.getCheckBoxs()[3].setSelected(false);
         
         //JCheckBox resCheckBox = new JCheckBox();
-        map.getCheckBoxs()[4].setSelected(true);
+        map.getCheckBoxs()[4].setSelected(false);
         
         //JCheckBox userCheckBox = new JCheckBox();
-        map.getCheckBoxs()[5].setSelected(true);
+        map.getCheckBoxs()[5].setSelected(false);
         
         //JCheckBox washCheckBox = new JCheckBox();
-        map.getCheckBoxs()[6].setSelected(true);
+        map.getCheckBoxs()[6].setSelected(false);
         
         layerLayeredPane.add(map.getCheckBoxs()[0]);
         layerLayeredPane.add(map.getCheckBoxs()[1]);
@@ -243,7 +243,6 @@ public class Main extends JFrame {
         map.getCheckBoxs()[4].setBounds(12, 240, 25, 25);
         map.getCheckBoxs()[5].setBounds(12, 295, 25, 25);
         map.getCheckBoxs()[6].setBounds(12, 350, 25, 25);
-        
         
         
         frame.add(layersPanel);
@@ -292,23 +291,7 @@ public class Main extends JFrame {
         
         frame.setVisible(true);
 
-        JScrollPane menu = map.updateMenu(null, "");
-        menu.setLayout(new ScrollPaneLayout());
-        menu.setBounds(800, 300, 175, 400);
 
-        frame.add(menu);
-
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-        
-
-        
-        
         map.getCheckBoxs()[0].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 
@@ -318,8 +301,12 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[0].isSelected()) {
                     System.out.println("accCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-                    map.updateMenu(menu, "Accessibility");
+                    JPopupMenu popup = map.makePopup("Accessibility");
 
+                    
+                    //checkbox triggered it, so place below it 
+                    popup.show(map.getCheckBoxs()[0], 165-map.getCheckBoxs()[0].getX(), 75-map.getCheckBoxs()[0].getY());
+                    
                 } else {
                     System.out.println("accCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
@@ -334,8 +321,8 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[1].isSelected()) {
                     System.out.println("classCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-                    map.updateMenu(menu, "Classrooms");
-
+                    JPopupMenu popup = map.makePopup("Classrooms");
+                    popup.show(map.getCheckBoxs()[1], 165-map.getCheckBoxs()[1].getX(), 75-map.getCheckBoxs()[1].getY());
                         
                 } else {
                     System.out.println("classCheckBox is unchecked");
@@ -343,7 +330,6 @@ public class Main extends JFrame {
                     map.removeFromPopup("Classrooms");
 
                 }
-
             }
         });
         
@@ -353,8 +339,8 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[2].isSelected()) {
                     System.out.println("favCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-                    map.updateMenu(menu, "Favourites");
-
+                    JPopupMenu popup = map.makePopup("Favourites");
+                    popup.show(map.getCheckBoxs()[2], 165-map.getCheckBoxs()[2].getX(), 75-map.getCheckBoxs()[2].getY());
 
 
                 } else {
@@ -363,7 +349,6 @@ public class Main extends JFrame {
                     map.removeFromPopup("Favourites");
 
                 }
-
             }
         });
         
@@ -372,7 +357,8 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[3].isSelected()) {
                     System.out.println("labCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-                    map.updateMenu(menu, "Labs");
+                    JPopupMenu popup = map.makePopup("Labs");
+                    popup.show(map.getCheckBoxs()[3], 165-map.getCheckBoxs()[3].getX(), 75-map.getCheckBoxs()[3].getY());
                     
                 } else {
                     System.out.println("labCheckBox is unchecked");
@@ -387,7 +373,8 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[4].isSelected()) {
                     System.out.println("resCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-                    map.updateMenu(menu, "Restaurants");
+                    JPopupMenu popup = map.makePopup("Restaurants");
+                    popup.show(map.getCheckBoxs()[4], 165-map.getCheckBoxs()[4].getX(), 75-map.getCheckBoxs()[4].getY());
                     
                 } else {
                     System.out.println("resCheckBox is unchecked");
@@ -405,7 +392,8 @@ public class Main extends JFrame {
 
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
 
-                    map.updateMenu(menu, "User defined POIs");
+                    JPopupMenu popup = map.makePopup("User defined POIs");
+                    popup.show(map.getCheckBoxs()[5], 165-map.getCheckBoxs()[5].getX(), 75-map.getCheckBoxs()[5].getY());
 //                    map.addMarker();
 
                 } else {
@@ -422,17 +410,18 @@ public class Main extends JFrame {
                     
                     System.out.println("washCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                    map.updateMenu(menu, "Washrooms");
+                    JPopupMenu popup = map.makePopup("Washrooms");
+                    popup.show(map.getCheckBoxs()[6], 165-map.getCheckBoxs()[6].getX(), 75-map.getCheckBoxs()[6].getY());
                 } else {
                     System.out.println("washCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
                     map.removeFromPopup("Washrooms");
                    
                 }
-                
             }
         });
         
+
         
         //map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
         //map.getBuilding("AlumniHall").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
