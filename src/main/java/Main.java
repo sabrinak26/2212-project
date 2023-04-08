@@ -56,6 +56,8 @@ public class Main extends JFrame {
     
     private static void openMainFrame() {
         
+        
+        
         // Creates frame
         
         frame = new Main();
@@ -291,13 +293,14 @@ public class Main extends JFrame {
         
         
         frame.setVisible(true);
+        
+        
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 2", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
+        map.getBuilding("Natural Sciences").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
 
-        JScrollPane menu = map.updateMenu(null, "");
-        menu.setLayout(new ScrollPaneLayout());
-        menu.setBounds(800, 300, 175, 400);
-
-        frame.add(menu);
-
+        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
@@ -307,6 +310,11 @@ public class Main extends JFrame {
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
         
 
+        JScrollPane menu = map.updateMenu(null, "");
+        menu.setLayout(new ScrollPaneLayout());
+        menu.setBounds(800, 300, 175, 400);
+        
+        frame.add(menu);
         
         
         map.getCheckBoxs()[0].addActionListener(new ActionListener() {
@@ -437,7 +445,7 @@ public class Main extends JFrame {
         //map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
         //map.getBuilding("AlumniHall").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
 
-//        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        //map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
         //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
 
         /*

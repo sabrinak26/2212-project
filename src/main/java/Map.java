@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -34,6 +35,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.awt.event.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class Map {
@@ -233,6 +239,8 @@ public class Map {
 
                         building = gson.fromJson(fileReader, Building.class);
                         building.setId(i);
+                        building.setLayers();
+                        
                         buildings[i] = building;
                         
                         
@@ -904,13 +912,30 @@ public class Map {
 
     //generates a popup for Main to use
     //code modified from https://stackoverflow.com/questions/19064358/how-to-create-a-popup-jpanel-in-a-jframe
-    public JPopupMenu makePopup(String category){
+    public JScrollPane updateMenu(JScrollPane menu, String category){
         
-        //finds selected layer and poi's within it
-        Layer layer = currentBuilding.getLayer(category);
+        POI pois[] = null;
+        if (!category.equals("")){        
+            //finds selected layer and poi's within it
+            Layer layer = currentBuilding.getLayer(category);
+            pois = layer.getPOIs();
+        }
         
-        POI pois[] = layer.getPOIs();
-        
+        else { //this was incredibly stupid on my part, just use the map 
+            System.out.println("what");
+            ArrayList<POI> poisLst = new ArrayList();
+            Collections.addAll(poisLst,currentBuilding.getLayer("Accessibility").getPOIs());
+            Collections.addAll(poisLst,currentBuilding.getLayer("Classrooms").getPOIs());
+            Collections.addAll(poisLst,currentBuilding.getLayer("Favourites").getPOIs());
+            Collections.addAll(poisLst,currentBuilding.getLayer("Labs").getPOIs());
+            Collections.addAll(poisLst,currentBuilding.getLayer("Restaurants").getPOIs());
+            Collections.addAll(poisLst,currentBuilding.getLayer("User defined POIs").getPOIs());
+            Collections.addAll(poisLst,currentBuilding.getLayer("Washrooms").getPOIs());
+            pois = new POI[poisLst.size()];
+            pois = (POI[]) poisLst.toArray(pois);
+            
+            for (int i=0; i<pois.length; i++) System.out.println(pois[i].getName());
+        }
         
         //add all names on current floor
        
@@ -936,22 +961,11 @@ public class Map {
             }
         });
             
-        popup = new JPopupMenu();
+        menu = new JScrollPane(JPois);
         
-        //tbh this just looked pretty
-        popup.setLayout(new BorderLayout());
-        
-        
-        popup.add(new JScrollPane(JPois));
-        
-        //ensure popup doesnt get too big
-        int size = names.getSize();
-        int height = size<10? size*23-size+5 : 250;
-        popup.setPopupSize(100, height);
-        
-        
-        //rutilize the main frame rather than dealing with JFrame.getframes()
-        return popup;
+        menu.repaint();
+        menu.revalidate();
+        return menu;
     
         }
     
