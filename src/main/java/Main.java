@@ -223,6 +223,93 @@ public class Main extends JFrame {
         frame.add(helpButton);
 
 
+
+        // add admin access fields
+        userNameTextField = new JTextField("Username");
+        passwordTextField = new JPasswordField();
+        enterCredsButton = new JButton("Enter");
+
+
+        enterCredsButton.addActionListener( e ->{
+//            System.out.println("go to admin page");
+
+            boolean passwordWorks = true;
+            char[] enteredPassword = passwordTextField.getPassword();
+            char[] validPassword = new char[]{'p', 'a', 's', 's', 'w', 'o', 'r', 'd'};
+
+            if (validPassword.length != enteredPassword.length) {
+                passwordWorks = false;
+            } else{
+                for (int i = 0; i < enteredPassword.length; i++) {
+                    if (enteredPassword[i] != validPassword[i]) {
+                        passwordWorks = false;
+                    }
+                }
+            }
+
+
+            if (userNameTextField.getText().equalsIgnoreCase("Admin") && passwordWorks) {
+                frame.dispose();
+                openAdminFrame();
+            }else {
+                System.out.println("incorrect password");
+                passwordTextField.setEchoChar((char)0);
+                passwordTextField.setText("Incorrect Password Entered");
+            }
+
+
+        });
+
+
+        userNameTextField.setForeground(Color.GRAY);
+        passwordTextField.setEchoChar((char)0);
+        passwordTextField.setForeground(Color.GRAY);
+        passwordTextField.setText("Password");
+        userNameTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (userNameTextField.getText().equals("Username")) {
+                    userNameTextField.setText("");
+                    userNameTextField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (userNameTextField.getText().isEmpty()) {
+                    userNameTextField.setForeground(Color.GRAY);
+                    userNameTextField.setText("Username");
+                }
+            }
+        });
+
+        passwordTextField.setForeground(Color.GRAY);
+        passwordTextField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (passwordTextField.getText().equals("Password") || passwordTextField.getText().equals("Incorrect Password Entered")) {
+                    passwordTextField.setEchoChar('*');
+                    passwordTextField.setText("");
+                    passwordTextField.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordTextField.getText().isEmpty()) {
+                    passwordTextField.setEchoChar((char)0);
+                    passwordTextField.setForeground(Color.GRAY);
+                    passwordTextField.setText("Password");
+                }
+            }
+        });
+
+        userNameTextField.setBounds(142, 0, 100, 25);
+        passwordTextField.setBounds(242, 0, 100, 25);
+        enterCredsButton.setBounds(342, 0, 75, 25);
+        frame.add(userNameTextField);
+        frame.add(passwordTextField);
+        frame.add(enterCredsButton);
+
+
         // generates icon from url provided by Open Weather Map
         URL url = null;
         try {
@@ -783,6 +870,49 @@ public class Main extends JFrame {
         frame.add(aboutButton);
         frame.add(helpButton);
 
+        JButton logout = new JButton("Logout");
+        logout.setBounds(142, 0, 75, 25);
+        logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open the main frame when the start button is clicked
+                Gson natSciGson = new Gson();
+
+                try (FileWriter writer = new FileWriter("./src/main/metadata/NaturalSciences.json")) {
+
+                    natSciGson.toJson(map.getBuilding("NaturalSciences"), writer);
+
+                } catch (IOException c) {
+                    c.printStackTrace();
+                }
+
+                Gson midSciGson = new Gson();
+
+
+                try (FileWriter writer = new FileWriter("./src/main/metadata/Middlesex.json")) {
+
+                    midSciGson.toJson(map.getBuilding("Middlesex"), writer);
+
+                } catch (IOException c) {
+                    c.printStackTrace();
+                }
+
+                Gson AlumGson = new Gson();
+
+
+                try (FileWriter writer = new FileWriter("./src/main/metadata/AlumniHall.json")) {
+
+                    AlumGson.toJson(map.getBuilding("AlumniHall"), writer);
+
+                } catch (IOException c) {
+                    c.printStackTrace();
+                }
+                frame.dispose();
+                openMainFrame();
+            }
+        });
+
+        frame.add(logout);
 
         //layersPanel.setBounds(720, 260, 270, 400);
 
@@ -1177,6 +1307,7 @@ public class Main extends JFrame {
 
 
             if (userNameTextField.getText().equalsIgnoreCase("Admin") && passwordWorks) {
+                startFrame.dispose();
                 openAdminFrame();
             }else {
                 System.out.println("incorrect password");
@@ -1221,6 +1352,14 @@ public class Main extends JFrame {
         enterCredsButton.setVisible(true);
 //        addNewPOIButton.setVisible(true);
         startFrame.setVisible(true);
+        
+        userNameTextField.revalidate();
+        userNameTextField.repaint();
+        passwordTextField.revalidate();
+        passwordTextField.repaint();
+        startFrame.revalidate();
+        startFrame.repaint();
+        
     }
     
     public JLabel[] getPoiInfo() {
