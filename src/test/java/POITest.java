@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
- * @author Sabrina
+ * @author sabrina
  */
 public class POITest {
     
@@ -121,7 +121,7 @@ public class POITest {
     public void testGetRoomNumber() {
         System.out.println("getRoomNumber");
         POI instance = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
-        int expResult = 2;
+        String expResult = "2";
         String result = instance.getRoomNumber();
         assertEquals(expResult, result);
     }
@@ -291,3 +291,4 @@ public class POITest {
     }
     
 }
+
