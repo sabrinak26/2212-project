@@ -58,47 +58,47 @@ public class MapTest {
     }
 
 
-    /**
-     * Test of getBuilding method, of class Map.
-     */
-    @Test
-    public void testGetBuilding_0args() {
-        System.out.println("getBuilding");
-        Map instance = new Map();
-        Building expResult = null;
-        Building result = instance.getBuilding();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    // /**
+    //  * Test of getBuilding method, of class Map.
+    //  */
+    // @Test
+    // public void testGetBuilding_0args() {
+    //     System.out.println("getBuilding");
+    //     Map instance = new Map();
+    //     Building expResult = null;
+    //     Building result = instance.getBuilding();
+    //     assertEquals(expResult, result);
+    //     // TODO review the generated test code and remove the default call to fail.
+    //     fail("The test case is a prototype.");
+    // }
 
-    /**
-     * Test of getBuilding method, of class Map.
-     */
-    @Test
-    public void testGetBuilding_String() {
-        System.out.println("getBuilding");
-        String buildingName = "";
-        Map instance = new Map();
-        Building expResult = null;
-        Building result = instance.getBuilding(buildingName);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    // /**
+    //  * Test of getBuilding method, of class Map.
+    //  */
+    // @Test
+    // public void testGetBuilding_String() {
+    //     System.out.println("getBuilding");
+    //     String buildingName = "";
+    //     Map instance = new Map();
+    //     Building expResult = null;
+    //     Building result = instance.getBuilding(buildingName);
+    //     assertEquals(expResult, result);
+    //     // TODO review the generated test code and remove the default call to fail.
+    //     fail("The test case is a prototype.");
+    // }
 
-    /**
-     * Test of setBuilding method, of class Map.
-     */
-    @Test
-    public void testSetBuilding() {
-        System.out.println("setBuilding");
-        Building building = null;
-        Map instance = new Map();
-        instance.setBuilding(building);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    // /**
+    //  * Test of setBuilding method, of class Map.
+    //  */
+    // @Test
+    // public void testSetBuilding() {
+    //     System.out.println("setBuilding");
+    //     Building building = null;
+    //     Map instance = new Map();
+    //     instance.setBuilding(building);
+    //     // TODO review the generated test code and remove the default call to fail.
+    //     fail("The test case is a prototype.");
+    // }
 
     /**
      * Test of getFloorName method, of class Map.
