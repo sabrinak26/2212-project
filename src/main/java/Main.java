@@ -280,6 +280,7 @@ public class Main extends JFrame {
                 // Open the main frame when the start button is clicked
                 saveJSON();
                 if(frame != null) frame.dispose();
+                saved = true;
                 openMainFrame();
             }
         });
@@ -417,20 +418,58 @@ public class Main extends JFrame {
         JLabel layersLabel = new JLabel();
         //layersLabel.setIcon(layersImage);
         //layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
-        layersLabel.setBounds(0, 0, layersImage.getIconWidth()/5, layersImage.getIconHeight());
+        layersLabel.setBounds(0, 0, layersImage.getIconWidth()/4, layersImage.getIconHeight());
 
         JLayeredPane layerLayeredPane = new JLayeredPane();
-        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth()/5, layersImage.getIconHeight());
+        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth()/4, layersImage.getIconHeight());
         layerLayeredPane.add(layersLabel, JLayeredPane.DEFAULT_LAYER);
+        
+        Font font = new Font("Arial", Font.PLAIN, 10);
+        
+        JLabel accLabel = new JLabel("Accessibility:");
+        accLabel.setFont(font);
+        layerLayeredPane.add(accLabel);
+        accLabel.setBounds(5, 0, 75, 25);
+        
+        JLabel classLabel = new JLabel("Classrooms:");
+        classLabel.setFont(font);
+        layerLayeredPane.add(classLabel);
+        classLabel.setBounds(5, 55, 75, 25);
+        
+        JLabel favLabel = new JLabel("Favourites:");
+        favLabel.setFont(font);
+        layerLayeredPane.add(favLabel);
+        favLabel.setBounds(7, 110, 75, 25);
+        
+        JLabel labLabel = new JLabel("Labs:");
+        labLabel.setFont(font);
+        layerLayeredPane.add(labLabel);
+        labLabel.setBounds(20, 165, 75, 25);
+        
+        JLabel resLabel = new JLabel("Restaurants:");
+        resLabel.setFont(font);
+        layerLayeredPane.add(resLabel);
+        resLabel.setBounds(5, 220, 75, 25);
+        
+        JLabel userLabel = new JLabel("User defined:");
+        userLabel.setFont(font);
+        layerLayeredPane.add(userLabel);
+        userLabel.setBounds(3, 275, 75, 25);
+        
+        JLabel washLabel = new JLabel("Washrooms:");
+        washLabel.setFont(font);
+        layerLayeredPane.add(washLabel);
+        washLabel.setBounds(5, 330, 75, 25);
 
         JPanel layersPanel = new JPanel();
         layersPanel.setLayout(null); // set the layout to null to use setBounds
-        layersPanel.setBounds(720, 260, layersImage.getIconWidth()/5, layersImage.getIconHeight());
+        layersPanel.setBounds(720, 260, layersImage.getIconWidth()/4, layersImage.getIconHeight());
+        
         
         
         for (int i = 0; i < map.getCheckBoxs().length; i++) {
             map.getCheckBoxs()[i].setSelected(true);
-            map.getCheckBoxs()[i].setBounds(12, 25+(55*i), 25, 25);
+            map.getCheckBoxs()[i].setBounds(18, 25+(55*i), 25, 25);
             layerLayeredPane.add(map.getCheckBoxs()[i]);
         }
 
