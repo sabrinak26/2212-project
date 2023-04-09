@@ -132,7 +132,7 @@ public class Main extends JFrame {
 
         searchPOIDropDown = new JComboBox(poiList);
         searchPOIDropDown.setBounds(730, 120, 250, 20);
-        AutoComplete.enable(searchPOIDropDown);
+        AutoComplete.enable(searchPOIDropDown); 
 
         findPOIOnMapButton = new JButton("find poi");
         findPOIOnMapButton.setBounds( 730, 200, 50,20 );
@@ -195,37 +195,39 @@ public class Main extends JFrame {
         
         ImageIcon layersImage = new ImageIcon("./src/main/images/icons/layers.png");
         JLabel layersLabel = new JLabel();
-        layersLabel.setIcon(layersImage);
-        layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        //layersLabel.setIcon(layersImage);
+        //layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layersLabel.setBounds(0, 0, layersImage.getIconWidth()/5, layersImage.getIconHeight());
 
+        
         JLayeredPane layerLayeredPane = new JLayeredPane();
-        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth()/5, layersImage.getIconHeight());
         layerLayeredPane.add(layersLabel, JLayeredPane.DEFAULT_LAYER);
 
         JPanel layersPanel = new JPanel();
         layersPanel.setLayout(null); // set the layout to null to use setBounds
-        layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layersPanel.setBounds(720, 260, layersImage.getIconWidth()/5, layersImage.getIconHeight());
         
         //JCheckBox accCheckBox = new JCheckBox();
-        map.getCheckBoxs()[0].setSelected(true);
+        map.getCheckBoxs()[0].setSelected(false);
         
         //JCheckBox classCheckBox = new JCheckBox();
-        map.getCheckBoxs()[1].setSelected(true);
+        map.getCheckBoxs()[1].setSelected(false);
         
         //JCheckBox favCheckBox = new JCheckBox();
-        map.getCheckBoxs()[2].setSelected(true);
+        map.getCheckBoxs()[2].setSelected(false);
         
         //JCheckBox labCheckBox = new JCheckBox();
-        map.getCheckBoxs()[3].setSelected(true);
+        map.getCheckBoxs()[3].setSelected(false);
         
         //JCheckBox resCheckBox = new JCheckBox();
-        map.getCheckBoxs()[4].setSelected(true);
+        map.getCheckBoxs()[4].setSelected(false);
         
         //JCheckBox userCheckBox = new JCheckBox();
-        map.getCheckBoxs()[5].setSelected(true);
+        map.getCheckBoxs()[5].setSelected(false);
         
         //JCheckBox washCheckBox = new JCheckBox();
-        map.getCheckBoxs()[6].setSelected(true);
+        map.getCheckBoxs()[6].setSelected(false);
         
         layerLayeredPane.add(map.getCheckBoxs()[0]);
         layerLayeredPane.add(map.getCheckBoxs()[1]);
@@ -292,14 +294,19 @@ public class Main extends JFrame {
         frame.add(poiInfo);
         
         
-        frame.setVisible(true);
         
-        
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 2", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
         map.getBuilding("Natural Sciences").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
 
-        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
         map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("kaaaay","Level 4", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        
+        
+        map.getBuilding("Alumni Hall").getLayer("Accessibility").addPOI("alu one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
+        map.getBuilding("Alumni Hall").getLayer("Classrooms").addPOI("alu two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
+
+        map.getBuilding("Alumni Hall").getLayer("Accessibility").addPOI("alu OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
+        map.getBuilding("Alumni Hall").getLayer("Accessibility").addPOI("alu kaaaay","Level 4", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
         
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
@@ -309,13 +316,37 @@ public class Main extends JFrame {
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
         map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
         
+        for (int i=0; i<7; i++){
+            map.getCheckBoxs()[i].setSelected(true);
+        }
 
-        JScrollPane menu = map.updateMenu(null, "");
+        /*JPanel menuPanel = new JPanel();
+        menuPanel.setLayout(null);
+        menuPanel.setBounds(800, 300, 175, 400);
+        menuPanel.setOpaque(true);*/
+        
+        /*
+        JLayeredPane p = new JLayeredPane();
+        p.setLayout(null);
+        p.setBounds(800, 300, 175, 400);
+
+        
+        JScrollPane menu = new JScrollPane(p);
         menu.setLayout(new ScrollPaneLayout());
         menu.setBounds(800, 300, 175, 400);
+        menu.setVisible(true); */
         
-        frame.add(menu);
+        //menuPanel.add("");
         
+        //frame.add(menuPanel);
+        //frame.add(menu);
+
+
+        frame.add(map.getMenuPanel());
+        
+        frame.setVisible(true);
+        
+        map.updateMenu();
         
         map.getCheckBoxs()[0].addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -326,12 +357,11 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[0].isSelected()) {
                     System.out.println("accCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-                    map.updateMenu(menu, "Accessibility");
+
 
                 } else {
                     System.out.println("accCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-                    map.removeFromPopup("Accessibility");
 
                 }
             }
@@ -342,13 +372,11 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[1].isSelected()) {
                     System.out.println("classCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-                    map.updateMenu(menu, "Classrooms");
 
                         
                 } else {
                     System.out.println("classCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-                    map.removeFromPopup("Classrooms");
 
                 }
 
@@ -361,14 +389,10 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[2].isSelected()) {
                     System.out.println("favCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-                    map.updateMenu(menu, "Favourites");
-
-
 
                 } else {
                     System.out.println("favCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-                    map.removeFromPopup("Favourites");
 
                 }
 
@@ -380,12 +404,10 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[3].isSelected()) {
                     System.out.println("labCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-                    map.updateMenu(menu, "Labs");
                     
                 } else {
                     System.out.println("labCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-                    map.removeFromPopup("Labs");
                 }
             }
         });
@@ -395,12 +417,10 @@ public class Main extends JFrame {
                 if (map.getCheckBoxs()[4].isSelected()) {
                     System.out.println("resCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-                    map.updateMenu(menu, "Restaurants");
                     
                 } else {
                     System.out.println("resCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-                    map.removeFromPopup("Restaurants");                   
                 }
             }
         });
@@ -413,13 +433,11 @@ public class Main extends JFrame {
 
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
 
-                    map.updateMenu(menu, "User defined POIs");
 //                    map.addMarker();
 
                 } else {
                     System.out.println("userCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
-                    map.removeFromPopup("User defined POIs");
                 }
             }
         });
@@ -430,17 +448,17 @@ public class Main extends JFrame {
                     
                     System.out.println("washCheckBox is checked");
                     map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                    map.updateMenu(menu, "Washrooms");
                 } else {
                     System.out.println("washCheckBox is unchecked");
                     map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                    map.removeFromPopup("Washrooms");
                    
                 }
                 
             }
         });
         
+        
+
         
         //map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
         //map.getBuilding("AlumniHall").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
