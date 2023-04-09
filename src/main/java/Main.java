@@ -45,6 +45,8 @@ public class Main extends JFrame {
     private static JTextField typeTextField;
     private static JTextField categoryTextField;
     private static JButton submitPOIButton;
+    private static JTextField userPOIText;
+    private static JButton userPOIButton;
 
     // searchPOI fields
     private static JComboBox searchPOIDropDown;
@@ -229,7 +231,7 @@ public class Main extends JFrame {
     private static void loginActionListener(JFrame frame, JButton enterCredsButton) {
         enterCredsButton.addActionListener(e -> {
             // System.out.println("go to admin page");
-
+            saved = false;
             boolean passwordWorks = true;
             char[] enteredPassword = passwordTextField.getPassword();
             char[] validPassword = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
@@ -255,6 +257,20 @@ public class Main extends JFrame {
 
         });
     }
+    
+    private static void buttonActionListener(JFrame frame, JButton enterCredsButton) {
+        enterCredsButton.addActionListener(e -> {
+            // System.out.println("go to admin page");
+            saved = false;
+            
+
+
+            
+                openUserFrame();
+           
+
+        });
+    }
 
 
     private static void logoutActionListener(JFrame frame, JButton button) {
@@ -273,7 +289,8 @@ public class Main extends JFrame {
 
         // Creates frame
         frame = new Main();
-
+        
+        saved = true;
 
         // Info about frame
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -342,7 +359,12 @@ public class Main extends JFrame {
         passwordTextField = new JPasswordField();
         enterCredsButton = new JButton("Enter");
 
+        userPOIButton = new JButton("Create User POI");
 
+        userPOIButton.setBounds(550, 0, 150, 25);
+        frame.add(userPOIButton);
+        
+        buttonActionListener(frame, userPOIButton);
 
         setPlaceholder(userNameTextField, "Username", false);
         setPlaceholder(passwordTextField, "Password", true);
@@ -546,6 +568,151 @@ public class Main extends JFrame {
 
     }
 
+    private static void openUserFrame() {
+        System.out.println("inside user frame");
+
+        // Creates frame
+        frame = new Main();
+
+        // Info about frame
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setLayout(null);
+        frame.setSize(1000, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setTitle("Group 16 - UWO GIS");
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(new Color(49, 39, 131));
+
+        // make the edit POI interface buttons
+
+        poiNameField = new JTextField("Enter POI name");
+        typeTextField = new JTextField("Enter POI type");
+        descTextField = new JTextField("Enter POI description");
+        roomNumTextField = new JTextField("Enter POI room number ");
+        categoryTextField = new JTextField("Enter the category");
+        submitPOIButton = new JButton("Submit");
+
+        setPlaceholder(poiNameField, "Enter POI name", false);
+        setPlaceholder(typeTextField, "Enter POI type", false);
+        setPlaceholder(descTextField, "Enter POI description", false);
+        setPlaceholder(roomNumTextField, "Enter POI room number", false);
+        setPlaceholder(categoryTextField, "Enter the category", false);
+
+        poiNameField.setBounds(20, 600, 150, 25);
+        //typeTextField.setBounds(220, 600, 150, 25);
+        descTextField.setBounds(20, 630, 150, 25);
+        roomNumTextField.setBounds(220, 630, 150, 25);
+        //categoryTextField.setBounds(420, 600, 150, 25);
+        submitPOIButton.setBounds(420, 630, 150, 25);
+        
+        typeTextField.setText("userdefined");
+        categoryTextField.setText("User defined POIs");
+        
+        frame.add(poiNameField);
+        //frame.add(typeTextField);
+        frame.add(descTextField);
+        frame.add(roomNumTextField);
+        //frame.add(categoryTextField);
+        frame.add(submitPOIButton);
+
+        poiNameField.setVisible(false);
+        //typeTextField.setVisible(false);
+        descTextField.setVisible(false);
+        roomNumTextField.setVisible(false);
+        //categoryTextField.setVisible(false);
+        submitPOIButton.setVisible(false);
+
+        // addNewPOIButton.setBounds( 200,600, 400,25 );
+
+        // add POI button
+        frame.add(addNewPOIButton);
+
+        map = new Map(addNewPOIButton, poiNameField, typeTextField, descTextField, roomNumTextField,
+                categoryTextField, submitPOIButton);
+
+        saved = false;
+
+
+        // Adds map panel
+
+        frame.add(map.getPanel());
+
+        // Adds help and about buttons
+
+        frame.add(aboutButton);
+        frame.add(helpButton);
+
+        JButton logoutButton = new JButton("Exit");
+        logoutButton.setBounds(142, 0, 75, 25);
+        logoutActionListener(frame, logoutButton);
+        frame.add(logoutButton);
+
+
+        ImageIcon layersImage = new ImageIcon("./src/main/images/icons/layers.png");
+        JLabel layersLabel = new JLabel();
+        layersLabel.setIcon(layersImage);
+        layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+
+        JLayeredPane layerLayeredPane = new JLayeredPane();
+        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layerLayeredPane.add(layersLabel, JLayeredPane.DEFAULT_LAYER);
+
+        JPanel layersPanel = new JPanel();
+        layersPanel.setLayout(null); // set the layout to null to use setBounds
+        layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
+
+
+        for (int i = 0; i < map.getCheckBoxs().length; i++) {
+            map.getCheckBoxs()[i].setSelected(false);
+            map.getCheckBoxs()[i].setBounds(12, 25+(55*i), 25, 25);
+            layerLayeredPane.add(map.getCheckBoxs()[i]);
+        }
+
+        layersPanel.add(layerLayeredPane);
+        frame.add(layersPanel);
+
+        frame.setVisible(true);
+
+
+        generateCheckboxActionListeners();
+
+
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+
+                // If in the middle of task and info not saved then is will promt user if they
+                // really want to close
+                // If you wnat to see this set saved to false
+                // When they close the window it saves all current data to JSON file
+
+                if (!saved) {
+
+                    ImageIcon icon = new ImageIcon("./src/main/images/icons/WesternLogo.png");
+                    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    icon = new ImageIcon(image);
+                    int confirm = JOptionPane.showConfirmDialog(frame, "POIs not saved. Are you sure you want to exit?", "Exit Program",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
+                    if (confirm == JOptionPane.YES_OPTION) {
+
+                        // Save info to JSONs
+
+                        saveJSON();
+
+                        System.exit(0);
+
+                    }
+                } else {
+
+                    saveJSON();
+
+                    System.exit(0);
+
+                }
+            }
+        });
+    }
+    
     private static void openAdminFrame() {
         System.out.println("inside admin frame");
 
@@ -605,7 +772,7 @@ public class Main extends JFrame {
         map = new Map(addNewPOIButton, poiNameField, typeTextField, descTextField, roomNumTextField,
                 categoryTextField, submitPOIButton);
 
-        saved = true;
+        saved = false;
 
 
         // Adds map panel
@@ -666,7 +833,7 @@ public class Main extends JFrame {
                     ImageIcon icon = new ImageIcon("./src/main/images/icons/WesternLogo.png");
                     Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                     icon = new ImageIcon(image);
-                    int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit Program",
+                    int confirm = JOptionPane.showConfirmDialog(frame, "POIs not saved. Are you sure you want to exit?", "Exit Program",
                             JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
                     if (confirm == JOptionPane.YES_OPTION) {
 
