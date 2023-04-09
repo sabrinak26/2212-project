@@ -312,6 +312,8 @@ public class Main extends JFrame {
                 }
             }
         }
+        
+        map.addFaves();
 
         // sets weather parameters/
         // LIMITED REQUESTS - uncomment only when feature needed
@@ -450,8 +452,54 @@ public class Main extends JFrame {
         poiDes.setBounds(305, 30, 300, 30);
         poiLayeredPane.add(poiDes, JLayeredPane.DEFAULT_LAYER);
 
-        poiInfo.add(poiLayeredPane);
 
+        JLabel favLab = new JLabel("Favourite");
+        favLab.setBounds(10,30,150,30);
+        poiLayeredPane.add(favLab, JLayeredPane.MODAL_LAYER);
+        
+        JButton favourite = new JButton();
+        favourite.setBounds(75,30,25,25);
+        favourite.setText("+");
+        favourite.setBorder(BorderFactory.createEmptyBorder());
+        favourite.setFocusable(false);
+        favourite.setVisible(false);
+        
+        poiLayeredPane.add(favourite, JLayeredPane.MODAL_LAYER);
+         
+        poiInfo.add(poiLayeredPane);        
+        poiRoom.addPropertyChangeListener("text", e -> {
+            
+            if (!poiTitle.getText().equals("")){
+                favourite.setVisible(true);
+                POI poi = ((POI) RoomNumPOIHashMap.get(poiRoom.getText()));
+                if (poi.isFavourite()){
+                    favourite.setText("-");
+                }
+                else {
+                    favourite.setText("+");
+                }
+            } else favourite.setVisible(false);
+        });
+        
+        //for some reason needs to be RoomNum..
+        favourite.addActionListener(e -> {
+            POI poi = (POI) RoomNumPOIHashMap.get(poiRoom.getText());
+            if (poi==null) return;
+            if (favourite.getText().equals("+")){
+                poi.setFavourite(true);
+                favourite.setText("-");
+            }
+            else {
+                poi.setFavourite(false);
+                favourite.setText("+");
+            }
+                    
+            map.updateMenu();
+        });
+        
+        
+        
+        
         frame.add(poiInfo);
         frame.add(map.getMenuPanel());
         

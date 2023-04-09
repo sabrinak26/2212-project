@@ -971,12 +971,31 @@ public class Map {
         for (int i=0; i<pois.length; i++){
             if (pois[i].getfloor().equals(currentFloor) || pois[i].getfloor().replaceAll("\\s+","").toLowerCase().equals(currentFloor))
                 if (!names.contains(pois[i].getName())){ //should never be true, but just incase
-                    names.addElement(pois[i].getName());
+                    if (pois[i].isFavourite()){
+                        continue;
+                    } else {
+                        names.addElement(pois[i].getName());
+                    }
                     map.put(pois[i].getName(), pois[i]); 
                 }
-        }   
+        }  
+        
     }
     
+    public void addFaves(){
+        for (int i=0; i<buildings.length; i++){
+            Layer[] lay = buildings[i].getLayers();
+            for (int j=0; j<lay.length; j++){
+                POI p[] = lay[j].getPOIs();
+                for (int k=0; k<p.length; k++){
+                    if (p[k].isFavourite()){
+                        names.add(0, p[k].getName()+" <3");
+                    }
+                }
+            }
+        }
+        
+    }
     public JPanel getMenuPanel(){
         return scrollPanel;
         
@@ -989,6 +1008,8 @@ public class Map {
         if (scrollPanel == null){
             createMenu();
         }
+        else addFaves();
+        
         
         names.clear();
         
