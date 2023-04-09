@@ -838,10 +838,11 @@ public class Map {
 
             for (Component component : components) {
                 System.out.println("This 1");
-                if (component instanceof JComponent)
+                if (component instanceof JComponent){
                     System.out.println("This 2");
                     ((JComponent) component).scrollRectToVisible(new Rectangle(x-100,y-100,1,1));
                     System.out.println("This 3");
+                }
                 if (component instanceof JLabel) {
                     System.out.println("This 3");
                     JLabel marker = (JLabel) component;
@@ -852,13 +853,13 @@ public class Map {
                     System.out.println(marker.getY());
                     System.out.println(y);
                     System.out.println((marker.getX() == x && marker.getY() == y));
-                    //if (marker.getX() == x && marker.getY() == y) {
+                    if (marker.getX() == x && marker.getY() == y) {
 
                         System.out.println("This 6");
                         marker.grabFocus();
                         marker.grabFocus();
                         break;
-                    //}
+                    }
                 }
             }
         }
@@ -982,10 +983,11 @@ public class Map {
                 POI poi = map.get(JPois.getSelectedValue());
                 System.out.println("Value Change");
                 
-                System.out.println(poi+" IS THIS POI?");
                 
                 if (poi != null){
                 
+                    System.out.println(poi.getName()+" IS THIS POI?");
+
                     selectMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
                 }
             }
@@ -1030,11 +1032,12 @@ public class Map {
         for (int i=0; i<buildings.length; i++){
             Layer[] lay = buildings[i].getLayers();
             for (int j=0; j<lay.length; j++){
-                POI p[] = lay[j].getPOIs();
-                for (int k=0; k<p.length; k++){
-                    if (p[k].isFavourite()){
-                        names.add(0, p[k].getName()+" <3");
+                POI pois[] = lay[j].getPOIs();
+                for (int k=0; k<pois.length; k++){
+                    if (pois[k].isFavourite()){
+                        names.add(0,"<3 "+pois[k].getName());
                     }
+                    map.put("<3 " +pois[k].getName(), pois[k]);
                 }
             }
         }
@@ -1054,8 +1057,6 @@ public class Map {
             createMenu();
         }
         else addFaves();
-        
-        
         
         
         addNames("Accessibility");
@@ -1078,8 +1079,6 @@ public class Map {
             createMenu();
         }
         else addFaves();
-        
-        
         
         
         addNames("Accessibility");
