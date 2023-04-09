@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
- * @author Sabrina
+ * @author sabrina
  */
 public class LayerTest {
     
@@ -45,10 +45,13 @@ public class LayerTest {
     @Test
     public void testAddPOI_0args() {
         System.out.println("addPOI");
-        Layer instance = null;
+        String category = "Classroom";
+        Layer instance = new Layer(category);
         instance.addPOI();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int expResult = 1;
+        int result = instance.getPOIs().length;
+        assertEquals(expResult, result);
+
     }
 
     /**
@@ -57,18 +60,20 @@ public class LayerTest {
     @Test
     public void testAddPOI_8args() {
         System.out.println("addPOI");
-        String poiName = "";
-        String floor = "";
-        String poiType = "";
-        String poiCategory = "";
-        int poiRoomNumber = 0;
-        String poiDescription = "";
-        int poiX = 0;
-        int poiY = 0;
-        Layer instance = null;
+        String poiName = "POI";
+        String floor = "Level 2";
+        String poiType = "User";
+        String poiCategory = "Classroom";
+        String poiRoomNumber = "1";
+        String poiDescription = "This is a test POI";
+        int poiX = 1;
+        int poiY = 1;
+        String category = "Classroom";
+        Layer instance = new Layer (category);
         instance.addPOI(poiName, floor, poiType, poiCategory, poiRoomNumber, poiDescription, poiX, poiY);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        int expResult = 1;
+        int result = instance.getPOIs().length;
+        assertEquals(expResult, result);
     }
 
     /**
@@ -77,8 +82,10 @@ public class LayerTest {
     @Test
     public void testRemovePOI() {
         System.out.println("removePOI");
-        int key = 0;
-        Layer instance = null;
+        int key = 1;
+        String category = "Classroom";
+        Layer instance = new Layer (category);
+        POI poi = new POI("POI", "Level 2", "User", "Classroom", "4", "This is a test POI", 1, 1,1);
         instance.removePOI(key);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -105,7 +112,7 @@ public class LayerTest {
         System.out.println("getPOIs");
         String category = "Labs";
         Layer instance = new Layer(category);
-        instance.addPOI("POI", "2", "User", "Labs", "2," "a POI", 0, 0);
+        instance.addPOI("POI", "2", "User", "Labs", "2", "a POI", 0, 0);
         POI testPOI = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
         POI[] expResult = {testPOI};
         POI[] result = instance.getPOIs();
@@ -139,5 +146,20 @@ public class LayerTest {
         boolean result = instance.getIsSelected();
         assertEquals(isSelected, result);
     }
+
+    /**
+     * Test of getPOINames method, of class Layer.
+     */
+    @Test
+    public void testGetPOINames() {
+        System.out.println("getPOINames");
+        Layer instance = null;
+        String[] expResult = null;
+        String[] result = instance.getPOINames();
+        assertArrayEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
     
 }
+
