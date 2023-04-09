@@ -2,6 +2,10 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import javax.swing.*;
 
+/**
+ *
+ * @author ben
+ */
 public class Building {
     private String buildingName;
     private String[] levels;
@@ -11,40 +15,77 @@ public class Building {
     private int id;
     //private Hashtable<String, JLayeredPane> layeredPanes;
 
-
+    /**
+     *
+     * @return
+     */
     public String[] getLevelNames() {
         return levelNames;
     }
 
+    /**
+     *
+     * @param levelNames
+     */
     public void setLevelNames(String[] levelNames) {
         this.levelNames = levelNames;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getBuildingName() {
         return buildingName;
     }
 
+    /**
+     *
+     * @param buildingName
+     */
     public void setBuildingName(String buildingName) {
         this.buildingName = buildingName;
     }
 
+    /**
+     *
+     * @return
+     */
     public String[] getLevels() {
         return levels;
     }
 
+    /**
+     *
+     * @param levels
+     */
     public void setLevels(String[] levels) {
         this.levels = levels;
     }
     
     // Gets the desired layer object in the building from string
+
+    /**
+     *
+     * @param category
+     * @return
+     */
     
     public Layer getLayer(String category) {
         
@@ -66,11 +107,19 @@ public class Building {
        
     }
 
+    /**
+     *
+     * @return
+     */
     public Layer[] getLayers () {
         return this.layers;
     }
 
     // Used this to create the layers, they are all in the JSON files now so might not need this method
+
+    /**
+     *
+     */
     
     public void setLayers() {
         

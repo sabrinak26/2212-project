@@ -8,6 +8,12 @@ import javax.swing.text.*;
  * To view a copy of the public domain dedication, visit
  * http://creativecommons.org/licenses/publicdomain/
  */
+
+/**
+ *
+ * @author jerem
+ */
+
 public class AutoComplete extends PlainDocument {
     JComboBox comboBox;
     ComboBoxModel model;
@@ -22,6 +28,10 @@ public class AutoComplete extends PlainDocument {
     KeyListener editorKeyListener;
     FocusListener editorFocusListener;
 
+    /**
+     *
+     * @param comboBox
+     */
     public AutoComplete(final JComboBox comboBox) {
         this.comboBox = comboBox;
         model = comboBox.getModel();
@@ -71,6 +81,10 @@ public class AutoComplete extends PlainDocument {
         highlightCompletedText(0);
     }
 
+    /**
+     *
+     * @param comboBox
+     */
     public static void enable(JComboBox comboBox) {
         // has to be editable
         comboBox.setEditable(true);
@@ -92,6 +106,12 @@ public class AutoComplete extends PlainDocument {
         }
     }
 
+    /**
+     *
+     * @param offs
+     * @param len
+     * @throws BadLocationException
+     */
     public void remove(int offs, int len) throws BadLocationException {
         // return immediately when selecting an item
         if (selecting) return;
@@ -110,6 +130,13 @@ public class AutoComplete extends PlainDocument {
         }
     }
 
+    /**
+     *
+     * @param offs
+     * @param str
+     * @param a
+     * @throws BadLocationException
+     */
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         // return immediately when selecting an item
         if (selecting) return;
@@ -189,7 +216,10 @@ public class AutoComplete extends PlainDocument {
         frame.pack(); frame.setVisible(true);
     }
 
-
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

@@ -35,8 +35,15 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.awt.event.*;
 
-
+/**
+ *
+ * @author ben
+ */
 public class Map {
+
+    /**
+     *
+     */
     public final String[] CATEGORIES = {"Accessibility", "Classrooms", "Favourites","Labs","Restaurants", "User Defined POIs", "Washrooms"};
     private JPanel scrollPanel;
     private JPanel panel;
@@ -71,6 +78,8 @@ public class Map {
     HashMap<String, POI> map = new HashMap<String, POI>();
     HashMap<POI, Building> faveMap = new HashMap<POI, Building>();
 
+
+            
     JLabel poiName;
     JLabel poiRoom;
     JLabel poiDes;
@@ -80,14 +89,25 @@ public class Map {
     private String icon = "04d";
     private float temp = 12;    
 
+    /**
+     *
+     * @return
+     */
     public JTabbedPane getTabs() {      
         return tabs;
     }
 
+    /**
+     *
+     * @param tabs
+     */
     public void setTabs(JTabbedPane tabs) {
         this.tabs = tabs;
     }
 
+    /**
+     *
+     */
     public Map() {
         panel = new JPanel();
         panel.setBounds(8, 25, 700, 568);
@@ -141,6 +161,16 @@ public class Map {
         }
     };
 
+    /**
+     *
+     * @param addNewPOIButton
+     * @param poiNameField
+     * @param typeTextField
+     * @param descTextField
+     * @param roomNumTextField
+     * @param categoryTextField
+     * @param submitPOIButton
+     */
     public Map( JButton addNewPOIButton, JTextField poiNameField, JTextField typeTextField, JTextField descTextField, JTextField roomNumTextField, JTextField categoryTextField, JButton submitPOIButton ) {
         panel = new JPanel();
         panel.setBounds(8, 25, 700, 568);
@@ -206,6 +236,10 @@ public class Map {
         };
 
     }
+
+    /**
+     *
+     */
     public void loadBuildingsData() {
         File dir = new File("./src/main/metadata/");
         File[] directoryListing = dir.listFiles();
@@ -463,12 +497,23 @@ public class Map {
     }
 
     // Reutnrs building object
+
+    /**
+     *
+     * @return
+     */
     
     public Building getBuilding() {
         return building;
     }
     
     // Returns desired building object from name of that building
+
+    /**
+     *
+     * @param buildingName
+     * @return
+     */
     
     public Building getBuilding(String buildingName) {
         
@@ -486,23 +531,44 @@ public class Map {
  
     }
 
+    /**
+     *
+     * @param building
+     */
     public void setBuilding(Building building) {
         this.building = building;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFloorName() {
         return floorName;
     }
 
+    /**
+     *
+     * @param floorName
+     */
     public void setFloorName(String floorName) {
         this.floorName = floorName;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPanel getPanel() {
         return panel;
     }
     
     // Set building that is currently being viewed
+
+    /**
+     *
+     * @param currentBuilding
+     */
     
     public void setCurrentBuilding(Building currentBuilding){
         
@@ -511,6 +577,11 @@ public class Map {
     }
     
     // Get building that is currently being viewed
+
+    /**
+     *
+     * @return
+     */
     
     public Building getCurrentBuilding(){
         
@@ -519,6 +590,11 @@ public class Map {
     }
     
     // Set floor that is currently being viewed
+
+    /**
+     *
+     * @param currentFloor
+     */
     
     public void setcurrentFloor(String currentFloor){
         
@@ -527,6 +603,11 @@ public class Map {
     }
     
     // Get floor that is currently being viewed
+
+    /**
+     *
+     * @return
+     */
     
     public String getcurrentFloor(){
         
@@ -534,12 +615,21 @@ public class Map {
         
     }
     
+    /**
+     *
+     * @param poi
+     */
     public void addPOIToMap(POI poi) {
         
         addMarker(poi.getX(),poi.getY(), currentBuilding.getBuildingName(), poi.getfloor(), poi, false);
         
     }
 
+    /**
+     *
+     * @param poi
+     * @param buildingName
+     */
     public void addPoIToMapLevel( POI poi, String buildingName ) {
         System.out.println("comparing to: " + buildingName + " and " + currentBuilding.getBuildingName());
         System.out.println("comparing to: " + poi.getfloor() + " and " + currentFloor);
@@ -595,12 +685,19 @@ public class Map {
         }
     }
     
+    /**
+     *
+     */
     public void addAllPois(){
         for (String cat : CATEGORIES){
             addPOIsToMap(currentBuilding.getLayer(cat).getPOIs());
         }
     }
     
+    /**
+     *
+     * @param pois
+     */
     public void addPOIsToMap(POI[] pois) {
         System.out.println("AHHHH");
         for (int i = 0; i < pois.length; i++) {
@@ -621,6 +718,10 @@ public class Map {
         }
     }
         
+    /**
+     *
+     * @param pois
+     */
     public void removePOIsFromMap(POI[] pois) {
         System.out.println("AHHHH: The Squeekqual");
         for (int i = 0; i < pois.length; i++) {
@@ -638,11 +739,25 @@ public class Map {
         
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     */
     public void addPOI(int x, int y) {
         
       
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param building
+     * @param level
+     * @param poi
+     * @param disappear
+     */
     public void addMarker(int x, int y, String building, String level, POI poi, boolean disappear) {
        System.out.print("TESTINGHEH");
         
@@ -732,6 +847,13 @@ public class Map {
 
     }
     
+    /**
+     *
+     * @param x
+     * @param y
+     * @param building
+     * @param level
+     */
     public void addMarker(int x, int y, String building, String level) {
        System.out.print("TESTINGHEH");
        
@@ -803,7 +925,13 @@ public class Map {
 
     }
     
-    
+    /**
+     *
+     * @param x
+     * @param y
+     * @param building
+     * @param level
+     */
     public void selectMarker(int x, int y, String building, String level){
         for (int i = 0; i < 2; i++){
             JLayeredPane pane = getLayeredPane(building, level);
@@ -859,7 +987,13 @@ public class Map {
         }
     }
     
-    
+    /**
+     *
+     * @param x
+     * @param y
+     * @param building
+     * @param level
+     */
     public void removeMarker(int x, int y, String building, String level) {
         
        JLayeredPane pane = getLayeredPane(building, level);
@@ -880,6 +1014,12 @@ public class Map {
 
     }
     
+    /**
+     *
+     * @param building
+     * @param level
+     * @return
+     */
     public JLayeredPane getLayeredPane(String building, String level) {
         
         level = level.replaceAll("\\s+","").toLowerCase();
@@ -897,6 +1037,12 @@ public class Map {
         
     }
 
+    /**
+     *
+     * @param building
+     * @param level
+     * @param pane
+     */
     public void addLayeredPane(String building, String level, JLayeredPane pane) {
         System.out.println("ADDED A LAYERED PANE");
         level = level.replaceAll("\\s+","").toLowerCase();
@@ -913,10 +1059,18 @@ public class Map {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public Building[] getBuildings() {
         return this.buildings;
     }
     
+    /**
+     *
+     * @return
+     */
     public JCheckBox[] getCheckBoxs() {
         
         JCheckBox[] boxs = {accCheckBox, classCheckBox, favCheckBox, labCheckBox, resCheckBox, userCheckBox, washCheckBox};
@@ -926,6 +1080,12 @@ public class Map {
     }
     
     //Utilizes Open Weather API to find current weather
+
+    /**
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void getWeather() throws IOException, InterruptedException{
         
         //https request code from https://github.com/mjg123/java-http-clients/blob/master/src/main/java/com/twilio/JavaHttpClientDemo.java
@@ -956,15 +1116,26 @@ public class Map {
     }
     
     //getters
+
+    /**
+     *
+     * @return
+     */
     public String getIcon(){
         return this.icon;
     }
     
+    /**
+     *
+     * @return
+     */
     public float getTemp(){
         return this.temp;
     }
 
-    
+    /**
+     *
+     */
     public void createMenu(){
         
         //make list :)
@@ -1005,6 +1176,10 @@ public class Map {
         
     }
     
+    /**
+     *
+     * @param category
+     */
     public void addNames(String category){
         
         POI pois[] = currentBuilding.getLayer(category).getPOIs();
@@ -1022,6 +1197,9 @@ public class Map {
         
     }
     
+    /**
+     *
+     */
     public void addFaves(){
         for (int i=0; i<buildings.length; i++){
             Layer[] lay = buildings[i].getLayers();
@@ -1039,11 +1217,19 @@ public class Map {
         }
         
     }
+
+    /**
+     *
+     * @return
+     */
     public JPanel getMenuPanel(){
         return scrollPanel;
         
     }
     
+    /**
+     *
+     */
     public void updateMenu(){
         names.clear();
         addAllPois();
@@ -1067,6 +1253,9 @@ public class Map {
         scrollPanel.repaint();
     }
     
+    /**
+     *
+     */
     public void updateJustMenu(){
         names.clear();
         
@@ -1089,6 +1278,10 @@ public class Map {
         scrollPanel.repaint();
     }
     
+    /**
+     *
+     * @return
+     */
     public HashMap getPOIHashMap() {
         return this.map;
     }

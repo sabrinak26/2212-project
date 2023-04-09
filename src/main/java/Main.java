@@ -14,9 +14,17 @@ import java.util.logging.Logger;
 import java.net.URL;
 import javax.swing.JFrame;
 
+/**
+ *
+ * @author ben
+ */
 public class Main extends JFrame {
 
     // Frame is main window that the application uses
+
+    /**
+     *
+     */
 
     public static Main frame;
 
@@ -895,6 +903,11 @@ public class Main extends JFrame {
     }
 
     // Main method
+
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         // Create the start screen
@@ -951,6 +964,12 @@ public class Main extends JFrame {
 
     }
 
+    /**
+     *
+     * @param poiTitle
+     * @param poiRoom
+     * @param poiDes
+     */
     public void setPoiInfo(String poiTitle, String poiRoom, String poiDes) {
 
         this.poiTitle.setText(poiTitle);
