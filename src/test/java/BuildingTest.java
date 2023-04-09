@@ -171,5 +171,20 @@ public class BuildingTest {
         Layer result = instance.getLayer("Classroom");
         assertEquals(layers, result);
     }
+
+    /**
+     * Test of getLayers method, of class Building.
+     */
+    @Test
+    public void testGetLayers() {
+        System.out.println("getLayers");
+        Building instance = new Building();
+        Layer[] expResult = null;
+        Layer[] result = instance.getLayers();
+        assertArrayEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
     
 }
+
