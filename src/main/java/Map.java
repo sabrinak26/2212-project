@@ -37,6 +37,7 @@ import java.awt.event.*;
 
 
 public class Map {
+    public final String[] CATEGORIES = {"Accessibility", "Classrooms", "Favourites","Labs","Restaurants", "User Defined POIs", "Washrooms"};
     private JPanel scrollPanel;
     private JPanel panel;
     private JTabbedPane tabs = new JTabbedPane();
@@ -596,6 +597,12 @@ public class Map {
         }
     }
     
+    public void addAllPois(){
+        for (String cat : CATEGORIES){
+            addPOIsToMap(currentBuilding.getLayer(cat).getPOIs());
+        }
+    }
+    
     public void addPOIsToMap(POI[] pois) {
         System.out.println("AHHHH");
         for (int i = 0; i < pois.length; i++) {
@@ -976,6 +983,9 @@ public class Map {
     }
     
     public void updateMenu(){
+        
+        addAllPois();
+        
         if (scrollPanel == null){
             createMenu();
         }

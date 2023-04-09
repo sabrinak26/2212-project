@@ -462,14 +462,7 @@ public class Main extends JFrame {
         
         generateCheckboxActionListeners();
         
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
-        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-    
+        map.addAllPois();
         
         frame.addWindowListener(new WindowAdapter() {
             @Override
