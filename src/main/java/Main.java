@@ -14,9 +14,17 @@ import java.util.logging.Logger;
 import java.net.URL;
 import javax.swing.JFrame;
 
+/**
+ *
+ * @author ben
+ */
 public class Main extends JFrame {
 
     // Frame is main window that the application uses
+
+    /**
+     *
+     */
 
     public static Main frame;
 
@@ -55,7 +63,7 @@ public class Main extends JFrame {
     private static JLabel poiTitle;
     private static JLabel poiRoom;
     private static JLabel poiDes;
-
+    
     // POI HashMap
     private static HashMap POIHashMap;
     private static HashMap BuildingPOIHashMap;
@@ -178,7 +186,7 @@ public class Main extends JFrame {
 
         searchPOIDropDown = new JComboBox(poiList);
         searchPOIDropDown.setBounds(730, 120, 250, 20);
-        AutoComplete.enable(searchPOIDropDown);
+        AutoComplete.enable(searchPOIDropDown); 
 
         findPOIOnMapButton = new JButton("find poi");
         findPOIOnMapButton.setBounds(730, 200, 100, 20);
@@ -257,17 +265,17 @@ public class Main extends JFrame {
 
         });
     }
-
+    
     private static void buttonActionListener(JFrame frame, JButton enterCredsButton) {
         enterCredsButton.addActionListener(e -> {
             // System.out.println("go to admin page");
             saved = false;
+            
 
 
-
-
+            
                 openUserFrame();
-
+           
 
         });
     }
@@ -290,7 +298,7 @@ public class Main extends JFrame {
 
         // Creates frame
         frame = new Main();
-
+        
         saved = true;
 
         // Info about frame
@@ -330,7 +338,7 @@ public class Main extends JFrame {
                 }
             }
         }
-
+        
         map.addFaves();
 
         // sets weather parameters/
@@ -364,7 +372,7 @@ public class Main extends JFrame {
 
         userPOIButton.setBounds(550, 0, 150, 25);
         frame.add(userPOIButton);
-
+        
         buttonActionListener(frame, userPOIButton);
 
         setPlaceholder(userNameTextField, "Username", false);
@@ -423,39 +431,39 @@ public class Main extends JFrame {
         JLayeredPane layerLayeredPane = new JLayeredPane();
         layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth()/4, layersImage.getIconHeight());
         layerLayeredPane.add(layersLabel, JLayeredPane.DEFAULT_LAYER);
-
+        
         Font font = new Font("Arial", Font.PLAIN, 10);
-
+        
         JLabel accLabel = new JLabel("Accessibility:");
         accLabel.setFont(font);
         layerLayeredPane.add(accLabel);
         accLabel.setBounds(5, 0, 75, 25);
-
+        
         JLabel classLabel = new JLabel("Classrooms:");
         classLabel.setFont(font);
         layerLayeredPane.add(classLabel);
         classLabel.setBounds(5, 55, 75, 25);
-
+        
         JLabel favLabel = new JLabel("Favourites:");
         favLabel.setFont(font);
         layerLayeredPane.add(favLabel);
         favLabel.setBounds(7, 110, 75, 25);
-
+        
         JLabel labLabel = new JLabel("Labs:");
         labLabel.setFont(font);
         layerLayeredPane.add(labLabel);
         labLabel.setBounds(20, 165, 75, 25);
-
+        
         JLabel resLabel = new JLabel("Restaurants:");
         resLabel.setFont(font);
         layerLayeredPane.add(resLabel);
         resLabel.setBounds(5, 220, 75, 25);
-
+        
         JLabel userLabel = new JLabel("User defined:");
         userLabel.setFont(font);
         layerLayeredPane.add(userLabel);
         userLabel.setBounds(3, 275, 75, 25);
-
+        
         JLabel washLabel = new JLabel("Washrooms:");
         washLabel.setFont(font);
         layerLayeredPane.add(washLabel);
@@ -464,9 +472,9 @@ public class Main extends JFrame {
         JPanel layersPanel = new JPanel();
         layersPanel.setLayout(null); // set the layout to null to use setBounds
         layersPanel.setBounds(720, 260, layersImage.getIconWidth()/4, layersImage.getIconHeight());
-
-
-
+        
+        
+        
         for (int i = 0; i < map.getCheckBoxs().length; i++) {
             map.getCheckBoxs()[i].setSelected(true);
             map.getCheckBoxs()[i].setBounds(18, 25+(55*i), 25, 25);
@@ -517,19 +525,19 @@ public class Main extends JFrame {
         JLabel favLab = new JLabel("Favourite");
         favLab.setBounds(10,30,150,30);
         poiLayeredPane.add(favLab, JLayeredPane.MODAL_LAYER);
-
+        
         JButton favourite = new JButton();
         favourite.setBounds(75,30,25,25);
         favourite.setText("+");
         favourite.setBorder(BorderFactory.createEmptyBorder());
         favourite.setFocusable(false);
         favourite.setVisible(false);
-
+        
         poiLayeredPane.add(favourite, JLayeredPane.MODAL_LAYER);
-
-        poiInfo.add(poiLayeredPane);
+         
+        poiInfo.add(poiLayeredPane);        
         poiRoom.addPropertyChangeListener("text", e -> {
-
+            
             if (!poiTitle.getText().equals("")){
                 favourite.setVisible(true);
                 POI poi = ((POI) RoomNumPOIHashMap.get(poiRoom.getText()));
@@ -541,7 +549,7 @@ public class Main extends JFrame {
                 }
             } else favourite.setVisible(false);
         });
-
+        
         //for some reason needs to be RoomNum..
         favourite.addActionListener(e -> {
             POI poi = (POI) RoomNumPOIHashMap.get(poiRoom.getText());
@@ -554,25 +562,25 @@ public class Main extends JFrame {
                 poi.setFavourite(false);
                 favourite.setText("+");
             }
-
+                    
             map.updateMenu();
         });
-
-
-
-
+        
+        
+        
+        
         frame.add(poiInfo);
         frame.add(map.getMenuPanel());
-
+        
         frame.setVisible(true);
-
-
+        
+        
         map.updateMenu();
-
+        
         generateCheckboxActionListeners();
-
+        
         map.addAllPois();
-
+        
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -643,10 +651,10 @@ public class Main extends JFrame {
         roomNumTextField.setBounds(220, 630, 150, 25);
         //categoryTextField.setBounds(420, 600, 150, 25);
         submitPOIButton.setBounds(420, 630, 150, 25);
-
+        
         typeTextField.setText("userdefined");
         categoryTextField.setText("User defined POIs");
-
+        
         frame.add(poiNameField);
         //frame.add(typeTextField);
         frame.add(descTextField);
@@ -751,7 +759,7 @@ public class Main extends JFrame {
             }
         });
     }
-
+    
     private static void openAdminFrame() {
         System.out.println("inside admin frame");
 
@@ -895,19 +903,14 @@ public class Main extends JFrame {
     }
 
     // Main method
+
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         // Create the start screen
-
-        JFrame startFrame = new JFrame();
-        startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        startFrame.setLayout(null);
-        startFrame.setSize(1000, 700);
-        startFrame.setTitle("Group 16 - UWO GIS - Start Page");
-        startFrame.setResizable(false);
-        startFrame.setLocationRelativeTo(null);
-        startFrame.getContentPane().setBackground(new Color(49, 39, 131));
-        startFrame.setVisible(true);
 
         // Creates and adds Help and About buttons
 
@@ -956,40 +959,17 @@ public class Main extends JFrame {
             }
         });
 
-        loginActionListener(startFrame, enterCredsButton);
+        openMainFrame();
 
-        // Add a start button to the start screen
-
-        JButton startButton = new JButton("Start");
-        startButton.setBounds(800, 550, 150, 75);
-        logoutActionListener(startFrame, startButton);
-
-        startFrame.add(startButton);
-        startFrame.add(aboutButton);
-        startFrame.add(helpButton);
-
-        startFrame.add(userNameTextField);
-        startFrame.add(passwordTextField);
-        startFrame.add(enterCredsButton);
-
-        startButton.setVisible(true);
-        aboutButton.setVisible(true);
-        helpButton.setVisible(true);
-
-        userNameTextField.setVisible(true);
-        passwordTextField.setVisible(true);
-        enterCredsButton.setVisible(true);
-        startFrame.setVisible(true);
-
-        userNameTextField.revalidate();
-        userNameTextField.repaint();
-        passwordTextField.revalidate();
-        passwordTextField.repaint();
-        startFrame.revalidate();
-        startFrame.repaint();
 
     }
 
+    /**
+     *
+     * @param poiTitle
+     * @param poiRoom
+     * @param poiDes
+     */
     public void setPoiInfo(String poiTitle, String poiRoom, String poiDes) {
 
         this.poiTitle.setText(poiTitle);

@@ -1,11 +1,10 @@
-/**
- *
- * @author ben
- */;
- 
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+/**
+ *
+ * @author ben
+ */
 public class Layer {
     
     private String category;
@@ -19,9 +18,11 @@ public class Layer {
     private int numPois;
     private int currKey = 0;
     boolean isSelected = false;
-    
-    // Create layer, might not need to construct more layers cause they are already all there
-    
+        
+    /**
+     *
+     * @param category
+     */
     public Layer(String category){
         
         this.category = category;
@@ -30,6 +31,10 @@ public class Layer {
     }
     
     // Add POI with no metadata to Hashtable using numPois as the key
+
+    /**
+     *
+     */
     
     public void addPOI() {
         
@@ -47,6 +52,18 @@ public class Layer {
     }
     
     // Add POI with metadata to Hashtable using numPois as the key
+
+    /**
+     *
+     * @param poiName
+     * @param floor
+     * @param poiType
+     * @param poiCategory
+     * @param poiRoomNumber
+     * @param poiDescription
+     * @param poiX
+     * @param poiY
+     */
     
     public void addPOI(String poiName, String floor, String poiType, String poiCategory, String poiRoomNumber, String poiDescription, int poiX, int poiY) {
     
@@ -64,6 +81,11 @@ public class Layer {
     }
     
     // If Hashtable and key exists then it removes that POI from the Hashtable
+
+    /**
+     *
+     * @param key
+     */
     
     public void removePOI(int key) {
         
@@ -75,12 +97,20 @@ public class Layer {
         }
     }
     
+    /**
+     *
+     * @return
+     */
     public String getCategory() {
         
         return category;
         
     }
     
+    /**
+     *
+     * @return
+     */
     public POI[] getPOIs() {
         
         if (pois == null) {
@@ -101,6 +131,10 @@ public class Layer {
         return poiArray;
     }
 
+    /**
+     *
+     * @return
+     */
     public String[] getPOINames() {
         if (pois == null) {
 
@@ -120,6 +154,10 @@ public class Layer {
         return poiNameArray;
     }
 
+    /**
+     *
+     * @return
+     */
     public String[] getPOIInformation() {
         if (pois == null) {
 
@@ -141,6 +179,10 @@ public class Layer {
         return poiInfoArray;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean getIsSelected() {
         
         
@@ -149,6 +191,10 @@ public class Layer {
         
     }
     
+    /**
+     *
+     * @param isSelected
+     */
     public void setIsSelected(boolean isSelected) {
         
         this.isSelected = isSelected;
