@@ -29,12 +29,12 @@ After building the software, you can run it using the following steps:
 
  1. Navigate to  Main.java from *src > main > java > main.java* in your IDE.
  2. Select 'Run' and 'Run Project' from the top of the page to run the program.
- 3. If you have successfully run the program, the application start page should appear.
+ 3. If you have successfully run the program, the application main page should appear.
 
  Note: Before running the software, make sure that all required libraries and third-party tools are installed on your system. If any errors occur during runtime, check if all the necessary libraries and tools are present and properly configured. Also, make sure that your system meets the minimum requirements for running the software.
 
 ## **User Guide:**
-When you run this program you will be brought to our starting page. Once you click the ‘Start’ button you will be able to navigate and modify the available building maps. The ‘About’ button provides additional information on the application and the 'Help' button provides information on how to use the program. The application contains the following functionalities:
+When you run this program you will be brought to our main page where you will be able to navigate and modify the available building maps. The ‘About’ button provides additional information on the application and the 'Help' button provides information on how to use the program. The application contains the following functionalities:
 
 ### **Navigating Maps:**
 Maps of Middlesex College (MC), Natural Science Centre (NSC), and Alumni Hall (AH) will be provided. You can select the map you are interested in by clicking on the tab with the name of the building at the top of the application. For large maps, you can use the scroll bar to navigate the map and better view the maps. Buildings have several floors that can be accessed using the drop-down menu at the bottom of each map to select available floors for each building.
@@ -65,7 +65,7 @@ In the top right-hand corner of the main page, the current weather in London is 
 ## **Editor Mode:**
  This software contains an editor mode to edit the metadata for the built-in points of interest (POIs) through a graphical interface. 
 
-To access the editor mode, you must first log in by entering the following credentials into the login function located at the bottom of the start page or the top of the main page:
+To access the editor mode, you must first log in by entering the following credentials into the login function located at the top of the main page:
 
 - **Username:** Admin
 
