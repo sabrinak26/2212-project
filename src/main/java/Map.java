@@ -67,9 +67,10 @@ public class Map {
     private JButton submitPOIButton;
 
     private boolean editMode = false;
-    private JPopupMenu popup = new JPopupMenu();
     DefaultListModel<String> names = new DefaultListModel<>();
     HashMap<String, POI> map = new HashMap<String, POI>();
+    HashMap<POI, Building> faveMap = new HashMap<POI, Building>();
+
 
             
     JLabel poiName;
@@ -185,9 +186,6 @@ public class Map {
                     removePOIsFromMap(getCurrentBuilding().getLayer("Restaurants").getPOIs());
                     removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                     removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
-
-                    names.removeAllElements();
-                    popup.removeAll();
                 }
                 
                 System.out.println(level);
@@ -270,8 +268,6 @@ public class Map {
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Restaurants").getPOIs());
                                 removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                                names.removeAllElements();
-                                popup.removeAll();
                         
                             }
                                 
@@ -988,7 +984,7 @@ public class Map {
                 
                     System.out.println(poi.getName()+" IS THIS POI?");
 
-                    selectMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
+                    selectMarker(poi.getX(), poi.getY(), faveMap.get(poi).getBuildingName(), poi.getfloor());
                 }
             }
         });
@@ -1037,7 +1033,9 @@ public class Map {
                     if (pois[k].isFavourite()){
                         names.add(0,"<3 "+pois[k].getName());
                     }
+                    faveMap.put(pois[k], buildings[i]);
                     map.put("<3 " +pois[k].getName(), pois[k]);
+                    
                 }
             }
         }
