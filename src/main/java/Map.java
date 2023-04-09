@@ -833,6 +833,7 @@ public class Map {
 
             }
 
+            //getTabs().setSelectedIndex(1);
 
 
             for (Component component : components) {
