@@ -71,8 +71,6 @@ public class Map {
     HashMap<String, POI> map = new HashMap<String, POI>();
     HashMap<POI, Building> faveMap = new HashMap<POI, Building>();
 
-
-            
     JLabel poiName;
     JLabel poiRoom;
     JLabel poiDes;
