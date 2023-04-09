@@ -899,16 +899,6 @@ public class Main extends JFrame {
 
         // Create the start screen
 
-        JFrame startFrame = new JFrame();
-        startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        startFrame.setLayout(null);
-        startFrame.setSize(1000, 700);
-        startFrame.setTitle("Group 16 - UWO GIS - Start Page");
-        startFrame.setResizable(false);
-        startFrame.setLocationRelativeTo(null);
-        startFrame.getContentPane().setBackground(new Color(49, 39, 131));
-        startFrame.setVisible(true);
-
         // Creates and adds Help and About buttons
 
         helpButton = new JButton();
@@ -956,37 +946,8 @@ public class Main extends JFrame {
             }
         });
 
-        loginActionListener(startFrame, enterCredsButton);
+        openMainFrame();
 
-        // Add a start button to the start screen
-
-        JButton startButton = new JButton("Start");
-        startButton.setBounds(800, 550, 150, 75);
-        logoutActionListener(startFrame, startButton);
-
-        startFrame.add(startButton);
-        startFrame.add(aboutButton);
-        startFrame.add(helpButton);
-
-        startFrame.add(userNameTextField);
-        startFrame.add(passwordTextField);
-        startFrame.add(enterCredsButton);
-
-        startButton.setVisible(true);
-        aboutButton.setVisible(true);
-        helpButton.setVisible(true);
-
-        userNameTextField.setVisible(true);
-        passwordTextField.setVisible(true);
-        enterCredsButton.setVisible(true);
-        startFrame.setVisible(true);
-
-        userNameTextField.revalidate();
-        userNameTextField.repaint();
-        passwordTextField.revalidate();
-        passwordTextField.repaint();
-        startFrame.revalidate();
-        startFrame.repaint();
 
     }
 
