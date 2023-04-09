@@ -297,28 +297,31 @@ public class Map {
                     System.out.println("THIS IS 2");
                     JLayeredPane layeredPane = generateLayeredPane(getBuilding().getLevels()[0].replaceAll("\\s+","").toLowerCase());
                     
-
+                    System.out.println("THIS IS 2.2");
                     JScrollPane mapPanel = new JScrollPane(layeredPane);
 
-
+                    
 
                     if ( addNewPOIButton != null ) {
-
+                        System.out.println("THIS IS 2.3");
                         addNewPOIButton.addActionListener(f ->
                         {
                             editMode = !editMode;
 
                             if (editMode) {
+                                System.out.println("THIS IS 2.4");    
                                 addNewPOIButton.setText("Select where you want to add your POI and click");
                                 layeredPane.addMouseListener(new MouseListener() {
                                     @Override
                                     public void mouseClicked(MouseEvent e) {
+                                        System.out.println("THIS IS 2.5");
                                         int x = e.getX()-9;
                                         int y = e.getY()-28;
 
                                         addMarker(x, y, currentBuilding.getBuildingName(),  currentFloor);
 
                                         System.out.println(x + "," + y);//these co-ords are relative to the component
+                                        System.out.println("Why am I here now");
                                         addNewPOIButton.setVisible(false);
                                         poiNameField.setVisible(true);
                                         typeTextField.setVisible(true);
@@ -971,14 +974,20 @@ public class Map {
         
         //make list :)
         JList JPois = new JList(names);
-        
+        JPois.clearSelection();
         JPois.addListSelectionListener(new ListSelectionListener() {
             
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 POI poi = map.get(JPois.getSelectedValue());
                 System.out.println("Value Change");
-                selectMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
+                
+                System.out.println(poi+" IS THIS POI?");
+                
+                if (poi != null){
+                
+                    selectMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
+                }
             }
         });
             
@@ -1037,16 +1046,17 @@ public class Map {
     }
     
     public void updateMenu(){
-        
+        names.clear();
         addAllPois();
         
         if (scrollPanel == null){
+            System.out.println("ScrollPanel is NULL1");
             createMenu();
         }
         else addFaves();
         
         
-        names.clear();
+        
         
         addNames("Accessibility");
         addNames("Classrooms");
@@ -1061,15 +1071,16 @@ public class Map {
     }
     
     public void updateJustMenu(){
-
+        names.clear();
         
         if (scrollPanel == null){
+            System.out.println("ScrollPanel is NULL2");
             createMenu();
         }
         else addFaves();
         
         
-        names.clear();
+        
         
         addNames("Accessibility");
         addNames("Classrooms");
