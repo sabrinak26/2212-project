@@ -63,7 +63,8 @@ public class Map {
     private JTextField typeTextField;
     private JTextField categoryTextField;
     private JButton submitPOIButton;
-    
+
+    private boolean editMode = false;
     private JPopupMenu popup = new JPopupMenu();
     DefaultListModel<String> names = new DefaultListModel<>();
     HashMap<String, POI> map = new HashMap<String, POI>();
@@ -299,112 +300,92 @@ public class Map {
 
 
                     if ( addNewPOIButton != null ) {
+
                         addNewPOIButton.addActionListener(f ->
                         {
-                            addNewPOIButton.setText("Select where you want to add your POI and click");
-                            layeredPane.addMouseListener(new MouseListener() {
-                                @Override
-                                public void mouseClicked(MouseEvent e) {
-                                    int x = e.getX()-9;
-                                    int y = e.getY()-28;
+                            editMode = !editMode;
 
-                                    addMarker(x, y, currentBuilding.getBuildingName(),  currentFloor);
+                            if (editMode) {
+                                addNewPOIButton.setText("Select where you want to add your POI and click");
+                                layeredPane.addMouseListener(new MouseListener() {
+                                    @Override
+                                    public void mouseClicked(MouseEvent e) {
+                                        int x = e.getX()-9;
+                                        int y = e.getY()-28;
 
-                                    System.out.println(x + "," + y);//these co-ords are relative to the component
-                                    addNewPOIButton.setVisible(false);
+                                        addMarker(x, y, currentBuilding.getBuildingName(),  currentFloor);
 
-                                    poiNameField.setVisible(true);
-                                    poiNameField.addFocusListener(new FocusListener() {
-                                        @Override
-                                        public void focusGained(FocusEvent e) {
-                                            if (poiNameField.getText().equals("Enter POI Name")) {
-                                                poiNameField.setText("");
-                                                poiNameField.setForeground(Color.BLACK);
+                                        System.out.println(x + "," + y);//these co-ords are relative to the component
+                                        addNewPOIButton.setVisible(false);
+                                        poiNameField.setVisible(true);
+                                        typeTextField.setVisible(true);
+                                        descTextField.setVisible(true);
+                                        roomNumTextField.setVisible(true);
+                                        submitPOIButton.setVisible(true);
+                                        categoryTextField.setVisible(true);
+
+                                        submitPOIButton.addActionListener( g -> {
+                                            submitPOIButton.setVisible(false);
+                                            String name = poiNameField.getText();
+                                            String type = typeTextField.getText();
+                                            String desc = descTextField.getText();
+                                            String roomNumStr = roomNumTextField.getText();
+
+                                            if ( !illegalPOIValues.containsKey(name) && !illegalPOIValues.containsKey(desc) && !illegalPOIValues.containsKey(roomNumStr) ) {
+                                                illegalPOIValues.put(name, name);
+                                                illegalPOIValues.put(desc, desc);
+                                                illegalPOIValues.put(roomNumStr, roomNumStr);
+
+                                                String roomNum = roomNumTextField.getText().replaceAll(" ", "").toUpperCase();
+                                                String category = categoryTextField.getText();
+                                                System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
+                                                System.out.println("this one");
+                                                currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
+
+
+
+                                            } else {
+                                                System.out.println("error, double name, desc, or room number ");
                                             }
-                                        }
-                                        @Override
-                                        public void focusLost(FocusEvent e) {
-                                            if (poiNameField.getText().isEmpty()) {
-                                                poiNameField.setForeground(Color.GRAY);
-                                                poiNameField.setText("Enter POI Name");
-                                            }
-                                        }
-                                    });
 
+                                            poiNameField.setVisible(false);
+                                            typeTextField.setVisible(false);
+                                            descTextField.setVisible(false);
+                                            roomNumTextField.setVisible(false);
+                                            categoryTextField.setVisible(false);
 
+                                            addNewPOIButton.setVisible(true);
 
-                                    typeTextField.setVisible(true);
+                                        } );
 
+                                    }
 
-                                    descTextField.setVisible(true);
+                                    @Override
+                                    public void mousePressed(MouseEvent e) {
 
+                                    }
 
-                                    roomNumTextField.setVisible(true);
+                                    @Override
+                                    public void mouseReleased(MouseEvent e) {
 
+                                    }
 
-                                    categoryTextField.setVisible(true);
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
 
+                                    }
 
-                                    submitPOIButton.setVisible(true);
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
 
-                                    submitPOIButton.addActionListener( g -> {
-                                        submitPOIButton.setVisible(false);
-                                        String name = poiNameField.getText();
-                                        String type = typeTextField.getText();
-                                        String desc = descTextField.getText();
-                                        String roomNumStr = roomNumTextField.getText();
-
-                                        if ( !illegalPOIValues.containsKey(name) && !illegalPOIValues.containsKey(desc) && !illegalPOIValues.containsKey(roomNumStr) ) {
-                                            illegalPOIValues.put(name, name);
-                                            illegalPOIValues.put(desc, desc);
-                                            illegalPOIValues.put(roomNumStr, roomNumStr);
-
-
-                                            String roomNum = roomNumTextField.getText().replaceAll(" ", "").toUpperCase();
-                                            String category = categoryTextField.getText();
-                                            System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
-                                            System.out.println("this one");
-                                            currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
-
-
-
-                                        } else {
-                                            System.out.println("error, double name, desc, or room number ");
-                                        }
-
-                                        poiNameField.setVisible(false);
-                                        typeTextField.setVisible(false);
-                                        descTextField.setVisible(false);
-                                        roomNumTextField.setVisible(false);
-                                        categoryTextField.setVisible(false);
-
-                                        addNewPOIButton.setVisible(true);
-
-                                    } );
-
+                                    }
+                                });
+                            } else {
+                                addNewPOIButton.setText("Add New POI");
+                                for (int j = 0; j < layeredPane.getMouseListeners().length; j++) {
+                                    layeredPane.removeMouseListener(layeredPane.getMouseListeners()[j]);
                                 }
-
-                                @Override
-                                public void mousePressed(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseReleased(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseEntered(MouseEvent e) {
-
-                                }
-
-                                @Override
-                                public void mouseExited(MouseEvent e) {
-
-                                }
-                            });
-
+                            }
 
                         });
                     }
@@ -433,9 +414,9 @@ public class Map {
             cb.addActionListener(cbActionListener);
             panel.add(cb);
             cb.setMaximumSize(cb.getPreferredSize()); 
-            
-            
-            
+
+
+
         } else {
             System.out.println("./src/main/metadata/ does not exist");
         }
@@ -468,79 +449,9 @@ public class Map {
             picLabel.setBounds(0, 0, picLabel.getPreferredSize().width, picLabel.getPreferredSize().height);
  
             // Layered pane is here
-            layeredPane.addMouseListener(new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    int x = e.getX()-9;
-                    int y = e.getY()-28;
 
-                    addMarker(x, y, currentBuilding.getBuildingName(),  currentFloor);
+            //editmodee
 
-                    System.out.println(x + "," + y);//these co-ords are relative to the component
-                    addNewPOIButton.setVisible(false);
-                    poiNameField.setVisible(true);
-                    typeTextField.setVisible(true);
-                    descTextField.setVisible(true);
-                    roomNumTextField.setVisible(true);
-                    submitPOIButton.setVisible(true);
-                    categoryTextField.setVisible(true);
-
-                    submitPOIButton.addActionListener( g -> {
-                        submitPOIButton.setVisible(false);
-                        String name = poiNameField.getText();
-                        String type = typeTextField.getText();
-                        String desc = descTextField.getText();
-                        String roomNumStr = roomNumTextField.getText();
-
-                        if ( !illegalPOIValues.containsKey(name) && !illegalPOIValues.containsKey(desc) && !illegalPOIValues.containsKey(roomNumStr) ) {
-                            illegalPOIValues.put(name, name);
-                            illegalPOIValues.put(desc, desc);
-                            illegalPOIValues.put(roomNumStr, roomNumStr);
-
-                            String roomNum = roomNumTextField.getText().replaceAll(" ", "").toUpperCase();
-                            String category = categoryTextField.getText();
-                            System.out.println("name: "+poiNameField.getText() + " type: "+typeTextField.getText() +" desc: "+descTextField.getText() + " room #: "+roomNumTextField.getText() + " category: " + categoryTextField.getText());
-                            System.out.println("this one");
-                            currentBuilding.getLayer( categoryTextField.getText() ).addPOI(name, currentFloor, type, category, roomNum, desc, x, y);
-
-
-
-                        } else {
-                            System.out.println("error, double name, desc, or room number ");
-                        }
-
-                        poiNameField.setVisible(false);
-                        typeTextField.setVisible(false);
-                        descTextField.setVisible(false);
-                        roomNumTextField.setVisible(false);
-                        categoryTextField.setVisible(false);
-
-                        addNewPOIButton.setVisible(true);
-
-                    } );
-
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-
-                }
-            });
 
 
             addLayeredPane(currentBuilding.getBuildingName(), level, layeredPane);
