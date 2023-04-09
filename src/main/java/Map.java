@@ -43,6 +43,7 @@ import java.util.Set;
 
 
 public class Map {
+    private JPanel scrollPanel;
     private JPanel panel;
     private JTabbedPane tabs = new JTabbedPane();
     private String floorName;
@@ -95,9 +96,8 @@ public class Map {
         panel.setBounds(8, 25, 700, 568);
         panel.setLayout(null);
 
-        
         loadBuildingsData();
-
+        
     }
 
     ActionListener cbActionListener = new ActionListener() {
@@ -105,13 +105,13 @@ public class Map {
         public void actionPerformed(ActionEvent e) {
             int index = ((JComboBox) e.getSource()).getSelectedIndex();
             String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
-            accCheckBox.setSelected(false);
-            classCheckBox.setSelected(false);
-            favCheckBox.setSelected(false); 
-            labCheckBox.setSelected(false);       
-            resCheckBox.setSelected(false); 
-            userCheckBox.setSelected(false);
-            washCheckBox.setSelected(false);
+            accCheckBox.setSelected(true);
+            classCheckBox.setSelected(true);
+            favCheckBox.setSelected(true); 
+            labCheckBox.setSelected(true);       
+            resCheckBox.setSelected(true); 
+            userCheckBox.setSelected(true);
+            washCheckBox.setSelected(true);
             
             if (currentBuilding != null && currentFloor != null) {
                             
@@ -123,24 +123,25 @@ public class Map {
                 removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                 removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
                 
-                names.removeAllElements();
-                popup.removeAll();
-           
+                 
             }
+            
             
             System.out.println(level);
             currentFloor = level;
+            updateMenu(); //8 PROBLEM CHILD
             System.out.println("THIS IS 1");
             JLayeredPane layeredPane = generateLayeredPane(level);
             mapPanel = new JScrollPane(layeredPane);
             
-
+            
             tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
 
             mapPanel.revalidate();
             mapPanel.repaint();
             tabs.revalidate();
             tabs.repaint();
+            
         }
     };
 
@@ -168,13 +169,13 @@ public class Map {
                 int index = ((JComboBox) e.getSource()).getSelectedIndex();
                 String level = getBuilding().getLevels()[index].replaceAll("\\s+","").toLowerCase();
                 
-                accCheckBox.setSelected(false);
-                classCheckBox.setSelected(false);
-                favCheckBox.setSelected(false); 
-                labCheckBox.setSelected(false);       
-                resCheckBox.setSelected(false); 
-                userCheckBox.setSelected(false);
-                washCheckBox.setSelected(false);
+                accCheckBox.setSelected(true);
+                classCheckBox.setSelected(true);
+                favCheckBox.setSelected(true); 
+                labCheckBox.setSelected(true);       
+                resCheckBox.setSelected(true); 
+                userCheckBox.setSelected(true);
+                washCheckBox.setSelected(true);
 
                 if (currentBuilding != null && currentFloor != null) {
 
@@ -186,20 +187,23 @@ public class Map {
                     removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                     removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
 
-                    names.removeAllElements();
-                    popup.removeAll();
                 }
                 
                 System.out.println(level);
                 currentFloor = level;
+                updateMenu();
                 System.out.println("THIS IS 1");
                 JLayeredPane layeredPane = generateLayeredPane(level);
                 mapPanel = new JScrollPane(layeredPane);
 
+                
 
 
                 tabs.setComponentAt(tabs.getSelectedIndex(), mapPanel);
 
+                
+                panel.revalidate();
+                
                 mapPanel.revalidate();
                 mapPanel.repaint();
                 tabs.revalidate();
@@ -254,16 +258,16 @@ public class Map {
                         @Override
                         public void stateChanged(ChangeEvent e) {
                             int index = tabs.getSelectedIndex();
-                            accCheckBox.setSelected(false);
-                            classCheckBox.setSelected(false);
-                            favCheckBox.setSelected(false); 
-                            labCheckBox.setSelected(false);       
-                            resCheckBox.setSelected(false); 
-                            userCheckBox.setSelected(false);
-                            washCheckBox.setSelected(false);
-                            
+                            accCheckBox.setSelected(true);
+                            classCheckBox.setSelected(true);
+                            favCheckBox.setSelected(true); 
+                            labCheckBox.setSelected(true);       
+                            resCheckBox.setSelected(true); 
+                            userCheckBox.setSelected(true);
+                            washCheckBox.setSelected(true);
+
                             if (currentBuilding != null && currentFloor != null) {
-                            
+
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Accessibility").getPOIs());
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Classrooms").getPOIs());
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Favourites").getPOIs());
@@ -271,13 +275,13 @@ public class Map {
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Restaurants").getPOIs());
                                 removePOIsFromMap(getCurrentBuilding().getLayer("User defined POIs").getPOIs());
                                 removePOIsFromMap(getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                                names.removeAllElements();
-                                popup.removeAll();
-                        
+                                
                             }
                                 
                             building = buildings[index];
                             currentBuilding = building;
+                            updateMenu(); 
+                            
                             System.out.println(building.getBuildingName());
                             if (cb != null) panel.remove(cb);
                             cb = new JComboBox<String>(building.getLevels());
@@ -285,6 +289,8 @@ public class Map {
                             panel.add(cb);
                             cb.addActionListener(cbActionListener);
 
+                            
+                            
                             panel.revalidate();
                             panel.repaint();
 
@@ -410,11 +416,14 @@ public class Map {
             currentFloor = "Level 2";
             
             setCurrentBuilding(getBuilding("NaturalSciences"));
-
+            updateMenu();
+            
             building = buildings[tabs.getSelectedIndex()];
 
             // Makes the comboBox and gives it the correct levels
             
+            
+
             if (cb != null) panel.remove(cb);
             cb = new JComboBox<String>(building.getLevels());
             cb.setBounds(315, 541, 95, 25);
@@ -423,7 +432,8 @@ public class Map {
             panel.add(cb);
             cb.setMaximumSize(cb.getPreferredSize()); 
             
-            
+            panel.revalidate();
+            panel.repaint();
             
         } else {
             System.out.println("./src/main/metadata/ does not exist");
@@ -579,6 +589,7 @@ public class Map {
     public void setcurrentFloor(String currentFloor){
         
         this.currentFloor = currentFloor;
+        updateMenu(); 
         
     }
     
@@ -816,6 +827,7 @@ public class Map {
     public void removeMarker(int x, int y, String building, String level) {
         
        JLayeredPane pane = getLayeredPane(building, level);
+       if (pane == null) return;
         Component[] components = pane.getComponents();
         for (Component component : components) {
             if (component instanceof JLabel) {
@@ -910,43 +922,7 @@ public class Map {
         return this.temp;
     }
 
-    //generates a popup for Main to use
-    //code modified from https://stackoverflow.com/questions/19064358/how-to-create-a-popup-jpanel-in-a-jframe
-    public JScrollPane updateMenu(JScrollPane menu, String category){
-        
-        POI pois[] = null;
-        if (!category.equals("")){        
-            //finds selected layer and poi's within it
-            Layer layer = currentBuilding.getLayer(category);
-            pois = layer.getPOIs();
-        }
-        
-        else { //this was incredibly stupid on my part, just use the map 
-            System.out.println("what");
-            ArrayList<POI> poisLst = new ArrayList();
-            Collections.addAll(poisLst,currentBuilding.getLayer("Accessibility").getPOIs());
-            Collections.addAll(poisLst,currentBuilding.getLayer("Classrooms").getPOIs());
-            Collections.addAll(poisLst,currentBuilding.getLayer("Favourites").getPOIs());
-            Collections.addAll(poisLst,currentBuilding.getLayer("Labs").getPOIs());
-            Collections.addAll(poisLst,currentBuilding.getLayer("Restaurants").getPOIs());
-            Collections.addAll(poisLst,currentBuilding.getLayer("User defined POIs").getPOIs());
-            Collections.addAll(poisLst,currentBuilding.getLayer("Washrooms").getPOIs());
-            pois = new POI[poisLst.size()];
-            pois = (POI[]) poisLst.toArray(pois);
-            
-            for (int i=0; i<pois.length; i++) System.out.println(pois[i].getName());
-        }
-        
-        //add all names on current floor
-       
-        
-        for (int i=0; i<pois.length; i++){
-            if (pois[i].getfloor().equals(currentFloor) || pois[i].getfloor().replaceAll("\\s+","").toLowerCase().equals(currentFloor))
-                if (!names.contains(pois[i].getName())){
-                    names.addElement(pois[i].getName());
-                    map.put(pois[i].getName(), pois[i]); //possible bug for duplicate names
-                }
-        }  
+    public void createMenu(){
         
         //make list :)
         JList JPois = new JList(names);
@@ -961,28 +937,60 @@ public class Map {
             }
         });
             
-        menu = new JScrollPane(JPois);
+        scrollPanel = new JPanel();
+        scrollPanel.setLayout(new BorderLayout());
+        scrollPanel.setBounds(800, 350, 170, 300);
         
-        menu.repaint();
-        menu.revalidate();
-        return menu;
-    
-        }
-    
-    public void removeFromPopup(String category){
-        //finds selected layer and poi's within it
-        Layer layer = currentBuilding.getLayer(category);
-        POI pois[] = layer.getPOIs();
+        JScrollPane menu = new JScrollPane(JPois);
+        menu.setLayout(new ScrollPaneLayout());
+        menu.setBounds(scrollPanel.getBounds());
         
-        //int ind;
-        for (int i=0; i<names.getSize(); i++){
-            //ind = names.indexOf(pois[i].getName());
-            names.removeElement(pois[i].getName());
-            //popup.remove(ind);
-       
-        }
+        scrollPanel.add(menu);
+        menu.setVisible(true);
+        scrollPanel.setVisible(true);
+        
+        scrollPanel.revalidate();
+        scrollPanel.repaint();
+
         
     }
-}
-
-  
+    
+    public void addNames(String category){
+        
+        POI pois[] = currentBuilding.getLayer(category).getPOIs();
+        for (int i=0; i<pois.length; i++){
+            if (pois[i].getfloor().equals(currentFloor) || pois[i].getfloor().replaceAll("\\s+","").toLowerCase().equals(currentFloor))
+                if (!names.contains(pois[i].getName())){ //should never be true, but just incase
+                    names.addElement(pois[i].getName());
+                    map.put(pois[i].getName(), pois[i]); 
+                }
+        }
+        
+        
+        
+    }
+    
+    public JPanel getMenuPanel(){
+        return scrollPanel;
+        
+    }
+    public void updateMenu(){
+        if (scrollPanel == null){
+            createMenu();
+        }
+        
+        names.clear();
+        
+        addNames("Accessibility");
+        addNames("Classrooms");
+        addNames("Favourites");
+        addNames("Labs");
+        addNames("Restaurants");
+        addNames("User defined POIs");
+        addNames("Washrooms");
+        
+        scrollPanel.revalidate();
+        scrollPanel.repaint();
+    }
+       
+} 
