@@ -53,7 +53,7 @@ public class Main extends JFrame {
     private static JLabel poiTitle;
     private static JLabel poiRoom;
     private static JLabel poiDes;
-
+    
     // POI HashMap
     private static HashMap POIHashMap;
     private static HashMap BuildingPOIHashMap;
@@ -105,15 +105,10 @@ public class Main extends JFrame {
                     JCheckBox currCheckBox = ((JCheckBox) e.getSource());
                     if (currCheckBox.isSelected()) {
                         map.addPOIsToMap(map.getCurrentBuilding().getLayer(layers[finalI]).getPOIs());
-                        JPopupMenu popup = map.makePopup(layers[finalI]);
-
-
-                        //checkbox triggered it, so place below it
-                        popup.show(map.getCheckBoxs()[finalI], 165-map.getCheckBoxs()[finalI].getX(), 75-map.getCheckBoxs()[finalI].getY());
+                        map.updateMenu();
 
                     } else {
                         map.removePOIsFromMap(map.getCurrentBuilding().getLayer(layers[finalI]).getPOIs());
-                        map.removeFromPopup(layers[finalI]);
 
                     }
                 }
@@ -181,7 +176,7 @@ public class Main extends JFrame {
 
         searchPOIDropDown = new JComboBox(poiList);
         searchPOIDropDown.setBounds(730, 120, 250, 20);
-        AutoComplete.enable(searchPOIDropDown);
+        AutoComplete.enable(searchPOIDropDown); 
 
         findPOIOnMapButton = new JButton("find poi");
         findPOIOnMapButton.setBounds(730, 200, 100, 20);
@@ -396,20 +391,21 @@ public class Main extends JFrame {
 
         ImageIcon layersImage = new ImageIcon("./src/main/images/icons/layers.png");
         JLabel layersLabel = new JLabel();
-        layersLabel.setIcon(layersImage);
-        layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        //layersLabel.setIcon(layersImage);
+        //layersLabel.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layersLabel.setBounds(0, 0, layersImage.getIconWidth()/5, layersImage.getIconHeight());
 
         JLayeredPane layerLayeredPane = new JLayeredPane();
-        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth(), layersImage.getIconHeight());
+        layerLayeredPane.setBounds(0, 0, layersImage.getIconWidth()/5, layersImage.getIconHeight());
         layerLayeredPane.add(layersLabel, JLayeredPane.DEFAULT_LAYER);
 
         JPanel layersPanel = new JPanel();
         layersPanel.setLayout(null); // set the layout to null to use setBounds
-        layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
-
-
+        layersPanel.setBounds(720, 260, layersImage.getIconWidth()/5, layersImage.getIconHeight());
+        
+        
         for (int i = 0; i < map.getCheckBoxs().length; i++) {
-            map.getCheckBoxs()[i].setSelected(false);
+            map.getCheckBoxs()[i].setSelected(true);
             map.getCheckBoxs()[i].setBounds(12, 25+(55*i), 25, 25);
             layerLayeredPane.add(map.getCheckBoxs()[i]);
         }
@@ -457,10 +453,23 @@ public class Main extends JFrame {
         poiInfo.add(poiLayeredPane);
 
         frame.add(poiInfo);
-
+        frame.add(map.getMenuPanel());
+        
         frame.setVisible(true);
-
+        
+        
+        map.updateMenu();
+        
         generateCheckboxActionListeners();
+        
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
+        map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
+    
         
         frame.addWindowListener(new WindowAdapter() {
             @Override
