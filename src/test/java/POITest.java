@@ -45,7 +45,7 @@ public class POITest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
         String expResult = "User";
         String result = instance.getType();
         assertEquals(expResult, result);
@@ -58,7 +58,7 @@ public class POITest {
     public void testSetType() {
         System.out.println("setType");
         String type = "User";
-        POI instance = new POI("POI", "2", null, "Labs", 2, "a POI", 0, 0,1);
+        POI instance = new POI("POI", "2", null, "Labs", "2", "a POI", 0, 0,1);
         instance.setType(type);
         String result = instance.getType();
         assertEquals(type, result);
@@ -70,7 +70,7 @@ public class POITest {
     @Test
     public void testGetCategory() {
         System.out.println("getCategory");
-        POI instance = new POI("POI", "2", null, "Labs", 2, "a POI", 0, 0,1);
+        POI instance = new POI("POI", "2", null, "Labs", "2", "a POI", 0, 0,1);
         String expResult = "Labs";
         String result = instance.getCategory();
         assertEquals(expResult, result);
@@ -83,7 +83,7 @@ public class POITest {
     public void testSetCategory() {
         System.out.println("setCategory");
         String category = "Labs";
-        POI instance = new POI("POI", "2", "User", null, 2, "a POI", 0, 0,1);;
+        POI instance = new POI("POI", "2", "User", null, "2", "a POI", 0, 0,1);;
         instance.setCategory(category);
         String result = instance.getCategory();
         assertEquals(category, result);
@@ -95,7 +95,7 @@ public class POITest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
         String expResult = "POI";
         String result = instance.getName();
         assertEquals(expResult, result);
@@ -108,7 +108,7 @@ public class POITest {
     public void testSetName() {
         System.out.println("setName");
         String name = "POIname";
-        POI instance = new POI(null, "2", "User", "Labs", 2, "a POI", 0, 0,1);
+        POI instance = new POI(null, "2", "User", "Labs", "2", "a POI", 0, 0,1);
         instance.setName(name);
         String result = instance.getName();
         assertEquals(name, result);
@@ -120,9 +120,9 @@ public class POITest {
     @Test
     public void testGetRoomNumber() {
         System.out.println("getRoomNumber");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
         int expResult = 2;
-        int result = instance.getRoomNumber();
+        String result = instance.getRoomNumber();
         assertEquals(expResult, result);
     }
 
@@ -132,10 +132,10 @@ public class POITest {
     @Test
     public void testSetRoomNumber() {
         System.out.println("setRoomNumber");
-        int roomNumber = 3;
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a POI", 0, 0,1);
+        String roomNumber = "3";
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
         instance.setRoomNumber(roomNumber);
-        int result = instance.getRoomNumber();
+        String result = instance.getRoomNumber();
         assertEquals(roomNumber, result);
     }
 
@@ -145,7 +145,7 @@ public class POITest {
     @Test
     public void testGetDescription() {
         System.out.println("getDescription");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 0, 0,1);
         String expResult = "a test POI";
         String result = instance.getDescription();
         assertEquals(expResult, result);
@@ -158,7 +158,7 @@ public class POITest {
     public void testSetDescription() {
         System.out.println("setDescription");
         String description = "a new description for the test POI";
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 0, 0,1);
         instance.setDescription(description);
         String result = instance.getDescription();
         assertEquals(description, result);
@@ -170,7 +170,7 @@ public class POITest {
     @Test
     public void testIsFavourite() {
         System.out.println("isFavourite");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 0, 0,1);
         boolean expResult = false;
         boolean result = instance.isFavourite();
         assertEquals(expResult, result);
@@ -183,7 +183,7 @@ public class POITest {
     public void testSetFavourite() {
         System.out.println("setFavourite");
         boolean favourite = true;
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 0, 0,1);
         instance.setFavourite(favourite);
         boolean result = instance.isFavourite();
         assertEquals(favourite, result);
@@ -195,7 +195,7 @@ public class POITest {
     @Test
     public void testGetX() {
         System.out.println("getX");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 0,1);
         int expResult = 1;
         int result = instance.getX();
         assertEquals(expResult, result);
@@ -208,7 +208,7 @@ public class POITest {
     public void testSetX() {
         System.out.println("setX");
         int x = 5;
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 0, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 0, 0,1);
         instance.setX(x);
         int result = instance.getX();
         assertEquals(x, result);
@@ -220,7 +220,7 @@ public class POITest {
     @Test
     public void testGetY() {
         System.out.println("getY");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 6,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 6,1);
         int expResult = 6;
         int result = instance.getY();
         assertEquals(expResult, result);
@@ -234,7 +234,7 @@ public class POITest {
     public void testSetY() {
         System.out.println("setY");
         int y = 7;
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 0,1);
         instance.setY(y);
         int result = instance.getY();
         assertEquals(y, result);
@@ -246,7 +246,7 @@ public class POITest {
     @Test
     public void testGetKey() {
         System.out.println("getKey");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 0,1);
         int expResult = 1;
         int result = instance.getKey();
         assertEquals(expResult, result);
@@ -259,7 +259,7 @@ public class POITest {
     public void testSetKey() {
         System.out.println("setKey");
         int key = 5;
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 0,1);
         instance.setKey(key);
         int result = instance.getKey();
         assertEquals(key, result);
@@ -271,7 +271,7 @@ public class POITest {
     @Test
     public void testGetfloor() {
         System.out.println("getfloor");
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 0,1);
         String expResult = "2";
         String result = instance.getfloor();
         assertEquals(expResult, result);
@@ -284,7 +284,7 @@ public class POITest {
     public void testSetfloor() {
         System.out.println("setfloor");
         String floor = "3";
-        POI instance = new POI("POI", "2", "User", "Labs", 2, "a test POI", 1, 0,1);
+        POI instance = new POI("POI", "2", "User", "Labs", "2", "a test POI", 1, 0,1);
         instance.setfloor(floor);
         String result = instance.getfloor();
         assertEquals(floor, result);

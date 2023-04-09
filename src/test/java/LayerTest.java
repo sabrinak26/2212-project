@@ -105,8 +105,8 @@ public class LayerTest {
         System.out.println("getPOIs");
         String category = "Labs";
         Layer instance = new Layer(category);
-        instance.addPOI("POI", "2", "User", "Labs", 2, "a POI", 0, 0);
-        POI testPOI = new POI("POI", "2", "User", "Labs", 2, "a POI", 0, 0,1);
+        instance.addPOI("POI", "2", "User", "Labs", "2," "a POI", 0, 0);
+        POI testPOI = new POI("POI", "2", "User", "Labs", "2", "a POI", 0, 0,1);
         POI[] expResult = {testPOI};
         POI[] result = instance.getPOIs();
         assertArrayEquals(expResult, result);

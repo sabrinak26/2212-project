@@ -8,32 +8,32 @@ import java.awt.event.*;
 import com.google.gson.Gson;
 import java.io.FileWriter;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.net.URL;
 import javax.swing.JFrame;
 
 public class Main extends JFrame {
-    
+
     // Frame is main window that the application uses
-    
+
     public static Main frame;
-    
-    // saved is for when the program needs to know if info is saved, hasnt been implemented yet so I just set it to true
-    
+
+    // saved is for when the program needs to know if info is saved, hasnt been
+    // implemented yet so I just set it to true
+
     private static boolean saved;
-    
+
     // Create help and about buttons
-    
+
     private static JButton helpButton;
     private static JButton aboutButton;
-
 
     // admin access buttons
     private static JTextField userNameTextField;
     private static JPasswordField passwordTextField;
     private static JButton enterCredsButton;
-
 
     // Main application window
 
@@ -49,82 +49,133 @@ public class Main extends JFrame {
     // searchPOI fields
     private static JComboBox searchPOIDropDown;
     private static JButton findPOIOnMapButton;
-    
+
     private static JLabel poiTitle;
     private static JLabel poiRoom;
     private static JLabel poiDes;
-    
-    private static void openMainFrame() {
-        
-        // Creates frame
-        
-        frame = new Main();
 
-        // add POI button
-//        frame.add(addNewPOIButton);
+    // POI HashMap
+    private static HashMap POIHashMap;
+    private static HashMap BuildingPOIHashMap;
+    private static HashMap RoomNumPOIHashMap;
+    private static HashMap DescHashMap;
 
-        
-        //JPanel layersPanel = new JPanel();
+    private static Map map;
 
-        Map map = new Map();
-        
-        //sets weather parameters/
-        //LIMITED REQUESTS - uncomment only when feature needed
-        /*
-        try {
-            map.getWeather();
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+
+    private static void saveJSON() {
+        if (map == null) return;
+        Gson natSciGson = new Gson();
+
+        try (FileWriter writer = new FileWriter("./src/main/metadata/NaturalSciences.json")) {
+
+            natSciGson.toJson(map.getBuilding("NaturalSciences"), writer);
+
+        } catch (IOException c) {
+            c.printStackTrace();
         }
-       */
-        
- 
-        
-        saved = true;
 
-        // Info about frame
-        
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setLayout(null);
-        frame.setSize(1000, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setTitle("Group 16 - UWO GIS");
-        frame.setResizable(false);
-        frame.getContentPane().setBackground(new Color(49,39, 131));
-        
+        Gson midSciGson = new Gson();
 
-        // Add search JComboBox
-//        String[] poiList = new String[]{"choice 1", "choice 2", "choice 3", "banana", "cat", "michael jordan"};
+        try (FileWriter writer = new FileWriter("./src/main/metadata/Middlesex.json")) {
 
-        // getCurrentBuilding().getLayer("Accessibility").getPOINames()
+            midSciGson.toJson(map.getBuilding("Middlesex"), writer);
 
-        String[] poiList = new String[]{};
+        } catch (IOException c) {
+            c.printStackTrace();
+        }
 
-        for ( int i=0; i <map.getBuildings().length; i++ ) {
+        Gson AlumGson = new Gson();
+
+        try (FileWriter writer = new FileWriter("./src/main/metadata/AlumniHall.json")) {
+
+            AlumGson.toJson(map.getBuilding("AlumniHall"), writer);
+
+        } catch (IOException c) {
+            c.printStackTrace();
+        }
+    }
+
+    private static void generateCheckboxActionListeners() {
+        String[] layers = {"Accessibility", "Classrooms", "Favourites", "Labs", "Restaurants", "User defined POIs" ,"Washrooms"};
+        for (int i = 0; i< map.getCheckBoxs().length; i++) {
+            int finalI = i;
+            map.getCheckBoxs()[i].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JCheckBox currCheckBox = ((JCheckBox) e.getSource());
+                    if (currCheckBox.isSelected()) {
+                        map.addPOIsToMap(map.getCurrentBuilding().getLayer(layers[finalI]).getPOIs());
+                        JPopupMenu popup = map.makePopup(layers[finalI]);
+
+
+                        //checkbox triggered it, so place below it
+                        popup.show(map.getCheckBoxs()[finalI], 165-map.getCheckBoxs()[finalI].getX(), 75-map.getCheckBoxs()[finalI].getY());
+
+                    } else {
+                        map.removePOIsFromMap(map.getCurrentBuilding().getLayer(layers[finalI]).getPOIs());
+                        map.removeFromPopup(layers[finalI]);
+
+                    }
+                }
+            });
+        }
+    }
+
+    private static void setPlaceholder(JTextField textField, String text, boolean isPassword) {
+        textField.setText(text);
+        textField.setForeground(Color.GRAY);
+        if (isPassword) passwordTextField.setEchoChar((char) 0);
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(text)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                    if (isPassword) passwordTextField.setEchoChar('*');
+
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText(text);
+                    if (isPassword) passwordTextField.setEchoChar((char) 0);
+                }
+            }
+        });
+    }
+
+
+    private static void generateSearchField() {
+        String[] poiList = new String[] {};
+        for (int i = 0; i < map.getBuildings().length; i++) {
             Building curr = map.getBuildings()[i];
-            String[] accPoi = curr.getLayer("Accessibility").getPOINames();
-            String[] classPoi = curr.getLayer("Classrooms").getPOINames();
-            String[] favPoi = curr.getLayer("Favourites").getPOINames();
-            String[] labPoi =curr.getLayer("Labs").getPOINames();
-            String[] restaurantPoi =curr.getLayer("Restaurants").getPOINames();
-            String[] userDefPoi = curr.getLayer("User defined POIs").getPOINames();
-            String[] washroomPoi = curr.getLayer("Washrooms").getPOINames();
+            String[] accPoi = curr.getLayer("Accessibility").getPOIInformation();
+            String[] classPoi = curr.getLayer("Classrooms").getPOIInformation();
+            String[] favPoi = curr.getLayer("Favourites").getPOIInformation();
+            String[] labPoi = curr.getLayer("Labs").getPOIInformation();
+            String[] restaurantPoi = curr.getLayer("Restaurants").getPOIInformation();
+            String[] userDefPoi = curr.getLayer("User defined POIs").getPOIInformation();
+            String[] washroomPoi = curr.getLayer("Washrooms").getPOIInformation();
 
-            String[] tempArr = new String[ poiList.length + accPoi.length + classPoi.length + favPoi.length + labPoi.length + restaurantPoi.length + userDefPoi.length + washroomPoi.length ];
-            System.arraycopy( poiList,0,tempArr, 0,poiList.length );
-            System.arraycopy(accPoi, 0, tempArr, poiList.length,accPoi.length  );
-            System.arraycopy( classPoi, 0, tempArr, poiList.length+accPoi.length, classPoi.length );
-            System.arraycopy( favPoi, 0, tempArr,poiList.length+accPoi.length+classPoi.length, favPoi.length );
-            System.arraycopy( labPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length, labPoi.length );
-            System.arraycopy( restaurantPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length, restaurantPoi.length );
-            System.arraycopy(userDefPoi, 0, tempArr,poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length+restaurantPoi.length, userDefPoi.length );
-            System.arraycopy( washroomPoi, 0, tempArr, poiList.length+accPoi.length+classPoi.length+favPoi.length+labPoi.length+restaurantPoi.length+ userDefPoi.length,washroomPoi.length );
+            String[] tempArr = new String[poiList.length + accPoi.length + classPoi.length + favPoi.length
+                    + labPoi.length + restaurantPoi.length + userDefPoi.length + washroomPoi.length];
+            System.arraycopy(poiList, 0, tempArr, 0, poiList.length);
+            System.arraycopy(accPoi, 0, tempArr, poiList.length, accPoi.length);
+            System.arraycopy(classPoi, 0, tempArr, poiList.length + accPoi.length, classPoi.length);
+            System.arraycopy(favPoi, 0, tempArr, poiList.length + accPoi.length + classPoi.length, favPoi.length);
+            System.arraycopy(labPoi, 0, tempArr, poiList.length + accPoi.length + classPoi.length + favPoi.length,
+                    labPoi.length);
+            System.arraycopy(restaurantPoi, 0, tempArr,
+                    poiList.length + accPoi.length + classPoi.length + favPoi.length + labPoi.length,
+                    restaurantPoi.length);
+            System.arraycopy(userDefPoi, 0, tempArr, poiList.length + accPoi.length + classPoi.length + favPoi.length
+                    + labPoi.length + restaurantPoi.length, userDefPoi.length);
+            System.arraycopy(washroomPoi, 0, tempArr, poiList.length + accPoi.length + classPoi.length + favPoi.length
+                    + labPoi.length + restaurantPoi.length + userDefPoi.length, washroomPoi.length);
             poiList = tempArr;
-
-
-
 
         }
 
@@ -133,64 +184,216 @@ public class Main extends JFrame {
         AutoComplete.enable(searchPOIDropDown);
 
         findPOIOnMapButton = new JButton("find poi");
-        findPOIOnMapButton.setBounds( 730, 200, 50,20 );
+        findPOIOnMapButton.setBounds(730, 200, 100, 20);
         findPOIOnMapButton.addActionListener(e -> {
-            System.out.println( "The selected POI to search is: " + searchPOIDropDown.getItemAt( searchPOIDropDown.getSelectedIndex() ) );
+            System.out.println("The selected POI to search is: "
+                    + searchPOIDropDown.getItemAt(searchPOIDropDown.getSelectedIndex()));
+            String toSearchFor = (String) searchPOIDropDown.getItemAt(searchPOIDropDown.getSelectedIndex());
 
-            // Here we will add the logic to scroll to the proper POI, searchPOI.getItemAt( searchPOI.getSelectedIndex()) gets the string of selected POI
+            POI searchedPOI = (POI) POIHashMap.get(toSearchFor);
+
+            if (searchedPOI != null) {
+
+                System.out.println("selecting marker");
+                map.selectMarker(searchedPOI.getX(), searchedPOI.getY(),
+                        ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName(),
+                        searchedPOI.getfloor());
+                map.addPoIToMapLevel(searchedPOI,
+                        (String) ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName());
+            } else {
+                searchedPOI = (POI) DescHashMap.get(toSearchFor);
+
+                if (searchedPOI != null) {
+                    System.out.println("selecting marker");
+                    map.addPoIToMapLevel(searchedPOI,
+                            (String) ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName());
+                    map.selectMarker(searchedPOI.getX(), searchedPOI.getY(),
+                            ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName(),
+                            searchedPOI.getfloor());
+                } else {
+                    searchedPOI = (POI) RoomNumPOIHashMap.get(toSearchFor);
+                    if (searchedPOI != null) {
+                        System.out.println("selecting marker");
+                        map.selectMarker(searchedPOI.getX(), searchedPOI.getY(),
+                                ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName(),
+                                searchedPOI.getfloor());
+                        map.addPoIToMapLevel(searchedPOI,
+                                (String) ((Building) BuildingPOIHashMap.get(searchedPOI.getName())).getBuildingName());
+                    }
+
+                }
+
+            }
         });
 
         frame.add(searchPOIDropDown);
         frame.add(findPOIOnMapButton);
-        
+    }
+
+
+    private static void loginActionListener(JFrame frame, JButton enterCredsButton) {
+        enterCredsButton.addActionListener(e -> {
+            // System.out.println("go to admin page");
+
+            boolean passwordWorks = true;
+            char[] enteredPassword = passwordTextField.getPassword();
+            char[] validPassword = new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' };
+
+            if (validPassword.length != enteredPassword.length) {
+                passwordWorks = false;
+            } else {
+                for (int i = 0; i < enteredPassword.length; i++) {
+                    if (enteredPassword[i] != validPassword[i]) {
+                        passwordWorks = false;
+                    }
+                }
+            }
+
+            if (userNameTextField.getText().equalsIgnoreCase("Admin") && passwordWorks) {
+                if (frame != null) frame.dispose();
+                openAdminFrame();
+            } else {
+                System.out.println("incorrect password");
+                passwordTextField.setEchoChar((char) 0);
+                passwordTextField.setText("Incorrect Password Entered");
+            }
+
+        });
+    }
+
+
+    private static void logoutActionListener(JFrame frame, JButton button) {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open the main frame when the start button is clicked
+                saveJSON();
+                if(frame != null) frame.dispose();
+                openMainFrame();
+            }
+        });
+    }
+
+    private static void openMainFrame() {
+
+        // Creates frame
+        frame = new Main();
+
+
+        // Info about frame
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setLayout(null);
+        frame.setSize(1000, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setTitle("Group 16 - UWO GIS");
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(new Color(49, 39, 131));
+
+        map = new Map();
+        POIHashMap = new HashMap();
+        BuildingPOIHashMap = new HashMap();
+        DescHashMap = new HashMap();
+        RoomNumPOIHashMap = new HashMap();
+        Building[] buildingList = map.getBuildings();
+
+        saved = true;
+
+        // Populates Hashmaps for each of the metadata
+        for (int i = 0; i < buildingList.length; i++) {
+            Layer[] curr_building_layer = buildingList[i].getLayers();
+
+            for (int j = 0; j < curr_building_layer.length; j++) {
+                POI[] poiList = curr_building_layer[j].getPOIs();
+
+                for (int k = 0; k < poiList.length; k++) {
+                    String curr_poi_name = poiList[k].getName();
+
+                    if (!POIHashMap.containsKey(curr_poi_name)) {
+                        POIHashMap.put(curr_poi_name, poiList[k]);
+                        BuildingPOIHashMap.put(curr_poi_name, buildingList[i]);
+                        RoomNumPOIHashMap.put(poiList[k].getRoomNumber() + "", poiList[k]);
+                        DescHashMap.put(poiList[k].getDescription(), poiList[k]);
+                    }
+                }
+            }
+        }
+
+        // sets weather parameters/
+        // LIMITED REQUESTS - uncomment only when feature needed
+        /*
+         * try {
+         * map.getWeather();
+         * } catch (IOException ex) {
+         * Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+         * } catch (InterruptedException ex) {
+         * Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+         * }
+         */
+
+        generateSearchField();
+
         // Adds map panel
-        
         frame.add(map.getPanel());
-        
+
         // Adds help and about buttons
-        
+
         frame.add(aboutButton);
         frame.add(helpButton);
 
+        // add admin access fields
+        userNameTextField = new JTextField("Username");
+        passwordTextField = new JPasswordField();
+        enterCredsButton = new JButton("Enter");
+
+
+
+        setPlaceholder(userNameTextField, "Username", false);
+        setPlaceholder(passwordTextField, "Password", true);
+        loginActionListener(frame, enterCredsButton);
+
+        userNameTextField.setBounds(142, 0, 100, 25);
+        passwordTextField.setBounds(242, 0, 100, 25);
+        enterCredsButton.setBounds(342, 0, 75, 25);
+        frame.add(userNameTextField);
+        frame.add(passwordTextField);
+        frame.add(enterCredsButton);
 
         // generates icon from url provided by Open Weather Map
         URL url = null;
         try {
-            url = new URL("https://openweathermap.org/img/wn/"+map.getIcon()+"@2x.png");
+            url = new URL("https://openweathermap.org/img/wn/" + map.getIcon() + "@2x.png");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        //gen image label
-        ImageIcon weatherImg = new ImageIcon(url); 
+
+        // gen image label
+        ImageIcon weatherImg = new ImageIcon(url);
         JLabel weatherLabel = new JLabel();
         weatherLabel.setIcon(weatherImg);
-        weatherLabel.setBounds(0,0, weatherImg.getIconWidth(), weatherImg.getIconHeight());
-        
-        //set text label for temp
-        JLabel weatherText = new JLabel();
-        weatherText.setText(String.format("%.1f\u00B0C",map.getTemp()));
-        weatherText.setForeground(Color.white);
-        weatherText.setBounds(0,-25,weatherImg.getIconWidth(), weatherImg.getIconHeight());
+        weatherLabel.setBounds(0, 0, weatherImg.getIconWidth(), weatherImg.getIconHeight());
 
-        //create pane to add weather to
+        // set text label for temp
+        JLabel weatherText = new JLabel();
+        weatherText.setText(String.format("%.1f\u00B0C", map.getTemp()));
+        weatherText.setForeground(Color.white);
+        weatherText.setBounds(0, -25, weatherImg.getIconWidth(), weatherImg.getIconHeight());
+
+        // create pane to add weather to
         JLayeredPane weatherLayeredPane = new JLayeredPane();
         weatherLayeredPane.setBounds(weatherLabel.getBounds());
         weatherLayeredPane.add(weatherLabel, JLayeredPane.DEFAULT_LAYER);
         weatherLayeredPane.add(weatherText, JLayeredPane.CENTER_ALIGNMENT);
-        
-        //create transparent panel to display
+
+        // create transparent panel to display
         JPanel weatherPanel = new JPanel();
         weatherPanel.setLayout(null);
-        weatherPanel.setBounds(860, 0, weatherImg.getIconWidth()+10, weatherImg.getIconHeight()+40);
+        weatherPanel.setBounds(860, 0, weatherImg.getIconWidth() + 10, weatherImg.getIconHeight() + 40);
         weatherPanel.setOpaque(false);
-        
+
         weatherPanel.add(weatherLayeredPane);
 
+        // layersPanel.setBounds(720, 260, 270, 400);
 
-
-        //layersPanel.setBounds(720, 260, 270, 400);
-        
         ImageIcon layersImage = new ImageIcon("./src/main/images/icons/layers.png");
         JLabel layersLabel = new JLabel();
         layersLabel.setIcon(layersImage);
@@ -203,52 +406,19 @@ public class Main extends JFrame {
         JPanel layersPanel = new JPanel();
         layersPanel.setLayout(null); // set the layout to null to use setBounds
         layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
-        
-        //JCheckBox accCheckBox = new JCheckBox();
-        map.getCheckBoxs()[0].setSelected(false);
-        
-        //JCheckBox classCheckBox = new JCheckBox();
-        map.getCheckBoxs()[1].setSelected(false);
-        
-        //JCheckBox favCheckBox = new JCheckBox();
-        map.getCheckBoxs()[2].setSelected(false);
-        
-        //JCheckBox labCheckBox = new JCheckBox();
-        map.getCheckBoxs()[3].setSelected(false);
-        
-        //JCheckBox resCheckBox = new JCheckBox();
-        map.getCheckBoxs()[4].setSelected(false);
-        
-        //JCheckBox userCheckBox = new JCheckBox();
-        map.getCheckBoxs()[5].setSelected(false);
-        
-        //JCheckBox washCheckBox = new JCheckBox();
-        map.getCheckBoxs()[6].setSelected(false);
-        
-        layerLayeredPane.add(map.getCheckBoxs()[0]);
-        layerLayeredPane.add(map.getCheckBoxs()[1]);
-        layerLayeredPane.add(map.getCheckBoxs()[2]);
-        layerLayeredPane.add(map.getCheckBoxs()[3]);
-        layerLayeredPane.add(map.getCheckBoxs()[4]);
-        layerLayeredPane.add(map.getCheckBoxs()[5]);
-        layerLayeredPane.add(map.getCheckBoxs()[6]);
 
-        
+
+        for (int i = 0; i < map.getCheckBoxs().length; i++) {
+            map.getCheckBoxs()[i].setSelected(false);
+            map.getCheckBoxs()[i].setBounds(12, 25+(55*i), 25, 25);
+            layerLayeredPane.add(map.getCheckBoxs()[i]);
+        }
+
         layersPanel.add(layerLayeredPane);
-        
-        map.getCheckBoxs()[0].setBounds(12, 25, 25, 25);
-        map.getCheckBoxs()[1].setBounds(12, 80, 25, 25);
-        map.getCheckBoxs()[2].setBounds(12, 135, 25, 25);
-        map.getCheckBoxs()[3].setBounds(12, 190, 25, 25);
-        map.getCheckBoxs()[4].setBounds(12, 240, 25, 25);
-        map.getCheckBoxs()[5].setBounds(12, 295, 25, 25);
-        map.getCheckBoxs()[6].setBounds(12, 350, 25, 25);
-        
-        
+
         frame.add(layersPanel);
         frame.add(weatherPanel);
-        
-        
+
         JPanel poiInfo = new JPanel();
         poiInfo.setLayout(null);
         poiInfo.setBounds(28, 600, 660, 65);
@@ -272,11 +442,11 @@ public class Main extends JFrame {
         JLabel poiDescription = new JLabel("POI Description:");
         poiDescription.setBounds(200, 30, 110, 30);
         poiLayeredPane.add(poiDescription, JLayeredPane.DEFAULT_LAYER);
-        
+
         poiTitle = new JLabel("");
         poiRoom = new JLabel("");
         poiDes = new JLabel("");
-        
+
         poiTitle.setBounds(267, 0, 200, 30);
         poiLayeredPane.add(poiTitle, JLayeredPane.DEFAULT_LAYER);
         poiRoom.setBounds(523, 0, 120, 30);
@@ -287,359 +457,59 @@ public class Main extends JFrame {
         poiInfo.add(poiLayeredPane);
 
         frame.add(poiInfo);
-        
-        
+
         frame.setVisible(true);
 
-
-        map.getCheckBoxs()[0].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                
-                //generates a pop up list of POI's
-                 
-
-                if (map.getCheckBoxs()[0].isSelected()) {
-                    System.out.println("accCheckBox is checked");
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-                    JPopupMenu popup = map.makePopup("Accessibility");
-
-                    
-                    //checkbox triggered it, so place below it 
-                    popup.show(map.getCheckBoxs()[0], 165-map.getCheckBoxs()[0].getX(), 75-map.getCheckBoxs()[0].getY());
-                    
-                } else {
-                    System.out.println("accCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Accessibility").getPOIs());
-                    map.removeFromPopup("Accessibility");
-
-                }
-            }
-        });
-        
-        map.getCheckBoxs()[1].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (map.getCheckBoxs()[1].isSelected()) {
-                    System.out.println("classCheckBox is checked");
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-                    JPopupMenu popup = map.makePopup("Classrooms");
-                    popup.show(map.getCheckBoxs()[1], 165-map.getCheckBoxs()[1].getX(), 75-map.getCheckBoxs()[1].getY());
-                        
-                } else {
-                    System.out.println("classCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Classrooms").getPOIs());
-                    map.removeFromPopup("Classrooms");
-
-                }
-            }
-        });
-        
-        map.getCheckBoxs()[2].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                
-                if (map.getCheckBoxs()[2].isSelected()) {
-                    System.out.println("favCheckBox is checked");
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-                    JPopupMenu popup = map.makePopup("Favourites");
-                    popup.show(map.getCheckBoxs()[2], 165-map.getCheckBoxs()[2].getX(), 75-map.getCheckBoxs()[2].getY());
-
-
-                } else {
-                    System.out.println("favCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Favourites").getPOIs());
-                    map.removeFromPopup("Favourites");
-
-                }
-            }
-        });
-        
-        map.getCheckBoxs()[3].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (map.getCheckBoxs()[3].isSelected()) {
-                    System.out.println("labCheckBox is checked");
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-                    JPopupMenu popup = map.makePopup("Labs");
-                    popup.show(map.getCheckBoxs()[3], 165-map.getCheckBoxs()[3].getX(), 75-map.getCheckBoxs()[3].getY());
-                    
-                } else {
-                    System.out.println("labCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Labs").getPOIs());
-                    map.removeFromPopup("Labs");
-                }
-            }
-        });
-        
-        map.getCheckBoxs()[4].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (map.getCheckBoxs()[4].isSelected()) {
-                    System.out.println("resCheckBox is checked");
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-                    JPopupMenu popup = map.makePopup("Restaurants");
-                    popup.show(map.getCheckBoxs()[4], 165-map.getCheckBoxs()[4].getX(), 75-map.getCheckBoxs()[4].getY());
-                    
-                } else {
-                    System.out.println("resCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Restaurants").getPOIs());
-                    map.removeFromPopup("Restaurants");                   
-                }
-            }
-        });
-        
-        map.getCheckBoxs()[5].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (map.getCheckBoxs()[5].isSelected()) {
-
-                    System.out.println("userCheckBox is checked");
-
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
-
-                    JPopupMenu popup = map.makePopup("User defined POIs");
-                    popup.show(map.getCheckBoxs()[5], 165-map.getCheckBoxs()[5].getX(), 75-map.getCheckBoxs()[5].getY());
-//                    map.addMarker();
-
-                } else {
-                    System.out.println("userCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("User defined POIs").getPOIs());
-                    map.removeFromPopup("User defined POIs");
-                }
-            }
-        });
-        
-        map.getCheckBoxs()[6].addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (map.getCheckBoxs()[6].isSelected()) {
-                    
-                    System.out.println("washCheckBox is checked");
-                    map.addPOIsToMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                    JPopupMenu popup = map.makePopup("Washrooms");
-                    popup.show(map.getCheckBoxs()[6], 165-map.getCheckBoxs()[6].getX(), 75-map.getCheckBoxs()[6].getY());
-                } else {
-                    System.out.println("washCheckBox is unchecked");
-                    map.removePOIsFromMap(map.getCurrentBuilding().getLayer("Washrooms").getPOIs());
-                    map.removeFromPopup("Washrooms");
-                   
-                }
-            }
-        });
-        
-
-        
-        //map.getBuilding("Natural Sciences").getLayer("Accessibility").addPOI("one","Level 4", "Built-in", "Accessibility", 7, "This is One on level 2", 200, 200);
-        //map.getBuilding("AlumniHall").getLayer("Classrooms").addPOI("two","Level 2", "Built-in", "Classrooms", 7, "This is Two", 100, 100);
-
-//        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
-        //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
-
-        /*
-        
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(0);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(1);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(2);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(3);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(4);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(5);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(6);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(7);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(8);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(9);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(10);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(11);
-        map.getBuilding("Natural Sciences").getLayer("Accessibility").removePOI(12);
-        
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(0);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(1);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(2);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(3);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(4);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(5);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(6);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(7);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(8);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(9);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(10);
-        map.getBuilding("AlumniHall").getLayer("Accessibility").removePOI(11);
-        
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(0);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(1);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(2);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(3);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(4);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(5);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(6);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(7);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(8);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(9);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(10);
-        map.getBuilding("Middlesex").getLayer("Accessibility").removePOI(11);
-
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(0);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(1);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(2);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(3);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(4);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(5);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(6);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(7);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(8);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(9);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(10);
-        map.getBuilding("Natural Sciences").getLayer("Classrooms").removePOI(11);
-        
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(0);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(1);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(2);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(3);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(4);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(5);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(6);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(7);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(8);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(9);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(10);
-        map.getBuilding("Natural Sciences").getLayer("Labs").removePOI(11);
-        
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(0);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(1);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(2);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(3);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(4);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(5);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(6);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(7);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(8);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(9);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(10);
-        map.getBuilding("AlumniHall").getLayer("Classrooms").removePOI(11);
-        
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(0);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(1);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(2);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(3);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(4);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(5);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(6);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(7);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(8);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(9);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(10);
-        map.getBuilding("Middlesex").getLayer("Classrooms").removePOI(11);
-
-        */
-        
-        // This is currently the line I am using to test putting POIs on the map
-        
-        //map.addMarker(75, 75, map.getBuilding("NaturalSciences").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-//        map.addMarker(175, 175, map.getBuilding("NaturalSciences").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-//        map.addMarker(250, 300, map.getBuilding("AlumniHall").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-//        map.addMarker(175, 175, map.getBuilding("AlumniHall").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-        
-        
-        //map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Accessibility").getPOIs());
-        //map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Classrooms").getPOIs());
-        
-        // Checks if application is being closed
+        generateCheckboxActionListeners();
         
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                
-                // If in the middle of task and info not saved then is will promt user if they really want to close
+
+                // If in the middle of task and info not saved then is will promt user if they
+                // really want to close
                 // If you wnat to see this set saved to false
                 // When they close the window it saves all current data to JSON file
-                
+
                 if (!saved) {
-                
+
                     ImageIcon icon = new ImageIcon("./src/main/images/icons/WesternLogo.png");
                     Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                     icon = new ImageIcon(image);
-                    int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit Program", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
+                    int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit Program",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
                     if (confirm == JOptionPane.YES_OPTION) {
-                        
+
                         // Save info to JSONs
-                        
-                        Gson natSciGson = new Gson();    
-                    
-                        try (FileWriter writer = new FileWriter("./src/main/metadata/NaturalSciences.json")) {
 
-                            natSciGson.toJson(map.getBuilding("NaturalSciences"), writer);
-
-                        } catch (IOException c) {
-                            c.printStackTrace();
-                        }
-
-                        Gson midSciGson = new Gson();         
-
-
-                        try (FileWriter writer = new FileWriter("./src/main/metadata/Middlesex.json")) {
-
-                            midSciGson.toJson(map.getBuilding("Middlesex"), writer);
-
-                        } catch (IOException c) {
-                             c.printStackTrace();
-                        }
-
-                        Gson AlumGson = new Gson();
-
-
-                        try (FileWriter writer = new FileWriter("./src/main/metadata/AlumniHall.json")) {
-
-                            AlumGson.toJson(map.getBuilding("AlumniHall"), writer);
-
-                        } catch (IOException c) {
-                            c.printStackTrace();
-                        }
-                        
+                        saveJSON();
                         System.exit(0);
-                    
+
                     }
                 } else {
-                
-                    Gson natSciGson = new Gson();    
-
-                    try (FileWriter writer = new FileWriter("./src/main/metadata/NaturalSciences.json")) {
-
-                        natSciGson.toJson(map.getBuilding("NaturalSciences"), writer);
-
-                    } catch (IOException c) {
-                        c.printStackTrace();
-                    }
-
-                    Gson midSciGson = new Gson();         
-
-                    try (FileWriter writer = new FileWriter("./src/main/metadata/Middlesex.json")) {
-
-                        midSciGson.toJson(map.getBuilding("Middlesex"), writer);
-
-                    } catch (IOException c) {
-                         c.printStackTrace();
-                    }
-
-                    Gson AlumGson = new Gson();
-
-                    try (FileWriter writer = new FileWriter("./src/main/metadata/AlumniHall.json")) {
-
-                        AlumGson.toJson(map.getBuilding("AlumniHall"), writer);
-
-                    } catch (IOException c) {
-                        c.printStackTrace();
-                    }
-
+                    saveJSON();
                     System.exit(0);
 
                 }
             }
         });
-        
-            
-        
+
     }
 
     private static void openAdminFrame() {
         System.out.println("inside admin frame");
 
         // Creates frame
-
-
         frame = new Main();
+
+        // Info about frame
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setLayout(null);
+        frame.setSize(1000, 700);
+        frame.setLocationRelativeTo(null);
+        frame.setTitle("Group 16 - UWO GIS");
+        frame.setResizable(false);
+        frame.getContentPane().setBackground(new Color(49, 39, 131));
 
         // make the edit POI interface buttons
 
@@ -650,13 +520,18 @@ public class Main extends JFrame {
         categoryTextField = new JTextField("Enter the category");
         submitPOIButton = new JButton("Submit");
 
+        setPlaceholder(poiNameField, "Enter POI name", false);
+        setPlaceholder(typeTextField, "Enter POI type", false);
+        setPlaceholder(descTextField, "Enter POI description", false);
+        setPlaceholder(roomNumTextField, "Enter POI room number", false);
+        setPlaceholder(categoryTextField, "Enter the category", false);
 
         poiNameField.setBounds(20, 600, 150, 25);
         typeTextField.setBounds(220, 600, 150, 25);
         descTextField.setBounds(20, 630, 150, 25);
         roomNumTextField.setBounds(220, 630, 150, 25);
         categoryTextField.setBounds(420, 600, 150, 25);
-        submitPOIButton.setBounds(420,630, 150, 25);
+        submitPOIButton.setBounds(420, 630, 150, 25);
 
         frame.add(poiNameField);
         frame.add(typeTextField);
@@ -672,37 +547,16 @@ public class Main extends JFrame {
         categoryTextField.setVisible(false);
         submitPOIButton.setVisible(false);
 
-//        addNewPOIButton.setBounds( 200,600, 400,25 );
-
-
-
-
-
+        // addNewPOIButton.setBounds( 200,600, 400,25 );
 
         // add POI button
         frame.add(addNewPOIButton);
 
-
-
-
-
-
-
-        Map map = new Map(addNewPOIButton, poiNameField, typeTextField, descTextField, roomNumTextField, categoryTextField, submitPOIButton);
-
-
+        map = new Map(addNewPOIButton, poiNameField, typeTextField, descTextField, roomNumTextField,
+                categoryTextField, submitPOIButton);
 
         saved = true;
 
-        // Info about frame
-
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setLayout(null);
-        frame.setSize(1000, 700);
-        frame.setLocationRelativeTo(null);
-        frame.setTitle("Group 16 - UWO GIS");
-        frame.setResizable(false);
-        frame.getContentPane().setBackground(new Color(49,39, 131));
 
         // Adds map panel
 
@@ -713,8 +567,11 @@ public class Main extends JFrame {
         frame.add(aboutButton);
         frame.add(helpButton);
 
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setBounds(142, 0, 75, 25);
+        logoutActionListener(frame, logoutButton);
+        frame.add(logoutButton);
 
-        //layersPanel.setBounds(720, 260, 270, 400);
 
         ImageIcon layersImage = new ImageIcon("./src/main/images/icons/layers.png");
         JLabel layersLabel = new JLabel();
@@ -729,158 +586,28 @@ public class Main extends JFrame {
         layersPanel.setLayout(null); // set the layout to null to use setBounds
         layersPanel.setBounds(720, 260, layersImage.getIconWidth(), layersImage.getIconHeight());
 
-        JCheckBox accCheckBox = new JCheckBox();
-        accCheckBox.setSelected(false);
 
-        JCheckBox classCheckBox = new JCheckBox();
-        classCheckBox.setSelected(false);
-
-        JCheckBox favCheckBox = new JCheckBox();
-        favCheckBox.setSelected(false);
-
-        JCheckBox labCheckBox = new JCheckBox();
-        labCheckBox.setSelected(false);
-
-        JCheckBox resCheckBox = new JCheckBox();
-        resCheckBox.setSelected(false);
-
-        JCheckBox userCheckBox = new JCheckBox();
-        userCheckBox.setSelected(false);
-
-        JCheckBox washCheckBox = new JCheckBox();
-        washCheckBox.setSelected(false);
-
-        layerLayeredPane.add(accCheckBox);
-        layerLayeredPane.add(classCheckBox);
-        layerLayeredPane.add(favCheckBox);
-        layerLayeredPane.add(labCheckBox);
-        layerLayeredPane.add(resCheckBox);
-        layerLayeredPane.add(userCheckBox);
-        layerLayeredPane.add(washCheckBox);
-
+        for (int i = 0; i < map.getCheckBoxs().length; i++) {
+            map.getCheckBoxs()[i].setSelected(false);
+            map.getCheckBoxs()[i].setBounds(12, 25+(55*i), 25, 25);
+            layerLayeredPane.add(map.getCheckBoxs()[i]);
+        }
 
         layersPanel.add(layerLayeredPane);
-
-        accCheckBox.setBounds(12, 25, 25, 25);
-        classCheckBox.setBounds(12, 80, 25, 25);
-        favCheckBox.setBounds(12, 135, 25, 25);
-        labCheckBox.setBounds(12, 190, 25, 25);
-        resCheckBox.setBounds(12, 240, 25, 25);
-        userCheckBox.setBounds(12, 295, 25, 25);
-        washCheckBox.setBounds(12, 350, 25, 25);
-
-
         frame.add(layersPanel);
-        
-        
 
         frame.setVisible(true);
 
-        accCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (accCheckBox.isSelected()) {
-                    System.out.println("accCheckBox is checked");
-                } else {
-                    System.out.println("accCheckBox is unchecked");
-                }
-            }
-        });
 
-        classCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (classCheckBox.isSelected()) {
-                    System.out.println("classCheckBox is checked");
-                } else {
-                    System.out.println("classCheckBox is unchecked");
-                }
-            }
-        });
+        generateCheckboxActionListeners();
 
-        favCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (favCheckBox.isSelected()) {
-                    System.out.println("favCheckBox is checked");
-                } else {
-                    System.out.println("favCheckBox is unchecked");
-                }
-            }
-        });
-
-        labCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (labCheckBox.isSelected()) {
-                    System.out.println("labCheckBox is checked");
-                } else {
-                    System.out.println("labCheckBox is unchecked");
-                }
-            }
-        });
-
-        resCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (resCheckBox.isSelected()) {
-                    System.out.println("resCheckBox is checked");
-                } else {
-                    System.out.println("resCheckBox is unchecked");
-                }
-            }
-        });
-
-        userCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (userCheckBox.isSelected()) {
-                    System.out.println("userCheckBox is checked");
-//                    map.addMarker();
-                } else {
-                    System.out.println("userCheckBox is unchecked");
-                }
-            }
-        });
-
-        washCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (washCheckBox.isSelected()) {
-                    System.out.println("washCheckBox is checked");
-                } else {
-                    System.out.println("washCheckBox is unchecked");
-                }
-            }
-        });
-
-//        map.getBuilding("NaturalSciences").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
-        //map.getBuilding("AlumniHall").getLayer("Accessibility").addPOI("OPAAAAAAAA","Level 2", "Built-in", "Accessibility", 7, "This is OPAAAAA", 125, 125);
-
-//        map.getBuilding("NaturalSciences").getLayer("").removePOI(0);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(1);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(2);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(3);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(4);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(5);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(6);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(7);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(8);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(9);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(10);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(11);
-//        map.getBuilding("NaturalSciences").getLayer("Classrooms").removePOI(12);
-
-        // This is currently the line I am using to test putting POIs on the map
-
-        //map.addMarker(75, 75, map.getBuilding("NaturalSciences").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-//        map.addMarker(175, 175, map.getBuilding("NaturalSciences").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-//        map.addMarker(250, 300, map.getBuilding("AlumniHall").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-//        map.addMarker(175, 175, map.getBuilding("AlumniHall").getBuildingName(), "level2"); // TYFUGIH*OUTCFYGI(&F*^&T(G*HYRDT*(&DRT&F^*G&T^R&
-
-
-        //map.addPOIsToMap(map.getBuilding("NaturalSciences").getLayer("Accessibility").getPOIs());
-
-        // Checks if application is being closed
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
 
-                // If in the middle of task and info not saved then is will promt user if they really want to close
+                // If in the middle of task and info not saved then is will promt user if they
+                // really want to close
                 // If you wnat to see this set saved to false
                 // When they close the window it saves all current data to JSON file
 
@@ -889,95 +616,33 @@ public class Main extends JFrame {
                     ImageIcon icon = new ImageIcon("./src/main/images/icons/WesternLogo.png");
                     Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                     icon = new ImageIcon(image);
-                    int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit Program", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
+                    int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit Program",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
                     if (confirm == JOptionPane.YES_OPTION) {
 
                         // Save info to JSONs
 
-                        Gson natSciGson = new Gson();
-
-                        try (FileWriter writer = new FileWriter("./src/main/metadata/NaturalSciences.json")) {
-
-                            natSciGson.toJson(map.getBuilding("NaturalSciences"), writer);
-
-                        } catch (IOException c) {
-                            c.printStackTrace();
-                        }
-
-                        Gson midSciGson = new Gson();
-
-
-                        try (FileWriter writer = new FileWriter("./src/main/metadata/Middlesex.json")) {
-
-                            midSciGson.toJson(map.getBuilding("Middlesex"), writer);
-
-                        } catch (IOException c) {
-                            c.printStackTrace();
-                        }
-
-                        Gson AlumGson = new Gson();
-
-
-                        try (FileWriter writer = new FileWriter("./src/main/metadata/AlumniHall.json")) {
-
-                            AlumGson.toJson(map.getBuilding("AlumniHall"), writer);
-
-                        } catch (IOException c) {
-                            c.printStackTrace();
-                        }
+                        saveJSON();
 
                         System.exit(0);
 
                     }
                 } else {
 
-                    Gson natSciGson = new Gson();
-
-                    try (FileWriter writer = new FileWriter("./src/main/metadata/NaturalSciences.json")) {
-
-                        natSciGson.toJson(map.getBuilding("NaturalSciences"), writer);
-
-                    } catch (IOException c) {
-                        c.printStackTrace();
-                    }
-
-                    Gson midSciGson = new Gson();
-
-                    try (FileWriter writer = new FileWriter("./src/main/metadata/Middlesex.json")) {
-
-                        midSciGson.toJson(map.getBuilding("Middlesex"), writer);
-
-                    } catch (IOException c) {
-                        c.printStackTrace();
-                    }
-
-                    Gson AlumGson = new Gson();
-
-                    try (FileWriter writer = new FileWriter("./src/main/metadata/AlumniHall.json")) {
-
-                        AlumGson.toJson(map.getBuilding("AlumniHall"), writer);
-
-                    } catch (IOException c) {
-                        c.printStackTrace();
-                    }
+                    saveJSON();
 
                     System.exit(0);
 
                 }
             }
         });
-
-
-
     }
 
-
     // Main method
-    
     public static void main(String[] args) {
-        
+
         // Create the start screen
-        
+
         JFrame startFrame = new JFrame();
         startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         startFrame.setLayout(null);
@@ -985,11 +650,11 @@ public class Main extends JFrame {
         startFrame.setTitle("Group 16 - UWO GIS - Start Page");
         startFrame.setResizable(false);
         startFrame.setLocationRelativeTo(null);
-        startFrame.getContentPane().setBackground(new Color(49,39, 131));
+        startFrame.getContentPane().setBackground(new Color(49, 39, 131));
         startFrame.setVisible(true);
 
         // Creates and adds Help and About buttons
-        
+
         helpButton = new JButton();
         aboutButton = new JButton();
         addNewPOIButton = new JButton();
@@ -999,70 +664,25 @@ public class Main extends JFrame {
         userNameTextField = new JTextField();
         passwordTextField = new JPasswordField();
 
-
-        userNameTextField.setForeground(Color.GRAY);
-        userNameTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (userNameTextField.getText().equals("Enter Username")) {
-                    userNameTextField.setText("");
-                    userNameTextField.setForeground(Color.BLACK);
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (userNameTextField.getText().isEmpty()) {
-                    userNameTextField.setForeground(Color.GRAY);
-                    userNameTextField.setText("Enter Username");
-                }
-            }
-        });
-
-        passwordTextField.setForeground(Color.GRAY);
-        passwordTextField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (passwordTextField.getText().equals("Enter Password") || passwordTextField.getText().equals("Incorrect Password Entered")) {
-                    passwordTextField.setEchoChar('*');
-                    passwordTextField.setText("");
-                    passwordTextField.setForeground(Color.BLACK);
-                }
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (passwordTextField.getText().isEmpty()) {
-                    passwordTextField.setEchoChar((char)0);
-                    passwordTextField.setForeground(Color.GRAY);
-                    passwordTextField.setText("Enter Password");
-                }
-            }
-        });
-
-
-
+        setPlaceholder(userNameTextField, "Enter Username", false);
+        setPlaceholder(passwordTextField, "Enter Password", true);
 
         helpButton.setText("Help");
         aboutButton.setText("About");
         addNewPOIButton.setText("Add New POI");
         enterCredsButton.setText("Enter");
-        
+
         aboutButton.setBounds(0, 0, 75, 25);
         helpButton.setBounds(67, 0, 75, 25);
-        addNewPOIButton.setBounds( 200,600, 400,25 );
-
-//        enterCredsButton.setText("Enter");
-
-        userNameTextField.setBounds(150, 450, 300,25);
-        passwordTextField.setBounds(450, 450, 300,25);
-        enterCredsButton.setBounds(400, 485, 100,25);
+        addNewPOIButton.setBounds(200, 600, 400, 25);
 
 
+        userNameTextField.setBounds(150, 450, 300, 25);
+        passwordTextField.setBounds(450, 450, 300, 25);
+        enterCredsButton.setBounds(400, 485, 100, 25);
 
-        
         // Check if buttons are correct then opens correct files
-        
         helpButton.addActionListener(e -> {
-            
             try {
                 File helpFile = new File("./src/main/PDFs/Help.pdf");
                 Desktop.getDesktop().open(helpFile);
@@ -1070,9 +690,8 @@ public class Main extends JFrame {
                 System.out.print("File does not exist");
             }
         });
-        
+
         aboutButton.addActionListener(e -> {
-            
             try {
                 File aboutFile = new File("./src/main/PDFs/About.pdf");
                 Desktop.getDesktop().open(aboutFile);
@@ -1081,57 +700,14 @@ public class Main extends JFrame {
             }
         });
 
-//        addNewPOIButton.addActionListener( e ->
-//        {
-//            addNewPOIButton.setText("Select where you want to add your point");
-//
-//
-//        });
+        loginActionListener(startFrame, enterCredsButton);
 
-        enterCredsButton.addActionListener( e ->{
-//            System.out.println("go to admin page");
-
-            boolean passwordWorks = true;
-            char[] enteredPassword = passwordTextField.getPassword();
-            char[] validPassword = new char[]{'p', 'a', 's', 's', 'w', 'o', 'r', 'd'};
-
-            if (validPassword.length != enteredPassword.length) {
-                passwordWorks = false;
-            } else{
-                for (int i = 0; i < enteredPassword.length; i++) {
-                    if (enteredPassword[i] != validPassword[i]) {
-                        passwordWorks = false;
-                    }
-                }
-            }
-
-
-            if (userNameTextField.getText().equalsIgnoreCase("Admin") && passwordWorks) {
-                openAdminFrame();
-            }else {
-                System.out.println("incorrect password");
-                passwordTextField.setEchoChar((char)0);
-                passwordTextField.setText("Incorrect Password Entered");
-            }
-
-
-        });
-        
-        
-        
         // Add a start button to the start screen
-        
+
         JButton startButton = new JButton("Start");
         startButton.setBounds(800, 550, 150, 75);
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Open the main frame when the start button is clicked
-                startFrame.dispose();
-                openMainFrame();
-            }
-        });
-        
+        logoutActionListener(startFrame, startButton);
+
         startFrame.add(startButton);
         startFrame.add(aboutButton);
         startFrame.add(helpButton);
@@ -1139,8 +715,6 @@ public class Main extends JFrame {
         startFrame.add(userNameTextField);
         startFrame.add(passwordTextField);
         startFrame.add(enterCredsButton);
-//        startFrame.add(addNewPOIButton);
-       
 
         startButton.setVisible(true);
         aboutButton.setVisible(true);
@@ -1149,33 +723,28 @@ public class Main extends JFrame {
         userNameTextField.setVisible(true);
         passwordTextField.setVisible(true);
         enterCredsButton.setVisible(true);
-//        addNewPOIButton.setVisible(true);
         startFrame.setVisible(true);
+
+        userNameTextField.revalidate();
+        userNameTextField.repaint();
+        passwordTextField.revalidate();
+        passwordTextField.repaint();
+        startFrame.revalidate();
+        startFrame.repaint();
+
     }
-    
-    public JLabel[] getPoiInfo() {
-        
-        JLabel[] array = {poiTitle, poiRoom, poiDes};
-        
-        return array;
-        
-    }
-    
+
     public void setPoiInfo(String poiTitle, String poiRoom, String poiDes) {
-        
+
         this.poiTitle.setText(poiTitle);
         this.poiRoom.setText(poiRoom);
         this.poiDes.setText(poiDes);
-        
+
         this.poiTitle.revalidate();
         this.poiTitle.repaint();
         this.poiRoom.revalidate();
         this.poiRoom.repaint();
         this.poiDes.revalidate();
         this.poiDes.repaint();
-        
     }
-    
 }
-    
-    

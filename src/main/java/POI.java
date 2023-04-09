@@ -12,7 +12,7 @@ public class POI {
     private String type;
     private String category;
     private String name;
-    private int roomNumber;
+    private String roomNumber;
     private String description;
     private boolean favourite;
     private int x_coordinate;
@@ -30,7 +30,7 @@ public class POI {
     
     // Create POI with metadata
     
-    public POI(String poiName, String floor, String poiType, String poiCategory, int poiRoomNumber, String poiDescription, int poiX, int poiY, int key) {
+    public POI(String poiName, String floor, String poiType, String poiCategory, String poiRoomNumber, String poiDescription, int poiX, int poiY, int key) {
         
         this.type = poiType;
         this.category = poiCategory;
@@ -69,11 +69,11 @@ public class POI {
         this.name = name;
     }
 
-    public int getRoomNumber() {
+    public String getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(int roomNumber) {
+    public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
 
