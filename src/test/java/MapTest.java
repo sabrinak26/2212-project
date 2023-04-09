@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
  */
 
+import java.util.HashMap;
+import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -44,33 +46,6 @@ public class MapTest {
     }
 
     /**
-     * Test of getTabs method, of class Map.
-     */
-    @Test
-    public void testGetTabs() {
-        System.out.println("getTabs");
-        Map instance = new Map();
-        JTabbedPane expResult = null;
-        JTabbedPane result = instance.getTabs();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setTabs method, of class Map.
-     */
-    @Test
-    public void testSetTabs() {
-        System.out.println("setTabs");
-        JTabbedPane tabs = null;
-        Map instance = new Map();
-        instance.setTabs(tabs);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of loadBuildingsData method, of class Map.
      */
     @Test
@@ -82,20 +57,6 @@ public class MapTest {
         fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of generateLayeredPane method, of class Map.
-     */
-    @Test
-    public void testGenerateLayeredPane() {
-        System.out.println("generateLayeredPane");
-        String level = "";
-        Map instance = new Map();
-        JLayeredPane expResult = null;
-        JLayeredPane result = instance.generateLayeredPane(level);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of getBuilding method, of class Map.
@@ -164,20 +125,6 @@ public class MapTest {
         instance.setFloorName(floorName);
         String result = instance.getFloorName();
         assertEquals(floorName, result);
-    }
-
-    /**
-     * Test of getPanel method, of class Map.
-     */
-    @Test
-    public void testGetPanel() {
-        System.out.println("getPanel");
-        Map instance = new Map();
-        JPanel expResult = null;
-        JPanel result = instance.getPanel();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -291,34 +238,240 @@ public class MapTest {
     }
 
     /**
-     * Test of getLayeredPane method, of class Map.
+     * Test of addPoIToMapLevel method, of class Map.
      */
     @Test
-    public void testGetLayeredPane() {
-        System.out.println("getLayeredPane");
+    public void testAddPoIToMapLevel() {
+        System.out.println("addPoIToMapLevel");
+        POI poi = null;
+        String buildingName = "";
+        Map instance = new Map();
+        instance.addPoIToMapLevel(poi, buildingName);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of addAllPois method, of class Map.
+     */
+    @Test
+    public void testAddAllPois() {
+        System.out.println("addAllPois");
+        Map instance = new Map();
+        instance.addAllPois();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of removePOIsFromMap method, of class Map.
+     */
+    @Test
+    public void testRemovePOIsFromMap() {
+        System.out.println("removePOIsFromMap");
+        POI[] pois = null;
+        Map instance = new Map();
+        instance.removePOIsFromMap(pois);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of addMarker method, of class Map.
+     */
+    @Test
+    public void testAddMarker_6args() {
+        System.out.println("addMarker");
+        int x = 0;
+        int y = 0;
+        String building = "";
+        String level = "";
+        POI poi = null;
+        boolean disappear = false;
+        Map instance = new Map();
+        instance.addMarker(x, y, building, level, poi, disappear);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of addMarker method, of class Map.
+     */
+    @Test
+    public void testAddMarker_4args() {
+        System.out.println("addMarker");
+        int x = 0;
+        int y = 0;
         String building = "";
         String level = "";
         Map instance = new Map();
-        JLayeredPane expResult = null;
-        JLayeredPane result = instance.getLayeredPane(building, level);
+        instance.addMarker(x, y, building, level);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of selectMarker method, of class Map.
+     */
+    @Test
+    public void testSelectMarker() {
+        System.out.println("selectMarker");
+        int x = 0;
+        int y = 0;
+        String building = "";
+        String level = "";
+        Map instance = new Map();
+        instance.selectMarker(x, y, building, level);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of removeMarker method, of class Map.
+     */
+    @Test
+    public void testRemoveMarker() {
+        System.out.println("removeMarker");
+        int x = 0;
+        int y = 0;
+        String building = "";
+        String level = "";
+        Map instance = new Map();
+        instance.removeMarker(x, y, building, level);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getBuildings method, of class Map.
+     */
+    @Test
+    public void testGetBuildings() {
+        System.out.println("getBuildings");
+        Map instance = new Map();
+        Building[] expResult = null;
+        Building[] result = instance.getBuildings();
+        assertArrayEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+
+    /**
+     * Test of getWeather method, of class Map.
+     */
+    @Test
+    public void testGetWeather() throws Exception {
+        System.out.println("getWeather");
+        Map instance = new Map();
+        instance.getWeather();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getIcon method, of class Map.
+     */
+    @Test
+    public void testGetIcon() {
+        System.out.println("getIcon");
+        Map instance = new Map();
+        String expResult = "";
+        String result = instance.getIcon();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of addLayeredPane method, of class Map.
+     * Test of getTemp method, of class Map.
      */
     @Test
-    public void testAddLayeredPane() {
-        System.out.println("addLayeredPane");
-        String building = "";
-        String level = "";
-        JLayeredPane pane = null;
+    public void testGetTemp() {
+        System.out.println("getTemp");
         Map instance = new Map();
-        instance.addLayeredPane(building, level, pane);
+        float expResult = 0.0F;
+        float result = instance.getTemp();
+        assertEquals(expResult, result, 0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of createMenu method, of class Map.
+     */
+    @Test
+    public void testCreateMenu() {
+        System.out.println("createMenu");
+        Map instance = new Map();
+        instance.createMenu();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of addNames method, of class Map.
+     */
+    @Test
+    public void testAddNames() {
+        System.out.println("addNames");
+        String category = "";
+        Map instance = new Map();
+        instance.addNames(category);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of addFaves method, of class Map.
+     */
+    @Test
+    public void testAddFaves() {
+        System.out.println("addFaves");
+        Map instance = new Map();
+        instance.addFaves();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+
+    /**
+     * Test of updateMenu method, of class Map.
+     */
+    @Test
+    public void testUpdateMenu() {
+        System.out.println("updateMenu");
+        Map instance = new Map();
+        instance.updateMenu();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of updateJustMenu method, of class Map.
+     */
+    @Test
+    public void testUpdateJustMenu() {
+        System.out.println("updateJustMenu");
+        Map instance = new Map();
+        instance.updateJustMenu();
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getPOIHashMap method, of class Map.
+     */
+    @Test
+    public void testGetPOIHashMap() {
+        System.out.println("getPOIHashMap");
+        Map instance = new Map();
+        HashMap expResult = null;
+        HashMap result = instance.getPOIHashMap();
+        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
     
 }
+
