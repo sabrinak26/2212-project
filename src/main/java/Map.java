@@ -277,6 +277,7 @@ public class Map {
                                 
                             building = buildings[index];
                             currentBuilding = building;
+                            currentFloor = "Level 2";
                             updateMenu();
                             System.out.println(building.getBuildingName());
                             if (cb != null) panel.remove(cb);
@@ -807,20 +808,54 @@ public class Map {
     
     
     public void selectMarker(int x, int y, String building, String level){
-        
-        JLayeredPane pane = getLayeredPane(building, level);
-        System.out.println("layered pane  " + pane.getName());
-        System.out.println("getting for building: " + building + ", level: " + level);
-        Component[] components = pane.getComponents();
-        
-        
-        for (Component component : components) {
-            if (component instanceof JComponent)
-                ((JComponent) component).scrollRectToVisible(new Rectangle(x-100,y-100,1,1));
-            if (component instanceof JLabel) {
-                JLabel marker = (JLabel) component;
-                if (marker.getX() == x && marker.getY() == y) {
-                    marker.grabFocus();
+        for (int i = 0; i < 2; i++){
+            JLayeredPane pane = getLayeredPane(building, level);
+            System.out.println("layered pane  " + pane.getName());
+            System.out.println("getting for building: " + building + ", level: " + level);
+            Component[] components = pane.getComponents();
+
+            if (building.equalsIgnoreCase("Natural Sciences")) {
+
+                getTabs().setSelectedIndex(0);
+
+
+
+            } else if (building.equalsIgnoreCase("Middlesex")) {
+
+                getTabs().setSelectedIndex(1);
+
+            } else {
+
+                getTabs().setSelectedIndex(2);
+
+            }
+
+            //getTabs().setSelectedIndex(1);
+
+
+            for (Component component : components) {
+                System.out.println("This 1");
+                if (component instanceof JComponent)
+                    System.out.println("This 2");
+                    ((JComponent) component).scrollRectToVisible(new Rectangle(x-100,y-100,1,1));
+                    System.out.println("This 3");
+                if (component instanceof JLabel) {
+                    System.out.println("This 3");
+                    JLabel marker = (JLabel) component;
+                    //marker.grabFocus();
+                    System.out.println("This 5");
+                    System.out.println(marker.getX());
+                    System.out.println(x);
+                    System.out.println(marker.getY());
+                    System.out.println(y);
+                    System.out.println((marker.getX() == x && marker.getY() == y));
+                    //if (marker.getX() == x && marker.getY() == y) {
+
+                        System.out.println("This 6");
+                        marker.grabFocus();
+                        marker.grabFocus();
+                        break;
+                    //}
                 }
             }
         }
@@ -942,7 +977,7 @@ public class Map {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 POI poi = map.get(JPois.getSelectedValue());
-                
+                System.out.println("Value Change");
                 selectMarker(poi.getX(), poi.getY(), currentBuilding.getBuildingName(), poi.getfloor());
             }
         });
@@ -1004,6 +1039,29 @@ public class Map {
     public void updateMenu(){
         
         addAllPois();
+        
+        if (scrollPanel == null){
+            createMenu();
+        }
+        else addFaves();
+        
+        
+        names.clear();
+        
+        addNames("Accessibility");
+        addNames("Classrooms");
+        addNames("Favourites");
+        addNames("Labs");
+        addNames("Restaurants");
+        addNames("User defined POIs");
+        addNames("Washrooms");
+        
+        scrollPanel.revalidate();
+        scrollPanel.repaint();
+    }
+    
+    public void updateJustMenu(){
+
         
         if (scrollPanel == null){
             createMenu();

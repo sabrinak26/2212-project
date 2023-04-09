@@ -105,7 +105,7 @@ public class Main extends JFrame {
                     JCheckBox currCheckBox = ((JCheckBox) e.getSource());
                     if (currCheckBox.isSelected()) {
                         map.addPOIsToMap(map.getCurrentBuilding().getLayer(layers[finalI]).getPOIs());
-                        map.updateMenu();
+                        map.updateJustMenu();
 
                     } else {
                         map.removePOIsFromMap(map.getCurrentBuilding().getLayer(layers[finalI]).getPOIs());
